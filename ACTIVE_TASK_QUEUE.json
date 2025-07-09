@@ -1,0 +1,162 @@
+{
+  "last_updated": "2025-07-09T19:41:25.417Z",
+  "total_tasks": 15,
+  "completed_tasks": 9,
+  "tasks": [
+    {
+      "id": "TASK-010",
+      "priority": "HIGH",
+      "status": "AVAILABLE",
+      "assigned_to": null,
+      "title": "Create Base Agent Tests",
+      "description": "Create comprehensive tests for AgentBase class",
+      "files_affected": [
+        "/test/agents/base-agent.test.js"
+      ],
+      "estimated_lines_saved": 0,
+      "instructions": "Test all methods in AgentBase. Include mock Redis, file operations, API calls.",
+      "dependencies": [
+        "TASK-001"
+      ]
+    },
+    {
+      "id": "TASK-011",
+      "priority": "MEDIUM",
+      "status": "AVAILABLE",
+      "assigned_to": null,
+      "title": "Merge Dashboard Components",
+      "description": "Consolidate MainDashboard.jsx and OptimizedMainDashboard.jsx",
+      "files_affected": [
+        "/dashboard/src/MainDashboard.jsx",
+        "/dashboard/src/OptimizedMainDashboard.jsx",
+        "/dashboard/src/components/MainDashboard.jsx"
+      ],
+      "estimated_lines_saved": 500,
+      "instructions": "Keep best features from both. Remove OptimizedMainDashboard after merge.",
+      "dependencies": []
+    },
+    {
+      "id": "TASK-012",
+      "priority": "MEDIUM",
+      "status": "AVAILABLE",
+      "assigned_to": null,
+      "title": "Consolidate Performance Dashboards",
+      "description": "Remove duplicate PerformanceDashboard components",
+      "files_affected": [
+        "/dashboard/src/PerformanceDashboard.jsx",
+        "/dashboard/src/components/PerformanceDashboard.jsx"
+      ],
+      "estimated_lines_saved": 400,
+      "instructions": "Keep /dashboard/src/components/PerformanceDashboard.jsx, update imports.",
+      "dependencies": []
+    },
+    {
+      "id": "TASK-013",
+      "priority": "MEDIUM",
+      "status": "AVAILABLE",
+      "assigned_to": null,
+      "title": "Remove Duplicate API Routes",
+      "description": "Consolidate duplicate agent-stats endpoints",
+      "files_affected": [
+        "/dashboard/api/agent-stats.js",
+        "/dashboard/app/api/agent-stats.js"
+      ],
+      "estimated_lines_saved": 200,
+      "instructions": "Keep Next.js 13+ app directory version, remove old pages/api version.",
+      "dependencies": []
+    },
+    {
+      "id": "TASK-014",
+      "priority": "MEDIUM",
+      "status": "AVAILABLE",
+      "assigned_to": null,
+      "title": "Update CLAUDE.md",
+      "description": "Document new architecture in CLAUDE.md",
+      "files_affected": [
+        "/CLAUDE.md"
+      ],
+      "estimated_lines_saved": 0,
+      "instructions": "Add sections for AgentBase, Redis Manager, Shared Utils. Update agent examples.",
+      "dependencies": [
+        "TASK-006",
+        "TASK-007",
+        "TASK-008",
+        "TASK-009"
+      ]
+    },
+    {
+      "id": "TASK-015",
+      "priority": "LOW",
+      "status": "AVAILABLE",
+      "assigned_to": null,
+      "title": "Analyze Enhancement Services",
+      "description": "Review 14 enhancement files for consolidation opportunities",
+      "files_affected": [
+        "/cli/enhancement-*.js"
+      ],
+      "estimated_lines_saved": 500,
+      "instructions": "Create report of overlapping functionality. Don't refactor yet, just analyze.",
+      "dependencies": []
+    }
+  ],
+  "completed": [
+    {
+      "id": "TASK-001",
+      "title": "Create Base Agent Class",
+      "completed_by": "Claude",
+      "completed_at": "2025-01-09T09:30:00Z"
+    },
+    {
+      "id": "TASK-002",
+      "title": "Implement Redis Connection Manager",
+      "completed_by": "Claude",
+      "completed_at": "2025-01-09T09:45:00Z"
+    },
+    {
+      "id": "TASK-003",
+      "title": "Consolidate API Cache Implementations",
+      "completed_by": "Claude",
+      "completed_at": "2025-01-09T10:00:00Z"
+    },
+    {
+      "id": "TASK-004",
+      "title": "Create Example Refactored Agent",
+      "completed_by": "Claude",
+      "completed_at": "2025-01-09T10:15:00Z"
+    },
+    {
+      "id": "TASK-005",
+      "title": "Create Shared Utilities Module",
+      "completed_by": "Claude",
+      "completed_at": "2025-01-09T10:30:00Z"
+    },
+    {
+      "id": "TASK-006",
+      "title": "Refactor GPT Agent",
+      "completed_by": "claude",
+      "completed_at": "2025-07-09T19:37:46.395Z",
+      "lines_saved": 300
+    },
+    {
+      "id": "TASK-007",
+      "title": "Refactor DeepSeek Agent",
+      "completed_by": "claude",
+      "completed_at": "2025-07-09T19:39:15.544Z",
+      "lines_saved": 300
+    },
+    {
+      "id": "TASK-008",
+      "title": "Refactor Mistral Agent",
+      "completed_by": "claude",
+      "completed_at": "2025-07-09T19:40:19.470Z",
+      "lines_saved": 300
+    },
+    {
+      "id": "TASK-009",
+      "title": "Refactor Gemini Agent",
+      "completed_by": "claude",
+      "completed_at": "2025-07-09T19:41:25.416Z",
+      "lines_saved": 300
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "testDate": "2025-07-09T18:47:15.899Z",
+  "efficientAgent": {
+    "name": "Efficient Agent",
+    "messageCount": 0,
+    "currentContextSize": 0,
+    "totalTokensIn": 168,
+    "totalTokensOut": 399,
+    "totalTokens": 567,
+    "completedTasks": 5,
+    "clearHistory": 5,
+    "avgContextSize": 17,
+    "tokensSaved": 501
+  },
+  "traditionalAgent": {
+    "name": "Traditional Agent",
+    "messageCount": 10,
+    "currentContextSize": 500,
+    "totalTokensIn": 1132,
+    "totalTokensOut": 399,
+    "totalTokens": 1531,
+    "completedTasks": 5,
+    "clearHistory": 0,
+    "avgContextSize": 210,
+    "tokensSaved": 0
+  },
+  "savings": {
+    "tokens": 964,
+    "percentage": 63,
+    "estimatedCostSavings": 0.019280000000000002
+  }
+}

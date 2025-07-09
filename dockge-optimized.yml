@@ -1,0 +1,68 @@
+# Ez Aigent - Dockge Optimized Stack
+# Simplified configuration for easy Dockge deployment
+
+version: '3.9'
+
+services:
+  # Core Services Bundle
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+
+  orchestrator:
+    image: ezaigent/orchestrator:latest
+    build: ./cli
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=production
+    volumes:
+      - ./src:/src
+      - ./shared:/shared
+    depends_on:
+      - redis
+
+  dashboard:
+    image: ezaigent/dashboard:latest
+    build: ./dashboard
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`ezaigent.local`)"
+
+  # Auto-scaling agent pool
+  agent-pool:
+    image: ezaigent/agent-base:latest
+    build: ./agents/claude
+    restart: unless-stopped
+    deploy:
+      replicas: ${INITIAL_AGENTS:-3}
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - API_KEYS=${CLAUDE_API_KEY},${OPENAI_API_KEY},${DEEPSEEK_API_KEYS}
+      - AUTO_SCALE=true
+    volumes:
+      - ./src:/src
+    depends_on:
+      - redis
+
+volumes:
+  redis_data:
+    driver: local
+
+# Dockge-specific labels
+x-dockge:
+  icon: "🤖"
+  category: "AI/Automation"
+  description: "Multi-agent AI system for automated software development"
