@@ -1,0 +1,152 @@
+version: '3.8'
+
+services:
+  # Redis - Required for agent communication
+  redis:
+    image: redis:7-alpine
+    container_name: ez-aigent-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - ezaigent-network
+
+  # Enhanced Dashboard
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: ez-aigent-dashboard
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - NEXT_TELEMETRY_DISABLED=1
+      - DASHBOARD_PORT=3000
+      - DASHBOARD_HOST=0.0.0.0
+    volumes:
+      - ./dashboard/src:/app/src:ro
+      - ./dashboard/pages:/app/pages:ro
+      - ./dashboard/public:/app/public:ro
+      - ./logs:/app/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+    networks:
+      - ezaigent-network
+
+  # Claude Agent
+  claude-agent:
+    build:
+      context: ./agents/claude
+      dockerfile: Dockerfile
+    container_name: ez-aigent-claude
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - MODEL=claude-3-opus
+      - ROLE=architecture
+      - AGENT_ID=claude-001
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory:/app/.agent-memory
+      - ./shared:/app/shared
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - ezaigent-network
+
+  # GPT Agent
+  gpt-agent:
+    build:
+      context: ./agents/gpt
+      dockerfile: Dockerfile
+    container_name: ez-aigent-gpt
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MODEL=gpt-4o
+      - ROLE=backend-logic
+      - AGENT_ID=gpt-001
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory:/app/.agent-memory
+      - ./shared:/app/shared
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - ezaigent-network
+
+  # DeepSeek Agent
+  deepseek-agent:
+    build:
+      context: ./agents/deepseek
+      dockerfile: Dockerfile
+    container_name: ez-aigent-deepseek
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DEEPSEEK_API_KEYS=${DEEPSEEK_API_KEYS}
+      - MODEL=deepseek-coder
+      - ROLE=test-utils
+      - AGENT_ID=deepseek-001
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory:/app/.agent-memory
+      - ./shared:/app/shared
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - ezaigent-network
+
+  # Orchestrator
+  orchestrator:
+    build:
+      context: ./cli
+      dockerfile: Dockerfile
+    container_name: ez-aigent-orchestrator
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=production
+      - MAX_AGENTS=10
+      - SCALE_UP_THRESHOLD=20
+      - SCALE_DOWN_THRESHOLD=5
+    volumes:
+      - ./src:/app/src
+      - ./shared:/app/shared
+      - ./logs:/app/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - ezaigent-network
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  ezaigent-network:
+    driver: bridge
+    name: ezaigent-network

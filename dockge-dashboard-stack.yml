@@ -1,0 +1,149 @@
+version: '3.8'
+
+services:
+  ez-aigent-redis:
+    image: redis:7-alpine
+    container_name: ez-aigent-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - ez_aigent_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - ez-aigent-network
+
+  ez-aigent-dashboard:
+    image: ezaigent/dashboard:latest
+    container_name: ez-aigent-dashboard
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://ez-aigent-redis:6379
+      - NEXT_TELEMETRY_DISABLED=1
+      - DASHBOARD_PORT=3000
+      - DASHBOARD_HOST=0.0.0.0
+      - DASHBOARD_URL=http://localhost:3000
+      - ENABLE_MONITORING=true
+      - ENABLE_CHAT=true
+      - ENABLE_3D_WORKSPACE=true
+      - ENABLE_VOICE_COMMANDS=false
+      - ENABLE_AUTO_DOCUMENTATION=true
+      - ENABLE_SECURITY_SCANNING=true
+    volumes:
+      - ez_aigent_logs:/app/logs
+      - ez_aigent_memory:/app/.agent-memory
+    depends_on:
+      - ez-aigent-redis
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+    networks:
+      - ez-aigent-network
+
+  ez-aigent-claude:
+    image: ezaigent/claude-agent:latest
+    container_name: ez-aigent-claude
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://ez-aigent-redis:6379
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY:-your-claude-api-key}
+      - MODEL=claude-3-opus
+      - ROLE=architecture
+      - AGENT_ID=claude-001
+      - NODE_ENV=production
+    volumes:
+      - ez_aigent_src:/app/src
+      - ez_aigent_memory:/app/.agent-memory
+      - ez_aigent_shared:/app/shared
+    depends_on:
+      - ez-aigent-redis
+    networks:
+      - ez-aigent-network
+
+  ez-aigent-gpt:
+    image: ezaigent/gpt-agent:latest
+    container_name: ez-aigent-gpt
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://ez-aigent-redis:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-your-openai-api-key}
+      - MODEL=gpt-4o
+      - ROLE=backend-logic
+      - AGENT_ID=gpt-001
+      - NODE_ENV=production
+    volumes:
+      - ez_aigent_src:/app/src
+      - ez_aigent_memory:/app/.agent-memory
+      - ez_aigent_shared:/app/shared
+    depends_on:
+      - ez-aigent-redis
+    networks:
+      - ez-aigent-network
+
+  ez-aigent-deepseek:
+    image: ezaigent/deepseek-agent:latest
+    container_name: ez-aigent-deepseek
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://ez-aigent-redis:6379
+      - DEEPSEEK_API_KEYS=${DEEPSEEK_API_KEYS:-your-deepseek-api-keys}
+      - MODEL=deepseek-coder
+      - ROLE=test-utils
+      - AGENT_ID=deepseek-001
+      - NODE_ENV=production
+    volumes:
+      - ez_aigent_src:/app/src
+      - ez_aigent_memory:/app/.agent-memory
+      - ez_aigent_shared:/app/shared
+    depends_on:
+      - ez-aigent-redis
+    networks:
+      - ez-aigent-network
+
+  ez-aigent-orchestrator:
+    image: ezaigent/orchestrator:latest
+    container_name: ez-aigent-orchestrator
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://ez-aigent-redis:6379
+      - NODE_ENV=production
+      - MAX_AGENTS=10
+      - SCALE_UP_THRESHOLD=20
+      - SCALE_DOWN_THRESHOLD=5
+      - ENABLE_MONITORING=true
+      - METRICS_PORT=9090
+    volumes:
+      - ez_aigent_src:/app/src
+      - ez_aigent_shared:/app/shared
+      - ez_aigent_logs:/app/logs
+    depends_on:
+      - ez-aigent-redis
+    networks:
+      - ez-aigent-network
+
+volumes:
+  ez_aigent_redis_data:
+    driver: local
+  ez_aigent_logs:
+    driver: local
+  ez_aigent_memory:
+    driver: local
+  ez_aigent_src:
+    driver: local
+  ez_aigent_shared:
+    driver: local
+
+networks:
+  ez-aigent-network:
+    driver: bridge
+    name: ez-aigent-network
