@@ -1,0 +1,13 @@
+# /cloudflared/config.yml
+url: http://localhost:3000
+
+# Use a unique subdomain under your Cloudflare zone
+# Must match DNS setup
+hostname: dashboard.yourdomain.com
+
+# Your Cloudflare Tunnel credentials file (generated via 'cloudflared tunnel create')
+credentials-file: /root/.cloudflared/<TUNNEL_ID>.json
+
+autoupdate-freq: 24h
+no-autoupdate: false
+loglevel: info

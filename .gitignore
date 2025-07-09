@@ -1,0 +1,64 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.tokenpool
+
+# Dependencies
+node_modules/
+vendor/
+venv/
+env/
+
+# Build outputs
+dist/
+build/
+out/
+*.pyc
+__pycache__/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Test coverage
+coverage/
+.nyc_output/
+*.coverage
+.coverage.*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Security
+*.pem
+*.key
+*.cert
+.secrets.baseline
+
+# Temporary files
+tmp/
+temp/
+.cache/
+
+# Agent outputs (for development)
+src/output/
+.agent.history.md
+.claude/

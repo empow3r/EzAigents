@@ -1,0 +1,78 @@
+# AI Agent Mesh Stack for Dell R720 - 100+ Parallel Cloud-Based Coding Agents
+
+version: '3.8'
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  dashboard:
+    build: ./dashboard
+    container_name: agent-dashboard
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+
+  # Claude Max Agent
+  agent_claude_max:
+    build: ./agents/claude
+    deploy:
+      replicas: 2
+    environment:
+      - MODEL=claude-3-opus
+      - API_KEY=${CLAUDE_KEY_1}
+      - ROLE=refactor-core
+      - REDIS_URL=redis://redis:6379
+
+  # GPT-4o Agent
+  agent_gpt4:
+    build: ./agents/gpt
+    deploy:
+      replicas: 4
+    environment:
+      - MODEL=gpt-4o
+      - API_KEY=${OPENAI_KEY_1}
+      - ROLE=backend-logic
+      - REDIS_URL=redis://redis:6379
+
+  # DeepSeek Agents (Free-tier, scaled)
+  agent_deepseek:
+    build: ./agents/deepseek
+    deploy:
+      replicas: 10
+    environment:
+      - MODEL=deepseek-coder
+      - API_KEY_POOL=${DEEPSEEK_KEYS}  # comma-separated keys
+      - ROLE=test-utils
+      - REDIS_URL=redis://redis:6379
+
+  # Mistral or Command R+ for Docs
+  agent_docs:
+    build: ./agents/mistral
+    deploy:
+      replicas: 2
+    environment:
+      - MODEL=command-r-plus
+      - API_KEY=${OPENROUTER_MISTRAL_KEY}
+      - ROLE=docgen
+      - REDIS_URL=redis://redis:6379
+
+  # Orchestrator
+  orchestrator:
+    build: ./cli
+    container_name: agent-orchestrator
+    command: node runner.js
+    volumes:
+      - ./src:/src
+      - ./tokenpool.json:/src/tokenpool.json
+      - ./filemap.json:/src/filemap.json
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - FILEMAP_PATH=/src/filemap.json
+      - TOKENPOOL_PATH=/src/tokenpool.json

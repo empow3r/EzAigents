@@ -1,0 +1,20 @@
+{
+  "claude-3-opus": [
+    "sk-claude-max-key-1",
+    "sk-claude-max-key-2"
+  ],
+  "gpt-4o": [
+    "sk-openai-key-1",
+    "sk-openai-key-2"
+  ],
+  "deepseek-coder": [
+    "sk-deepseek-key-1",
+    "sk-deepseek-key-2",
+    "sk-deepseek-key-3",
+    "sk-deepseek-key-4"
+  ],
+  "command-r-plus": [
+    "sk-mistral-key-1",
+    "sk-mistral-key-2"
+  ]
+}
