@@ -37,14 +37,14 @@ services:
       - "3000"
     environment:
       # Core Configuration
-      - NODE_ENV=production
-      - REDIS_URL=redis://redis:6379
-      - NEXT_TELEMETRY_DISABLED=1
+      - NODE_ENV="production"
+      - REDIS_URL="redis://redis:6379"
+      - NEXT_TELEMETRY_DISABLED="1"
       
       # Dashboard Configuration
-      - DASHBOARD_PORT=3000
-      - DASHBOARD_HOST=0.0.0.0
-      - DASHBOARD_URL=http://localhost:3000
+      - DASHBOARD_PORT="3000"
+      - DASHBOARD_HOST="0.0.0.0"
+      - DASHBOARD_URL="http://localhost:3000"
       
       # API Keys - Multiple LLMs with Rotation
       - CLAUDE_API_KEY=${CLAUDE_API_KEY}
@@ -70,8 +70,8 @@ services:
       
       # Security & Authentication
       - JWT_SECRET=${JWT_SECRET}
-      - API_RATE_LIMIT=100
-      - SESSION_TIMEOUT=1800000
+      - API_RATE_LIMIT="100"
+      - SESSION_TIMEOUT="1800000"
       - ENABLE_HTTPS="true"
       - HTTPS_PORT="3443"
       - SSL_CERT_PATH="/app/ssl/cert.pem"
@@ -79,59 +79,59 @@ services:
       - SSL_CERT_DOMAIN="${SSL_CERT_DOMAIN:-localhost}"
       
       # Telnyx SMS Configuration
-      - TELNYX_API_KEY=${TELNYX_API_KEY:-}
-      - TELNYX_FROM_NUMBER=${TELNYX_FROM_NUMBER:-}
-      - TELNYX_MESSAGING_PROFILE_ID=${TELNYX_MESSAGING_PROFILE_ID:-}
-      - TELNYX_WEBHOOK_URL=${TELNYX_WEBHOOK_URL:-}
-      - TELNYX_PUBLIC_KEY=${TELNYX_PUBLIC_KEY:-}
-      - ADMIN_PHONE_NUMBERS=${ADMIN_PHONE_NUMBERS:-}
+      - TELNYX_API_KEY=${TELNYX_API_KEY:-""}
+      - TELNYX_FROM_NUMBER=${TELNYX_FROM_NUMBER:-""}
+      - TELNYX_MESSAGING_PROFILE_ID=${TELNYX_MESSAGING_PROFILE_ID:-""}
+      - TELNYX_WEBHOOK_URL=${TELNYX_WEBHOOK_URL:-""}
+      - TELNYX_PUBLIC_KEY=${TELNYX_PUBLIC_KEY:-""}
+      - ADMIN_PHONE_NUMBERS=${ADMIN_PHONE_NUMBERS:-""}
       
       # Agent Configuration
-      - MAX_AGENTS=100
-      - AGENT_TIMEOUT=300000
-      - AGENT_RETRY_ATTEMPTS=3
-      - AGENT_MEMORY_PATH=./.agent-memory
-      - MAX_CONTEXT_SIZE=150000
+      - MAX_AGENTS="100"
+      - AGENT_TIMEOUT="300000"
+      - AGENT_RETRY_ATTEMPTS="3"
+      - AGENT_MEMORY_PATH="./.agent-memory"
+      - MAX_CONTEXT_SIZE="150000"
       
       # Auto-Scaling Configuration
-      - MIN_AGENTS=1
-      - SCALE_UP_THRESHOLD=20
-      - SCALE_DOWN_THRESHOLD=5
-      - SCALING_INTERVAL=30000
-      - COOLDOWN_PERIOD=300000
+      - MIN_AGENTS="1"
+      - SCALE_UP_THRESHOLD="20"
+      - SCALE_DOWN_THRESHOLD="5"
+      - SCALING_INTERVAL="30000"
+      - COOLDOWN_PERIOD="300000"
       
       # Queue Configuration
-      - QUEUE_RETRY_DELAY=5000
-      - QUEUE_MAX_RETRIES=5
-      - FAILED_TASK_TTL=86400
+      - QUEUE_RETRY_DELAY="5000"
+      - QUEUE_MAX_RETRIES="5"
+      - FAILED_TASK_TTL="86400"
       
       # Monitoring & Metrics
-      - ENABLE_MONITORING=true
-      - METRICS_PORT=9090
-      - HEALTH_CHECK_INTERVAL=30000
-      - ALERT_QUEUE_DEPTH=100
-      - ALERT_ERROR_RATE=0.05
-      - ALERT_RESPONSE_TIME=30000
+      - ENABLE_MONITORING="true"
+      - METRICS_PORT="9090"
+      - HEALTH_CHECK_INTERVAL="30000"
+      - ALERT_QUEUE_DEPTH="100"
+      - ALERT_ERROR_RATE="0.05"
+      - ALERT_RESPONSE_TIME="30000"
       
       # Logging
-      - LOG_LEVEL=info
-      - LOG_FILE_PATH=./logs/ezaugent.log
-      - DEBUG=ez-aigent:*
-      - LOG_MAX_SIZE=10m
-      - LOG_MAX_FILES=5
+      - LOG_LEVEL="info"
+      - LOG_FILE_PATH="./logs/ezaugent.log"
+      - DEBUG="ez-aigent:*"
+      - LOG_MAX_SIZE="10m"
+      - LOG_MAX_FILES="5"
       
       # Cost Tracking
-      - ENABLE_COST_TRACKING=true
-      - COST_ALERT_THRESHOLD=100
-      - COST_CLAUDE_PER_1K=0.015
-      - COST_GPT4_PER_1K=0.03
-      - COST_DEEPSEEK_PER_1K=0.001
-      - COST_MISTRAL_PER_1K=0.002
-      - COST_GEMINI_PER_1K=0.001
+      - ENABLE_COST_TRACKING="true"
+      - COST_ALERT_THRESHOLD="100"
+      - COST_CLAUDE_PER_1K="0.015"
+      - COST_GPT4_PER_1K="0.03"
+      - COST_DEEPSEEK_PER_1K="0.001"
+      - COST_MISTRAL_PER_1K="0.002"
+      - COST_GEMINI_PER_1K="0.001"
       
       # Enhancement System
-      - ENHANCEMENT_QUEUE_PREFIX=queue:enhancement:
-      - ENHANCEMENT_CONCURRENCY=2
+      - ENHANCEMENT_QUEUE_PREFIX="queue:enhancement:"
+      - ENHANCEMENT_CONCURRENCY="2"
       
       # Notification Configuration
       - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
@@ -146,16 +146,16 @@ services:
       - EMERGENCY_SHUTDOWN_KEY=${EMERGENCY_SHUTDOWN_KEY}
       
       # Performance Tuning
-      - REDIS_POOL_SIZE=10
-      - AGENT_CONCURRENCY=3
-      - BATCH_SIZE=10
+      - REDIS_POOL_SIZE="10"
+      - AGENT_CONCURRENCY="3"
+      - BATCH_SIZE="10"
       
       # Feature Flags
-      - ENABLE_CHAT=true
-      - ENABLE_3D_WORKSPACE=true
-      - ENABLE_VOICE_COMMANDS=false
-      - ENABLE_AUTO_DOCUMENTATION=true
-      - ENABLE_SECURITY_SCANNING=true
+      - ENABLE_CHAT="true"
+      - ENABLE_3D_WORKSPACE="true"
+      - ENABLE_VOICE_COMMANDS="false"
+      - ENABLE_AUTO_DOCUMENTATION="true"
+      - ENABLE_SECURITY_SCANNING="true"
       
       # External Services
       - GITHUB_TOKEN=${GITHUB_TOKEN}
@@ -166,17 +166,17 @@ services:
       - SENTRY_DSN=${SENTRY_DSN}
       
       # TTS Server Configuration
-      - TTS_SERVER_URL=http://ai_llm:11435
-      - TTS_ENABLED=true
-      - TTS_VOICE_MODEL=neural-voice
-      - TTS_LANGUAGE=en-US
-      - ENABLE_VOICE_NOTIFICATIONS=true
-      - ENABLE_VOICE_COMMANDS=true
+      - TTS_SERVER_URL="http://ai_llm:11435"
+      - TTS_ENABLED="true"
+      - TTS_VOICE_MODEL="neural-voice"
+      - TTS_LANGUAGE="en-US"
+      - ENABLE_VOICE_NOTIFICATIONS="true"
+      - ENABLE_VOICE_COMMANDS="true"
       
       # Experimental Features
-      - ENABLE_AI_SUGGESTIONS=false
-      - ENABLE_PREDICTIVE_SCALING=false
-      - ENABLE_NEURAL_OPTIMIZATION=false
+      - ENABLE_AI_SUGGESTIONS="false"
+      - ENABLE_PREDICTIVE_SCALING="false"
+      - ENABLE_NEURAL_OPTIMIZATION="false"
     volumes:
       - ssl_certs:/app/ssl:ro
       - logs:/app/logs
