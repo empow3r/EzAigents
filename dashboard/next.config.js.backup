@@ -1,0 +1,80 @@
+/** @type {import('next').NextConfig} */
+const path = require('path');
+
+const nextConfig = {
+  reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  
+  // Performance optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  
+  // Image optimization
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    domains: ['localhost'],
+    minimumCacheTTL: 86400,
+  },
+  
+  // Webpack configuration
+  webpack: (config, { dev, isServer }) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname),
+    };
+    
+    return config;
+  },
+  
+  // Headers for caching and performance
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+        ],
+      },
+    ];
+  },
+  
+  // Compression
+  compress: true,
+  
+  // Output optimization
+  poweredByHeader: false,
+  generateEtags: true,
+  
+  // Page extensions
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
+  
+  // Rewrites for API optimization
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: process.env.API_URL || 'http://localhost:3001/api/:path*',
+      },
+    ];
+  },
+};
+
+module.exports = nextConfig;
