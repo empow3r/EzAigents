@@ -13,6 +13,7 @@ import EnhancementDashboard from './components/EnhancementDashboard';
 import EnhancementCommandCenter from './components/EnhancementCommandCenter';
 import ResponsiveLayout from './components/ResponsiveLayout';
 import ChatDashboard from './components/ChatDashboard';
+import TTSManager from './components/TTSManager';
 import { Button } from '@/components/ui/button';
 import { 
   BarChart3, 
@@ -25,7 +26,8 @@ import {
   Sun,
   Sparkles,
   GitBranch,
-  MessageCircle
+  MessageCircle,
+  Volume2
 } from 'lucide-react';
 
 export default function MainDashboard() {
@@ -37,6 +39,7 @@ export default function MainDashboard() {
     { id: 'project', name: 'Project Status', icon: GitBranch, component: ProjectDashboard },
     { id: 'enhanced', name: 'Enhanced Dashboard', icon: Sparkles, component: EnhancedAgentDashboard },
     { id: 'chat', name: 'Agent Chat', icon: MessageCircle, component: ChatDashboard },
+    { id: 'tts', name: 'Text-to-Speech', icon: Volume2, component: TTSManager },
     { id: 'dashboard', name: 'Classic Dashboard', icon: BarChart3, component: AgentDashboard },
     { id: 'workspace', name: '3D Workspace', icon: Box, component: Agent3DWorkspace },
     { id: 'diffs', name: 'Code Diffs', icon: GitCompare, component: CodeDiffViewer },
