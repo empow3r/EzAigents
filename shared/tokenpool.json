@@ -1,20 +1,17 @@
 {
   "claude-3-opus": [
-    "sk-claude-max-key-1",
-    "sk-claude-max-key-2"
+    "YOUR_CLAUDE_API_KEY_HERE"
   ],
   "gpt-4o": [
-    "sk-openai-key-1",
-    "sk-openai-key-2"
+    "YOUR_OPENAI_API_KEY_HERE"
   ],
   "deepseek-coder": [
-    "sk-deepseek-key-1",
-    "sk-deepseek-key-2",
-    "sk-deepseek-key-3",
-    "sk-deepseek-key-4"
+    "YOUR_DEEPSEEK_API_KEY_HERE"
   ],
   "command-r-plus": [
-    "sk-mistral-key-1",
-    "sk-mistral-key-2"
+    "YOUR_MISTRAL_API_KEY_HERE"
+  ],
+  "gemini-pro": [
+    "YOUR_GEMINI_API_KEY_HERE"
   ]
 }

@@ -1,19 +1,21 @@
 'use client';
-import React, { useState, lazy } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
-import AgentDashboard from './AgentDashboard';
-import EnhancedAgentDashboard from './EnhancedAgentDashboard';
-import Agent3DWorkspace from './Agent3DWorkspace';
-import CodeDiffViewer from './CodeDiffViewer';
-import GameficationDashboard from './GameficationDashboard';
-import ProjectDashboard from './ProjectDashboard';
-import PromptManager from './PromptManager';
-import EnhancementDashboard from './components/EnhancementDashboard';
-import EnhancementCommandCenter from './components/EnhancementCommandCenter';
 import ResponsiveLayout from './components/ResponsiveLayout';
-import ChatDashboard from './components/ChatDashboard';
-import TTSManager from './components/TTSManager';
+
+// Lazy load components for better performance
+const AgentDashboard = lazy(() => import('./AgentDashboard'));
+const EnhancedAgentDashboard = lazy(() => import('./EnhancedAgentDashboard'));
+const Agent3DWorkspace = lazy(() => import('./Agent3DWorkspace'));
+const CodeDiffViewer = lazy(() => import('./CodeDiffViewer'));
+const GameficationDashboard = lazy(() => import('./GameficationDashboard'));
+const ProjectDashboard = lazy(() => import('./ProjectDashboard'));
+const PromptManager = lazy(() => import('./PromptManager'));
+const EnhancementDashboard = lazy(() => import('./components/EnhancementDashboard'));
+const EnhancementCommandCenter = lazy(() => import('./components/EnhancementCommandCenter'));
+const ChatDashboard = lazy(() => import('./components/ChatDashboard'));
+const TTSManager = lazy(() => import('./components/TTSManager'));
 import { Button } from '@/components/ui/button';
 import { 
   BarChart3, 
@@ -31,7 +33,7 @@ import {
 } from 'lucide-react';
 
 export default function MainDashboard() {
-  const [activeTab, setActiveTab] = useState('enhancements');
+  const [activeTab, setActiveTab] = useState('command');
   const [darkMode, setDarkMode] = useState(true);
 
   const tabs = [
@@ -177,7 +179,17 @@ export default function MainDashboard() {
             transition={{ duration: 0.3 }}
             className="w-full"
           >
-            {activeComponent && React.createElement(activeComponent)}
+            <Suspense fallback={
+              <div className="flex items-center justify-center min-h-[600px]">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="w-12 h-12 border-3 border-blue-500 border-t-transparent rounded-full"
+                />
+              </div>
+            }>
+              {activeComponent && React.createElement(activeComponent)}
+            </Suspense>
           </motion.div>
         </AnimatePresence>
       </main>

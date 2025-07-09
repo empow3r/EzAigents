@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useApiWithLoading } from '../hooks/useApiWithLoading';
 import { 
   Activity, 
   AlertTriangle, 
@@ -23,6 +24,7 @@ const EnhancementCommandCenter = () => {
   const [coordinationData, setCoordinationData] = useState(null);
   const [realTimeMetrics, setRealTimeMetrics] = useState({});
   const [selectedEnhancement, setSelectedEnhancement] = useState(null);
+  const { loading, fetchWithLoading } = useApiWithLoading();
 
   // Enhancement icons mapping
   const enhancementIcons = {
@@ -55,8 +57,7 @@ const EnhancementCommandCenter = () => {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await fetch('/api/enhancement-analytics');
-      const data = await response.json();
+      const data = await fetchWithLoading('/api/enhancement-analytics');
       setAnalyticsData(data);
     } catch (error) {
       console.error('Failed to fetch analytics:', error);
@@ -65,8 +66,7 @@ const EnhancementCommandCenter = () => {
 
   const fetchCoordination = async () => {
     try {
-      const response = await fetch('/api/enhancement-coordination');
-      const data = await response.json();
+      const data = await fetchWithLoading('/api/enhancement-coordination');
       setCoordinationData(data);
     } catch (error) {
       console.error('Failed to fetch coordination data:', error);
@@ -75,8 +75,7 @@ const EnhancementCommandCenter = () => {
 
   const fetchRealTimeMetrics = async () => {
     try {
-      const response = await fetch('/api/real-time-metrics');
-      const data = await response.json();
+      const data = await fetchWithLoading('/api/real-time-metrics');
       setRealTimeMetrics(data);
     } catch (error) {
       console.error('Failed to fetch real-time metrics:', error);
@@ -103,14 +102,17 @@ const EnhancementCommandCenter = () => {
     }
   };
 
-  if (!analyticsData || !coordinationData) {
+  if (loading || !analyticsData || !coordinationData) {
     return (
       <div className="flex items-center justify-center h-96">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full"
-        />
+        <div className="text-center">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            className="w-12 h-12 border-3 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"
+          />
+          <p className="text-gray-300">Loading enhancement data...</p>
+        </div>
       </div>
     );
   }
