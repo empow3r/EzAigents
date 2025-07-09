@@ -7,6 +7,7 @@ Thumbs.db
 .env.local
 .env.*.local
 .env.tokenpool
+!.env.example
 
 # Dependencies
 node_modules/
