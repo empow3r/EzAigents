@@ -7,7 +7,7 @@
 Implement the GPT-4 agent specialized in backend logic, API development, and data processing.
 
 ## Context
-You are building the GPT-4 agent for EzAugent. This agent excels at implementing business logic, creating APIs, and data transformations. Focus ONLY on GPT agent files.
+You are building the GPT-4 agent for Ez Aigent. This agent excels at implementing business logic, creating APIs, and data transformations. Focus ONLY on GPT agent files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `agents/gpt/index.js`

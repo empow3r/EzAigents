@@ -1,18 +1,19 @@
 {
-  "core/utils/math.ts": {
-    "model": "claude-3-opus",
-    "prompt": "Refactor this file for clarity and speed. Preserve all tests."
-  },
-  "core/api/handler.ts": {
-    "model": "gpt-4o",
-    "prompt": "Ensure all endpoints handle edge cases, log errors clearly, and are documented."
-  },
-  "test/user.test.ts": {
-    "model": "deepseek-coder",
-    "prompt": "Convert tests to use Vitest, cover all edge cases and mocks."
-  },
-  "docs/getting-started.md": {
-    "model": "command-r-plus",
-    "prompt": "Rewrite this documentation in clean markdown for developers and beginners."
+  "task_mappings": {
+    "architecture": {
+      "agent": "claude",
+      "model": "claude-3-opus",
+      "prompt": "Analyze and improve the architecture of this code"
+    },
+    "implementation": {
+      "agent": "gpt",
+      "model": "gpt-4o", 
+      "prompt": "Implement the functionality described"
+    },
+    "testing": {
+      "agent": "deepseek",
+      "model": "deepseek-coder",
+      "prompt": "Create comprehensive tests"
+    }
   }
 }

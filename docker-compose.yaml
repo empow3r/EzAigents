@@ -1,0 +1,104 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: ai_redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+
+  runner:
+    build: ./cli
+    container_name: ai_runner
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - FILEMAP_PATH=/shared/filemap.json
+      - TOKENPOOL_PATH=/shared/tokenpool.json
+    volumes:
+      - ./src:/src
+      - ./shared:/shared
+    depends_on:
+      - redis
+
+  dashboard:
+    build: ./dashboard
+    container_name: ai_dashboard
+    ports:
+      - '3000:3000'
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    volumes:
+      - ./shared:/shared
+
+  claude:
+    build: ./agents/claude
+    container_name: ai_claude
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - API_KEY=${CLAUDE_API_KEY}
+      - MODEL=claude-3-opus
+      - ROLE=refactor-core
+    volumes:
+      - ./src:/src
+    depends_on:
+      - redis
+
+  gpt:
+    build: ./agents/gpt
+    container_name: ai_gpt
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - API_KEY=${OPENAI_API_KEY}
+      - MODEL=gpt-4o
+      - ROLE=backend-logic
+    volumes:
+      - ./src:/src
+    depends_on:
+      - redis
+
+  deepseek:
+    build: ./agents/deepseek
+    container_name: ai_deepseek
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - API_KEY_POOL=${DEEPSEEK_API_KEYS}
+      - MODEL=deepseek-coder
+      - ROLE=test-utils
+    volumes:
+      - ./src:/src
+    depends_on:
+      - redis
+
+  mistral:
+    build: ./agents/mistral
+    container_name: ai_mistral
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - API_KEY=${MISTRAL_API_KEY}
+      - MODEL=command-r-plus
+      - ROLE=docgen
+    volumes:
+      - ./src:/src
+    depends_on:
+      - redis
+
+  gemini:
+    build: ./agents/gemini
+    container_name: ai_gemini
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - API_KEY=${GEMINI_API_KEY}
+      - MODEL=gemini-pro
+      - ROLE=analysis
+    volumes:
+      - ./src:/src
+    depends_on:
+      - redis
+
+volumes:
+  redis_data:

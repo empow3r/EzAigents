@@ -7,7 +7,7 @@
 Build a robust token pool management system for API key rotation and rate limit handling.
 
 ## Context
-You are building the token management system for EzAugent, an AI multi-agent orchestrator that coordinates 10-100+ agents. Your focus is ONLY on token/API key management files.
+You are building the token management system for Ez Aigent, an AI multi-agent orchestrator that coordinates 10-100+ agents. Your focus is ONLY on token/API key management files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `cli/token_pool_manager.js`

@@ -1,0 +1,13 @@
+{
+  "name": "ez-aigent-gpt-agent",
+  "version": "1.0.0",
+  "description": "GPT-4 agent for logic implementation and backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.2",
+    "axios": "^1.6.0"
+  }
+}

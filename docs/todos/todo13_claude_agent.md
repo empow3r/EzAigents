@@ -7,7 +7,7 @@
 Implement the complete Claude agent with advanced code refactoring and architecture capabilities.
 
 ## Context
-You are building the Claude agent for EzAugent. This agent specializes in code refactoring, architecture decisions, and complex reasoning. Focus ONLY on Claude agent files.
+You are building the Claude agent for Ez Aigent. This agent specializes in code refactoring, architecture decisions, and complex reasoning. Focus ONLY on Claude agent files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `agents/claude/index.js`

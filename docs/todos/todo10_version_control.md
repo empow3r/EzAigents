@@ -7,7 +7,7 @@
 Implement comprehensive version control integration and automated commit management.
 
 ## Context
-You are building version control automation for EzAugent. Multiple agents will be making changes simultaneously. Focus ONLY on version control related files.
+You are building version control automation for Ez Aigent. Multiple agents will be making changes simultaneously. Focus ONLY on version control related files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `cli/git_manager.js`

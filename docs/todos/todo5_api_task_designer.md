@@ -31,10 +31,10 @@ Design all API endpoints, task types, and command structures for the multi-agent
   - /agent pause all
   - /agent retry {task-id}
 - [ ] Define CLI commands:
-  - ezaugent start
-  - ezaugent scale {agent} {count}
-  - ezaugent logs {agent}
-  - ezaugent cost-report
+  - ez-aigent start
+  - ez-aigent scale {agent} {count}
+  - ez-aigent logs {agent}
+  - ez-aigent cost-report
 - [ ] Create `api_spec.yaml` (OpenAPI 3.0)
 - [ ] Define webhook payload formats
 - [ ] Create GraphQL schema alternative

@@ -7,7 +7,7 @@
 Build the complete Next.js dashboard UI for monitoring and controlling the multi-agent system.
 
 ## Context
-You are creating the web dashboard for EzAugent. This will be the primary interface for monitoring 100+ agents. Focus ONLY on frontend dashboard files.
+You are creating the web dashboard for Ez Aigent. This will be the primary interface for monitoring 100+ agents. Focus ONLY on frontend dashboard files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `dashboard/src/app/page.tsx`

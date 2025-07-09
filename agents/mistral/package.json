@@ -1,0 +1,13 @@
+{
+  "name": "ez-aigent-mistral-agent",
+  "version": "1.0.0",
+  "description": "Mistral agent for documentation generation",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.2",
+    "axios": "^1.6.0"
+  }
+}

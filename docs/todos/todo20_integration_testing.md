@@ -7,7 +7,7 @@
 Create comprehensive integration tests and end-to-end testing for the complete multi-agent system.
 
 ## Context
-You are building the testing framework to ensure EzAugent works flawlessly with 100+ agents. Focus ONLY on testing files.
+You are building the testing framework to ensure Ez Aigent works flawlessly with 100+ agents. Focus ONLY on testing files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `tests/integration/agent_integration.test.js`

@@ -1,556 +1,291 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with the Ez Aigent codebase.
 
 ## Project Overview
-**EzAugent (AgentForce VCore)** - An AI Multi-Agent SaaS Builder Orchestrator platform that coordinates 10-100+ cloud-based AI coding agents to build and scale SaaS products within 24 hours.
+**Ez Aigent** - An AI Multi-Agent SaaS Builder Orchestrator platform that coordinates 10-100+ cloud-based AI coding agents to build and scale SaaS products within 24 hours.
+
+## High-Level Architecture
+
+1. **Orchestrator** (`cli/runner.js`) - Central task distributor
+2. **AI Agent Pool** - Five specialized agent types (Claude, GPT, DeepSeek, Mistral, Gemini)
+3. **Redis Queue** - Central pub/sub message broker (port 6379)
+4. **Dashboard** - Next.js web interface at http://localhost:3000
+5. **Auto-Scaler** - Dynamic scaling based on queue depth
+
+**Key Patterns:**
+- Queue-Based Distribution: Model-specific Redis queues
+- Token Pool Rotation: Automatic API key rotation
+- File Lock Management: Prevents concurrent file conflicts
+- Memory Optimization: Auto context clearing after tasks
+- Failure Recovery: Exponential backoff retry mechanism
 
 ## Project Structure
-
-### Current Directory Structure
 ```
-EzAugent/
+Ez Aigent/
 ├── cli/               # Orchestrator and runner services
-│   ├── runner.js      # Main task dequeuer and distributor
-│   ├── enqueue.js     # Task enqueueing utility
-│   ├── agent-spawner.js # Dynamic agent configuration
-│   └── package.json
 ├── agents/            # Individual agent containers
-│   ├── claude/        # Claude agent (architecture, refactoring)
-│   ├── gpt/           # GPT agent (backend logic)
-│   ├── deepseek/      # DeepSeek agent (testing)
-│   ├── mistral/       # Mistral agent (documentation)
-│   └── gemini/        # Gemini agent (analysis)
 ├── dashboard/         # Web UI and monitoring
-│   ├── src/           # React components
-│   ├── api/           # API endpoints
-│   └── package.json
 ├── shared/            # Shared configuration
-│   ├── filemap.json   # Task-to-agent mapping
-│   └── tokenpool.json # API key rotation pool
-├── src/output/        # Agent-generated outputs
-├── deployment/        # Docker and K8s configurations
+├── src/               # Shared source code and outputs
 ├── scripts/           # Utility scripts
-└── docs/              # Documentation
+└── .agent-memory/     # Agent persistent memory
 ```
 
-## Key Architecture Components
+## Core Files
+- `cli/runner.js` - Main orchestrator
+- `cli/enqueue.js` - Task enqueueing
+- `cli/coordination-service.js` - Agent coordination
+- `cli/file-lock-manager.js` - File lock management
+- `shared/filemap.json` - Task-to-agent mapping
+- `shared/tokenpool.json` - API key rotation pool
+- `.env.example` - Environment template
 
-### 1. **Multi-Agent System**
-- **Redis Queue**: Central task distribution via pub/sub (port 6379)
-- **Agent Types**: Claude, GPT-4o, DeepSeek, Mistral agents with specialized roles
-- **Token Pool**: Rotating API key management in `tokenpool.json`
-- **File Mapping**: Task assignments defined in `filemap.json`
+## Agent Specializations
+- **Claude**: Architecture, refactoring (200k tokens)
+- **GPT-4o**: Backend logic, APIs (128k tokens)
+- **DeepSeek**: Testing, validation (32k tokens)
+- **Mistral**: Documentation (32k tokens)
+- **Gemini**: Code analysis (32k tokens)
 
-### 2. **Core Files**
-**Orchestration Layer:**
-- `agent_runner.js`: Main task dequeuer and distributor
-- `orchestrator_context_engine.js`: Context priming for agents (enqueue.js)
-- `orchestrator_autotuner.js`: Performance optimization
-- `agent_spawner_enhancer.js`: Dynamic agent configuration with model-specific prompts
-- `enqueue_script.js`: Task enqueueing utility
-- `agent_sync_service.js`: Agent synchronization service
-
-**Agent Implementations:**
-- `agent_claude_index.js`: Claude agent (refactoring, architecture)
-- `agent_mistral_index.js`: Mistral agent (documentation)
-- Individual agents follow pattern: dequeue → process → output
-
-**Dashboard & UI:**
-- `agent_dashboard_ui.jsx`: React component for stats visualization
-- `agent_dashboard_api.js`: Backend API for dashboard
-- `agent_dashboard_tui.js`: Terminal UI version
-- `dashboard_nextjs_app.jsx`: Next.js dashboard application
-- `metrics_api_route.js`: Metrics endpoint for dashboard
-
-**Supporting Services:**
-- `agent_memory_writer.js`: Persistent memory management
-- `agent_knowledge_evolver.js`: Knowledge base evolution
-- `cost_model.js`: Token cost calculation and tracking
-
-**Configuration:**
-- `filemap.json`: Task-to-model mapping
-- `tokenpool.json`: API key rotation pool
-- `ai_agent_infra_setup.env`: Environment setup guide
-- `ai_agent_infra_setup.js`: Infrastructure initialization
-- `env.txt`: Environment variable reference
-
-**Infrastructure:**
-- `docker_compose_ai_mesh.yaml`: Local multi-agent setup
-- `ai_agent_mesh_stack.yaml`: Kubernetes deployment
-- `cloudflare_tunnel_setup.yaml`: Secure remote access
-- `agentstack_deployment_kit.js`: Deployment utilities (v1, v2, v3)
-
-### 3. **Memory & Context System**
-Each agent maintains context through:
-- `todo.md`: Task tracking with [x] checkboxes
-- `notes.md`: Technical decisions and logs
-- `codebase.md`: File changes and diffs
-- `version.md`: Commit summaries
-- `security.md`: Security audit logs
-
-## Dependency Management
-
-### Core Dependencies Required
-**Note:** No package.json files exist yet. Each service needs its own:
-
-**Orchestrator/CLI (`cli/package.json`):**
-```json
-{
-  "dependencies": {
-    "ioredis": "^5.3.2",
-    "axios": "^1.6.0",
-    "dotenv": "^16.3.1"
-  }
-}
-```
-
-**Agents (`agents/*/package.json`):**
-```json
-{
-  "dependencies": {
-    "ioredis": "^5.3.2",
-    "axios": "^1.6.0"
-  }
-}
-```
-
-**Dashboard (`dashboard/package.json`):**
-```json
-{
-  "dependencies": {
-    "next": "^14.0.0",
-    "react": "^18.2.0",
-    "recharts": "^2.9.0",
-    "@radix-ui/react-*": "latest",
-    "ioredis": "^5.3.2"
-  }
-}
-```
-
-### Installing Dependencies
+## Quick Start
 ```bash
-# After creating directory structure:
-cd cli && npm install
-cd ../dashboard && npm install
-cd ../agents/claude && npm install
-# Repeat for each agent
-```
+# 1. Setup
+git clone https://github.com/your-username/ez-aigent.git
+cd ez-aigent
+npm install
+cp .env.example .env  # Add your API keys
 
-## Development Commands
+# 2. Start Redis
+docker run -d -p 6379:6379 redis:alpine
 
-### Local Development
-```bash
-# Start entire system with Docker Compose
+# 3. Start system
 docker-compose up
 
-# Start system manually (requires Redis running)
-./start-agents.sh
-
-# Check system status
-./check-agents.sh
-
-# Stop all agents
-./stop-agents.sh
-
-# Individual components
-npm run start             # Start orchestrator only
-npm run dashboard         # Start dashboard only
-npm run agent:claude      # Start Claude agent only
-npm run agent:gpt         # Start GPT agent only
-npm run agent:deepseek    # Start DeepSeek agent only
-npm run agent:mistral     # Start Mistral agent only
+# 4. Access dashboard
+open http://localhost:3000
 ```
 
-### Build & Deploy
+## Essential Commands
+
+### Development
 ```bash
-# Build Docker images
-npm run docker:build
+# System control
+npm run start          # Start orchestrator
+npm run stop           # Stop all services
+npm run monitor        # Monitor system
+npm run analytics      # Generate report
 
-# Start with Docker Compose
-npm run docker:up
+# Docker operations
+docker-compose up -d   # Start all services
+docker-compose down    # Stop all services
+docker-compose logs -f # View logs
 
-# Stop Docker services
-npm run docker:down
+# Agent management
+npm run autoscaler     # Start auto-scaler
+npm run agent:claude   # Start individual agent
 
-# Build production dashboard
-cd dashboard && npm run build
+# Task operations
+cd cli && node enqueue.js  # Enqueue tasks
 ```
 
-### Testing & Validation
+### Redis Monitoring
 ```bash
-# Code quality
-npm run lint              # ESLint code checking
-npm run format            # Prettier code formatting
+# Queue inspection
+redis-cli LLEN queue:claude-3-opus          # Queue size
+redis-cli LRANGE queue:failures 0 -1        # Failed tasks
+redis-cli PSUBSCRIBE agent:*                # Watch activity
+redis-cli KEYS "file_lock:*"                # Check locks
 
-# Manual testing
-cd cli && node enqueue.js # Enqueue test tasks
-redis-cli LLEN queue:claude-3-opus # Check queue status
+# Queue recovery
+redis-cli RPOPLPUSH processing:claude-3-opus queue:claude-3-opus
 ```
 
-## Critical Conventions
-
-### API Key Management
-- Store keys in `.env.tokenpool` (never commit)
-- Keys rotate automatically via `tokenPool` in agent_runner.js
-- Each model has multiple keys for load balancing
-
-### Task Assignment
-- Tasks defined in `filemap.json` with model + prompt
-- Redis queue manages task distribution
-- Failed tasks auto-retry with exponential backoff
-
-### Queue Architecture
-**Queue Naming Pattern:**
-- `queue:{model}` - Pending tasks for specific model
-- `processing:{model}` - Tasks currently being processed
-- `queue:failures` - Failed tasks with error details
-- `agent:status` - Real-time status updates channel
-- `agent:errors` - Error logging channel
-
-**Job Payload Structure:**
-```json
-{
-  "file": "core/api/handler.ts",
-  "prompt": "Refactor for clarity and add error handling",
-  "model": "claude-3-opus",
-  "timestamp": "2025-07-09T00:00:00Z"
-}
-```
-
-**Queue Operations:**
-- Enqueue: `LPUSH queue:{model} {job_json}`
-- Dequeue: `RPOPLPUSH queue:{model} processing:{model}`
-- Complete: `LREM processing:{model} 1 {job_json}`
-- Retry: `RPOPLPUSH processing:{model} queue:{model}`
-
-### Agent Communication Patterns
-**Model-to-Queue Mapping:**
-- Claude models → `queue:claude-3-opus`
-- GPT models → `queue:gpt-4o`
-- DeepSeek → `queue:deepseek-coder`
-- Mistral → `queue:command-r-plus`
-
-**Context Priming System:**
-1. Orchestrator loads `filemap.json`
-2. Determines agent type based on model
-3. Calls `primeAgentContext()` to enhance prompt
-4. Publishes enriched job to appropriate queue
-
-**Agent Role Assignment:**
-- Claude: `refactor-core`, architecture, refactoring
-- GPT: `backend-logic`, logic, backend
-- DeepSeek: `test-utils`, testing, validation
-- Mistral: `docgen`, documentation generation
-- Gemini: `analysis`, code analysis
-
-**Inter-Agent Communication:**
-- All via Redis pub/sub channels
-- No direct agent-to-agent communication
-- Agents write outputs to `./src/output/` directory
-- Status updates published to `agent:status` channel
-
-### Security Practices
-- Input sanitization required for all user inputs
-- No hardcoded credentials
-- Agent outputs sandboxed before execution
-- Memory isolation between agents
-
-## Agent-Specific Guidelines
-
-### Claude Agents
-- Focus: Architecture, refactoring, documentation
-- Max context: 200k tokens
-- Best for: Complex reasoning, code review
-
-### GPT-4o Agents  
-- Focus: Logic implementation, API endpoints
-- Max context: 128k tokens
-- Best for: Backend services, data processing
-
-### DeepSeek Agents
-- Focus: Testing, validation, type generation
-- Max context: 32k tokens  
-- Best for: Unit tests, integration tests
-
-### Mistral Agents
-- Focus: Documentation, comments, README files
-- Max context: 32k tokens
-- Best for: Technical writing, API docs
-
-### Gemini Agents
-- Focus: Code analysis, optimization
-- Max context: 32k tokens
-- Best for: Performance analysis, code review
-
-## Deployment Patterns
-
-### Local (1-3 agents)
+### Testing & Deployment
 ```bash
-docker-compose up
+# Testing
+./test-full-system.sh
+node test-collaboration.js
+
+# Production deployment
+./scripts/deploy-production.sh
+docker-compose -f docker-compose.production.yml up -d
 ```
-
-### Distributed (2-5 workstations)
-- Shared Redis instance
-- NFS/shared volume for code
-- VPN or Tailscale networking
-
-### Cloud (50+ agents)
-- Kubernetes via `deployment/k8s/agent-mesh-stack.yaml`
-- Auto-scaling based on queue depth
-- Fly.io or Railway deployment ready
-
-## Monitoring & Observability
-
-### Dashboard Routes
-- `/agents` - Live agent status
-- `/queue` - Task queue depth
-- `/cost` - Token usage and costs
-- `/errors` - Failed tasks and retries
-- `/memory` - Agent context usage
-
-### Logging
-- Agent logs: `.logs/{agent}.md`
-- Task history: `.agent.history.md`
-- Cost tracking: Supabase integration
-- Errors: Redis `agent:errors` channel
-
-## Project Phases
-
-1. **Foundation**: Redis setup, basic agents, token rotation
-2. **Agent Runtime**: Memory management, file I/O, commit hooks
-3. **Dashboard**: Real-time UI, diff viewer, cost tracking
-4. **Control**: Slack/CLI commands, voice triggers, PDF reports
 
 ## Environment Variables
 ```bash
-# Core Redis connection
+# Core
 REDIS_URL=redis://localhost:6379
 
-# API Keys (use OpenRouter for Claude models)
-CLAUDE_API_KEY=sk-or-cl-max-xxxxxxxxx    # OpenRouter Claude key
-OPENAI_API_KEY=sk-xxxxx                  # OpenAI API key
-DEEPSEEK_API_KEYS=sk-ds1,sk-ds2,sk-ds3   # Comma-separated OpenRouter keys
-MISTRAL_API_KEY=sk-mistralxxxxx          # Mistral/OpenRouter API key
-GEMINI_API_KEY=sk-geminixxx              # Gemini API key
+# API Keys
+CLAUDE_API_KEY=sk-or-cl-max-xxxxx
+OPENAI_API_KEY=sk-xxxxx
+DEEPSEEK_API_KEYS=key1,key2,key3  # Comma-separated
+MISTRAL_API_KEY=sk-mistralxxxxx
+GEMINI_API_KEY=sk-geminixxx
 
-# File paths (Docker containers)
-FILEMAP_PATH=/shared/filemap.json
-TOKENPOOL_PATH=/shared/tokenpool.json
+# Auto-scaling (optional)
+MIN_AGENTS=1
+MAX_AGENTS=10
+SCALE_UP_THRESHOLD=20
+SCALE_DOWN_THRESHOLD=5
 ```
 
-## Development Setup
+## Queue Architecture
+- `queue:{model}` - Pending tasks
+- `processing:{model}` - Tasks in progress
+- `queue:failures` - Failed tasks
+- `agent:status` - Real-time updates
+- `agent:errors` - Error logging
 
-### Initial Project Setup
-1. **Create Directory Structure:**
-```bash
-mkdir -p cli agents/{claude,gpt,deepseek,mistral} dashboard/src src/output shared
+**Model-to-Queue Mapping:**
+- Claude → `queue:claude-3-opus`
+- GPT → `queue:gpt-4o`
+- DeepSeek → `queue:deepseek-coder`
+- Mistral → `queue:command-r-plus`
+- Gemini → `queue:gemini-pro`
+
+## Task Processing Flow
+1. Load task from `filemap.json`
+2. Context priming for agent role
+3. Enqueue to model-specific queue
+4. Agent claims file lock (30-min TTL)
+5. Process with status updates
+6. Save to memory and clear context
+7. Release file lock
+
+## Agent Memory System
+All agents implement automatic context clearing for token efficiency:
+
 ```
-
-2. **Move Files to Correct Locations:**
-```bash
-# Move orchestrator files
-mv agent_runner.js cli/runner.js
-mv orchestrator_context_engine.js cli/enqueue.js
-mv agent_spawner_enhancer.js cli/agent-spawner.js
-
-# Move agent files
-mv agent_claude_index.js agents/claude/index.js
-mv agent_mistral_index.js agents/mistral/index.js
-
-# Move shared configs
-mv filemap.json tokenpool.json shared/
-
-# Create placeholder agents for GPT and DeepSeek
-cp agents/claude/index.js agents/gpt/index.js
-cp agents/claude/index.js agents/deepseek/index.js
-```
-
-3. **Create Package.json Files:**
-```bash
-# Create package.json in each directory using the dependency templates above
-cd cli && npm init -y && npm install ioredis axios dotenv
-cd ../dashboard && npm init -y && npm install next react recharts @radix-ui/react-*
-# Repeat for each agent directory
-```
-
-4. **Start Redis:**
-```bash
-# Using Docker
-docker run -d -p 6379:6379 redis:alpine
-
-# Or install locally
-brew install redis && redis-server
-```
-
-5. **Set Environment Variables:**
-```bash
-cp env.txt .env
-# Edit .env with your API keys
-export $(cat .env | xargs)
-```
-
-### Running the System
-
-**Option 1: Using Docker Compose (Recommended)**
-```bash
-# Copy environment template
-cp config/env.example .env
-# Edit .env with your API keys
-
-# Start entire system
-docker-compose up
-
-# Or using npm scripts
-npm run docker:up
-```
-
-**Option 2: Using Start Script**
-```bash
-# Start all services locally
-./start-agents.sh
-
-# Check status
-./check-agents.sh
-
-# Stop all services
-./stop-agents.sh
-```
-
-**Option 3: Manual Startup**
-```bash
-# Terminal 1: Start Redis
-redis-server
-
-# Terminal 2: Start orchestrator
-npm run start
-
-# Terminal 3: Start agents individually
-npm run agent:claude
-npm run agent:gpt
-npm run agent:deepseek
-npm run agent:mistral
-
-# Terminal 4: Start dashboard
-npm run dashboard
-
-# Terminal 5: Enqueue tasks
-cd cli && node enqueue.js
+.agent-memory/
+├── claude/
+│   ├── current-session.md
+│   ├── completed-tasks.md
+│   ├── errors.md
+│   └── learnings.md
+└── [other agents...]
 ```
 
 ## Common Development Tasks
 
 ### Adding a New Agent
-1. Create directory: `mkdir agents/{agent_name}`
-2. Copy template: `cp agents/claude/index.js agents/{agent_name}/index.js`
-3. Update model and role in the agent file
-4. Add to `docker_compose_ai_mesh.yaml`
-5. Update `tokenpool.json` with API keys
-6. Add role mapping in orchestrator
+1. Create `agents/{name}/` directory
+2. Copy agent template from `agents/claude/index.js`
+3. Update model, role, and capabilities
+4. Add to `docker-compose.yaml`
+5. Update `shared/tokenpool.json`
+6. Add queue mapping in `cli/runner.js`
 
-### Debugging Task Failures
-1. Check Redis queue: `redis-cli LRANGE queue:{model} 0 -1`
-2. View processing queue: `redis-cli LRANGE processing:{model} 0 -1`
-3. Check failure queue: `redis-cli LRANGE queue:failures 0 -1`
-4. View agent logs: `docker logs ai_{agent_name}`
-5. Monitor Redis pub/sub: `redis-cli PSUBSCRIBE agent:*`
-6. Verify API key validity in tokenpool
+### Debugging Issues
+1. Check Redis connection: `docker ps | grep redis`
+2. View agent logs: `docker logs ai_{agent_name}`
+3. Monitor activity: `redis-cli PSUBSCRIBE agent:*`
+4. Check failures: `redis-cli LRANGE queue:failures 0 -1`
+5. Verify API keys in environment
 
 ### Performance Optimization
 - Use model fallbacks for cost optimization
-- Implement caching for repeated tasks
-- Monitor token usage per agent/model
+- Monitor token usage per agent
 - Adjust concurrency based on API limits
-- Use DeepSeek for high-volume, low-complexity tasks
+- Use DeepSeek for high-volume, simple tasks
 
-## Security Checklist
-- [ ] No hardcoded API keys or secrets
-- [ ] Input validation on all external data
-- [ ] Sandboxed execution for generated code
-- [ ] Rate limiting per API key
-- [ ] Audit logs for all agent actions
-- [ ] Memory isolation between agents
-- [ ] Secure Redis with AUTH
-- [ ] HTTPS for dashboard access
+## Security Best Practices
+- [ ] Store API keys in `.env` only (gitignored)
+- [ ] Enable Redis AUTH in production
+- [ ] Implement dashboard authentication
+- [ ] Sandbox agent outputs
+- [ ] Regular security scans
 
-### API Security
-**OpenRouter Integration:**
-- All agents use OpenRouter API endpoints
-- Supports multiple models through single endpoint
-- API keys stored in environment variables only
-- Token rotation prevents rate limit issues
+## Token-Efficient Workflow
+1. Make small code changes (5-20 lines)
+2. Test immediately
+3. Run security check
+4. Save to memory files
+5. Clear context with `/clear`
+6. Repeat for next task
 
-**Secure Key Management:**
-- Use `API_KEY_POOL` for comma-separated keys
-- Keys rotate automatically in `tokenPool`
-- Never log or output API keys
-- Store keys in `.env.tokenpool` (gitignored)
+Benefits: 90% token savings, faster processing, better testing
 
-**Output Sanitization:**
-- Agent outputs written to isolated directories
-- No direct execution of generated code
-- Review outputs before integration
-- Sandbox testing environment recommended
+## Enhancement System
+Available enhancement modules:
+- `security-layer` - Security hardening
+- `observability-stack` - Monitoring infrastructure
+- `distributed-queue-system` - Advanced queuing
+- `intelligent-orchestration` - Smart routing
+- `collaboration-framework` - Multi-agent coordination
+- `self-healing-infrastructure` - Auto recovery
 
-### Redis Security
 ```bash
-# Enable Redis AUTH
-redis-cli CONFIG SET requirepass "your-secure-password"
-
-# Update connection strings
-REDIS_URL=redis://:your-secure-password@localhost:6379
+# Enhancement commands
+npm run enhance:dispatch security-layer
+npm run enhance:monitor
+npm run enhance:validate all
 ```
 
-### Dashboard Security
-- Implement authentication before production
-- Use HTTPS in production (see deployment/cloudflare_tunnel_setup.yaml)
-- Restrict dashboard access to internal network
-- Add rate limiting to API endpoints
-
-## Quick Start for Development
-
-### Prerequisites
-- Node.js 20+
-- Redis server
-- API keys for chosen AI models
-
-### Setup
-1. Clone repository and install dependencies:
-   ```bash
-   npm install
-   ```
-
-2. Set up environment:
-   ```bash
-   cp config/env.example .env
-   # Edit .env with your API keys
-   ```
-
-3. Start development:
-   ```bash
-   # Option 1: All-in-one script
-   ./start-agents.sh
-
-   # Option 2: Docker Compose
-   docker-compose up
-
-   # Option 3: Individual services
-   npm run start &          # Orchestrator
-   npm run agent:claude &   # Agents
-   npm run dashboard       # Dashboard
-   ```
-
-4. Access dashboard at `http://localhost:3000`
-
-### Task Enqueueing
-Edit `shared/filemap.json` to define tasks, then:
+## Dashboard API Endpoints
 ```bash
-cd cli && node enqueue.js
+# Agent management
+curl http://localhost:3000/api/agents
+curl http://localhost:3000/api/agent-stats
+
+# Task management
+curl http://localhost:3000/api/queue-stats
+curl http://localhost:3000/api/enqueue -X POST -d '{"file":"src/api.js","prompt":"Add tests"}'
+
+# System monitoring
+curl http://localhost:3000/api/health
+curl http://localhost:3000/api/redis-status
 ```
 
-### Monitoring
-- Dashboard: `http://localhost:3000`
-- Agent status: `./check-agents.sh`
-- Redis queues: `redis-cli LLEN queue:claude-3-opus`
+## Troubleshooting
 
-Remember: Context, Model, Prompt are the eternal fundamentals. This system maximizes all three through structured thinking, autonomous execution, and continuous feedback. 
+### Redis Connection Failed
+```bash
+docker ps | grep redis
+# Check REDIS_URL in .env
+```
+
+### Agent Not Processing
+```bash
+redis-cli CLIENT LIST | grep claude
+curl -H "Authorization: Bearer $CLAUDE_API_KEY" https://api.openrouter.ai/api/v1/models
+docker logs --tail 50 ai_claude
+```
+
+### Tasks Failing
+```bash
+redis-cli LRANGE queue:failures 0 0 | jq '.'
+docker exec ai_claude ls -la /app/src/api/handler.js
+jq '.' shared/filemap.json
+```
+
+## Production Checklist
+- [ ] API keys configured
+- [ ] Redis AUTH enabled
+- [ ] Dashboard secured
+- [ ] Monitoring alerts set
+- [ ] Backup strategy ready
+- [ ] Auto-scaling configured
+- [ ] Security scans passing
+- [ ] Integration tests passing
+- [ ] Documentation updated
+- [ ] Team trained on procedures
+
+## Key Documentation Files
+- `ENHANCEMENT_GUIDE.md` - Enhancement implementation
+- `ENHANCEMENT_ROADMAP.md` - Development roadmap
+- `MONITORING.md` - System monitoring guide
+- `CHANGE_LOG.md` - Mandatory change log with ROI
+- `QUICK_WINS.md` - Week 1 implementation guide
+
+## Mandatory Documentation SOP
+Every code change MUST be documented with:
+1. Files changed with purpose
+2. Business impact and ROI (3x-20x)
+3. Key features added
+4. Integration points
+5. Usage instructions
+6. Testing procedures
+
+Remember: Context, Model, Prompt are the eternal fundamentals. This system maximizes all three through structured thinking, autonomous execution, and continuous feedback.

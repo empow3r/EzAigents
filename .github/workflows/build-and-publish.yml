@@ -1,0 +1,332 @@
+name: Build and Publish Docker Images
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      
+    strategy:
+      matrix:
+        component:
+          - name: runner
+            dockerfile: ./cli/Dockerfile
+            context: ./cli
+            image: ez-aigent-runner
+          - name: dashboard
+            dockerfile: ./dashboard/Dockerfile
+            context: ./dashboard
+            image: ez-aigent-dashboard
+          - name: claude
+            dockerfile: ./agents/claude/Dockerfile
+            context: ./agents/claude
+            image: ez-aigent-claude
+          - name: gpt
+            dockerfile: ./agents/gpt/Dockerfile
+            context: ./agents/gpt
+            image: ez-aigent-gpt
+          - name: deepseek
+            dockerfile: ./agents/deepseek/Dockerfile
+            context: ./agents/deepseek
+            image: ez-aigent-deepseek
+          - name: mistral
+            dockerfile: ./agents/mistral/Dockerfile
+            context: ./agents/mistral
+            image: ez-aigent-mistral
+          - name: gemini
+            dockerfile: ./agents/gemini/Dockerfile
+            context: ./agents/gemini
+            image: ez-aigent-gemini
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.component.image }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+          type=raw,value=latest,enable={{is_default_branch}}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ${{ matrix.component.context }}
+        file: ${{ matrix.component.dockerfile }}
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        platforms: linux/amd64,linux/arm64
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event_name != 'pull_request'
+    
+    strategy:
+      matrix:
+        image:
+          - ez-aigent-runner
+          - ez-aigent-dashboard
+          - ez-aigent-claude
+          - ez-aigent-gpt
+          - ez-aigent-deepseek
+          - ez-aigent-mistral
+          - ez-aigent-gemini
+
+    steps:
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}:latest'
+        format: 'sarif'
+        output: 'trivy-results-${{ matrix.image }}.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results-${{ matrix.image }}.sarif'
+
+  create-release-artifacts:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event_name == 'release'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Create deployment package
+      run: |
+        mkdir -p release-artifacts
+        
+        # Copy deployment files
+        cp dockge-stack.yml release-artifacts/
+        cp docker-compose.production.yml release-artifacts/
+        cp .env.production release-artifacts/env.template
+        cp DEPLOYMENT_GUIDE.md release-artifacts/
+        cp README.md release-artifacts/
+        
+        # Create quick start script
+        cat > release-artifacts/quick-deploy.sh << 'EOF'
+        #!/bin/bash
+        echo "🚀 Ez Aigent Quick Deploy"
+        echo "========================"
+        
+        # Check if .env exists
+        if [ ! -f .env ]; then
+          echo "📝 Copying environment template..."
+          cp env.template .env
+          echo "⚠️  Please edit .env file with your API keys before deployment!"
+          echo "   Required: CLAUDE_API_KEY, OPENAI_API_KEY, DEEPSEEK_API_KEYS, MISTRAL_API_KEY, GEMINI_API_KEY"
+          exit 1
+        fi
+        
+        # Deploy with Docker Compose
+        echo "🚀 Deploying Ez Aigent..."
+        docker-compose -f docker-compose.production.yml up -d
+        
+        echo "✅ Deployment complete!"
+        echo "📊 Dashboard: http://localhost:3000"
+        echo "🔍 Status: docker-compose -f docker-compose.production.yml ps"
+        EOF
+        
+        chmod +x release-artifacts/quick-deploy.sh
+        
+        # Create Dockge import instructions
+        cat > release-artifacts/DOCKGE_IMPORT.md << 'EOF'
+        # Dockge Import Instructions
+        
+        ## Method 1: Direct Import
+        1. Copy `dockge-stack.yml` to your Dockge stacks directory
+        2. Create `.env` file from `env.template` with your API keys
+        3. Import stack in Dockge web interface
+        4. Deploy and monitor through Dockge dashboard
+        
+        ## Method 2: GitHub Integration
+        1. Fork this repository
+        2. Configure GitHub Container Registry access
+        3. Import stack using GitHub URL in Dockge
+        4. Set up auto-updates from repository
+        
+        ## Required Environment Variables
+        - CLAUDE_API_KEY=sk-or-cl-your-key
+        - OPENAI_API_KEY=sk-your-key
+        - DEEPSEEK_API_KEYS=key1,key2,key3
+        - MISTRAL_API_KEY=sk-your-key
+        - GEMINI_API_KEY=AIza-your-key
+        EOF
+        
+        # Create archive
+        tar -czf release-artifacts.tar.gz -C release-artifacts .
+
+    - name: Upload release artifacts
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          release-artifacts.tar.gz
+          release-artifacts/dockge-stack.yml
+          release-artifacts/docker-compose.production.yml
+          release-artifacts/DEPLOYMENT_GUIDE.md
+          release-artifacts/quick-deploy.sh
+        name: Ez Aigent ${{ github.ref_name }}
+        body: |
+          ## 🚀 Ez Aigent Multi-Agent System Release
+          
+          This release includes:
+          - **Dockge-compatible stack file** for one-click deployment
+          - **Docker Compose configuration** for production deployment
+          - **Complete deployment guide** with troubleshooting
+          - **Quick deployment script** for automated setup
+          
+          ### Quick Start Options:
+          
+          #### Option 1: Dockge Deployment
+          1. Download `dockge-stack.yml`
+          2. Import into your Dockge interface
+          3. Configure environment variables
+          4. Deploy with one click
+          
+          #### Option 2: Docker Compose
+          1. Download `docker-compose.production.yml`
+          2. Create `.env` file with API keys
+          3. Run `docker-compose up -d`
+          
+          #### Option 3: Quick Script
+          1. Download and extract `release-artifacts.tar.gz`
+          2. Run `./quick-deploy.sh`
+          3. Follow the prompts
+          
+          ### What's New:
+          - 🎯 Dockge-optimized stack configuration
+          - 🚀 GitHub Container Registry integration
+          - 🔒 Enhanced security scanning
+          - 📊 Improved monitoring and efficiency tracking
+          - 🎛️ Auto-scaling capabilities
+          
+          ### Requirements:
+          - Docker 20.10+
+          - Docker Compose 2.0+
+          - 4GB RAM minimum (8GB recommended)
+          - API keys for Claude, OpenAI, DeepSeek, Mistral, Gemini
+          
+          See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for complete instructions.
+
+  update-dockge-store:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event_name == 'release'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Create Dockge Store Submission
+      run: |
+        mkdir -p dockge-store
+        
+        # Create store metadata
+        cat > dockge-store/ez-aigent.json << EOF
+        {
+          "name": "ez-aigent",
+          "title": "Ez Aigent Multi-Agent System",
+          "description": "AI Multi-Agent SaaS Builder Orchestrator - Coordinate 10-100+ AI agents to build and scale software",
+          "version": "${{ github.ref_name }}",
+          "author": "Nathan Hart",
+          "category": "AI/Development",
+          "tags": ["ai", "agents", "automation", "development", "orchestration", "saas"],
+          "icon": "🤖",
+          "screenshot": "https://raw.githubusercontent.com/${{ github.repository }}/main/docs/screenshot.png",
+          "repository": "https://github.com/${{ github.repository }}",
+          "documentation": "https://github.com/${{ github.repository }}/blob/main/DEPLOYMENT_GUIDE.md",
+          "compose_file": "https://raw.githubusercontent.com/${{ github.repository }}/main/dockge-stack.yml",
+          "environment_template": "https://raw.githubusercontent.com/${{ github.repository }}/main/.env.production",
+          "requirements": {
+            "memory": "4GB",
+            "cpu": "2 cores",
+            "disk": "20GB"
+          },
+          "ports": [
+            {
+              "port": 3000,
+              "description": "Dashboard Web Interface",
+              "protocol": "http"
+            }
+          ],
+          "environment_variables": [
+            {
+              "name": "CLAUDE_API_KEY",
+              "description": "Claude API key (OpenRouter recommended)",
+              "required": true
+            },
+            {
+              "name": "OPENAI_API_KEY", 
+              "description": "OpenAI API key",
+              "required": true
+            },
+            {
+              "name": "DEEPSEEK_API_KEYS",
+              "description": "DeepSeek API keys (comma-separated)",
+              "required": true
+            },
+            {
+              "name": "MISTRAL_API_KEY",
+              "description": "Mistral API key",
+              "required": true
+            },
+            {
+              "name": "GEMINI_API_KEY",
+              "description": "Gemini API key", 
+              "required": true
+            }
+          ],
+          "features": [
+            "🧠 5 specialized AI agents (Claude, GPT-4o, DeepSeek, Mistral, Gemini)",
+            "📊 Real-time dashboard with monitoring and control",
+            "⚡ Auto-scaling based on workload",
+            "🔒 Security scanning and compliance",
+            "📈 Efficiency tracking and optimization",
+            "🎛️ Complete Dockge integration"
+          ]
+        }
+        EOF
+
+    - name: Submit to Dockge Community Store
+      run: |
+        echo "📦 Dockge store submission created"
+        echo "💡 Submit dockge-store/ez-aigent.json to Dockge community store"
+        echo "🔗 Repository: https://github.com/${{ github.repository }}"

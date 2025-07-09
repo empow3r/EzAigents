@@ -7,7 +7,7 @@
 Create a central registry system for agent discovery, health monitoring, and load balancing.
 
 ## Context
-You are building the agent registry for EzAugent, which manages the lifecycle of 10-100+ AI agents. Focus ONLY on registry and agent management files.
+You are building the agent registry for Ez Aigent, which manages the lifecycle of 10-100+ AI agents. Focus ONLY on registry and agent management files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `cli/agent_registry.js`

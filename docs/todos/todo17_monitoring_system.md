@@ -7,7 +7,7 @@
 Build comprehensive monitoring, logging, and observability for the multi-agent system.
 
 ## Context
-You are creating the monitoring infrastructure for EzAugent to track 100+ agents. Focus ONLY on monitoring and observability files.
+You are creating the monitoring infrastructure for Ez Aigent to track 100+ agents. Focus ONLY on monitoring and observability files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `cli/monitoring/metrics_collector.js`

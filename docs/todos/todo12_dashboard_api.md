@@ -7,7 +7,7 @@
 Create the backend API endpoints and real-time services for the dashboard.
 
 ## Context
-You are building the API layer for the EzAugent dashboard. This API serves data to the frontend and manages agent control. Focus ONLY on dashboard API files.
+You are building the API layer for the Ez Aigent dashboard. This API serves data to the frontend and manages agent control. Focus ONLY on dashboard API files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `dashboard/api/agents/route.ts`

@@ -7,7 +7,7 @@
 Implement the Mistral agent specialized in documentation generation and technical writing.
 
 ## Context
-You are building the Mistral agent for EzAugent. This agent creates documentation, API docs, and user guides. Focus ONLY on Mistral agent files.
+You are building the Mistral agent for Ez Aigent. This agent creates documentation, API docs, and user guides. Focus ONLY on Mistral agent files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `agents/mistral/index.js`

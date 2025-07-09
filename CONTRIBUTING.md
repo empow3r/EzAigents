@@ -1,6 +1,6 @@
-# Contributing to EzAugent
+# Contributing to Ez Aigent
 
-Thank you for your interest in contributing to EzAugent! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to Ez Aigent! This document provides guidelines for contributing to the project.
 
 ## 🤖 Agent Development Guidelines
 
@@ -177,4 +177,4 @@ Provide:
 - Review documentation
 - Contact maintainers
 
-Thank you for contributing to EzAugent! Together we're building the future of AI-powered development.
+Thank you for contributing to Ez Aigent! Together we're building the future of AI-powered development.

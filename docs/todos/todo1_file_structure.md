@@ -4,7 +4,7 @@
 **Dependencies:** None (First agent)
 
 ## Objective
-Design and create the complete file structure for the EzAugent multi-agent orchestration system.
+Design and create the complete file structure for the Ez Aigent multi-agent orchestration system.
 
 ## Tasks
 - [ ] Create directory structure as defined in CLAUDE.md

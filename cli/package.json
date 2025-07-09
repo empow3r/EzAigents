@@ -1,0 +1,8 @@
+{
+  "name": "ez-aigent-cli",
+  "version": "1.0.0",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "ioredis": "^5.3.2"
+  }
+}

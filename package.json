@@ -1,43 +1,19 @@
 {
-  "name": "ezaugent",
-  "version": "0.1.0",
-  "description": "AI Multi-Agent SaaS Builder Orchestrator - Coordinate 10-100+ AI agents to build software",
-  "private": true,
-  "workspaces": [
-    "cli",
-    "agents/*",
-    "dashboard"
-  ],
+  "name": "ez-aigent-system",
+  "version": "2.0.0",
+  "description": "AI-powered multi-agent orchestration platform",
+  "main": "cli/runner.js",
   "scripts": {
     "start": "node cli/runner.js",
-    "dev": "npm run start",
-    "dashboard": "cd dashboard && npm run dev",
-    "agent:claude": "node agents/claude/index.js",
-    "agent:gpt": "node agents/gpt/index.js",
-    "agent:deepseek": "node agents/deepseek/index.js",
-    "agent:mistral": "node agents/mistral/index.js",
-    "docker:up": "docker-compose -f deployment/docker/docker-compose.yaml up",
-    "docker:down": "docker-compose -f deployment/docker/docker-compose.yaml down",
-    "docker:build": "docker-compose -f deployment/docker/docker-compose.yaml build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint .",
-    "format": "prettier --write ."
+    "analytics": "node cli/enhancement-analytics.js report",
+    "monitor": "./scripts/monitor-system.sh",
+    "stop": "./scripts/stop-system.sh"
   },
-  "keywords": [
-    "ai",
-    "agents",
-    "orchestration",
-    "automation",
-    "saas",
-    "multi-agent"
-  ],
-  "author": "Nathan Hart",
-  "license": "UNLICENSED",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "ioredis": "^5.3.2"
+  },
   "engines": {
     "node": ">=20.0.0"
-  },
-  "devDependencies": {
-    "eslint": "^8.56.0",
-    "prettier": "^3.2.4"
   }
 }

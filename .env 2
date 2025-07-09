@@ -1,0 +1,8 @@
+REDIS_URL=redis://localhost:6379
+CLAUDE_API_KEY=sk-or-cl-max-xxxxxxxxx
+OPENAI_API_KEY=sk-xxxxx
+DEEPSEEK_API_KEYS=sk-ds1,sk-ds2,sk-ds3
+MISTRAL_API_KEY=sk-mistralxxxxx
+GEMINI_API_KEY=sk-gemini-xxxxx
+FILEMAP_PATH=./shared/filemap.json
+TOKENPOOL_PATH=./shared/tokenpool.json

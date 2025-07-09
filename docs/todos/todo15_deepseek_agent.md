@@ -7,7 +7,7 @@
 Implement the DeepSeek agent specialized in test generation, code validation, and type safety.
 
 ## Context
-You are building the DeepSeek agent for EzAugent. This agent focuses on testing, validation, and ensuring code quality. Focus ONLY on DeepSeek agent files.
+You are building the DeepSeek agent for Ez Aigent. This agent focuses on testing, validation, and ensuring code quality. Focus ONLY on DeepSeek agent files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `agents/deepseek/index.js`

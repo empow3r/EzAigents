@@ -1,0 +1,13 @@
+{
+  "name": "ez-aigent-deepseek-agent",
+  "version": "1.0.0",
+  "description": "DeepSeek agent for testing and validation",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.2",
+    "axios": "^1.6.0"
+  }
+}

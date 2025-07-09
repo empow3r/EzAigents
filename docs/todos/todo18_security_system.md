@@ -7,7 +7,7 @@
 Implement comprehensive security measures and compliance features for the multi-agent system.
 
 ## Context
-You are building security infrastructure for EzAugent to protect API keys, agent outputs, and ensure compliance. Focus ONLY on security files.
+You are building security infrastructure for Ez Aigent to protect API keys, agent outputs, and ensure compliance. Focus ONLY on security files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `cli/security/secret_manager.js`

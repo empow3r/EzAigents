@@ -63,3 +63,29 @@ temp/
 src/output/
 .agent.history.md
 .claude/
+*.output.js
+*.output.json
+
+# Redis
+dump.rdb
+
+# Agent PIDs
+.agent_pids
+
+# Enhancement backups and reports
+.enhancement-backups/
+rollback-report-*.md
+validation-report-*.md
+validation-summary-*.md
+enhancement-report-*.md
+
+# Next.js
+.next/
+out/
+
+# Docker
+docker-compose.override.yml
+
+# Kubernetes
+*.kubeconfig
+*-secret.yaml

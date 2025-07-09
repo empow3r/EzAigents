@@ -1,0 +1,270 @@
+{
+  "enhancements": {
+    "distributed-queue-system": {
+      "id": "ENH-001",
+      "title": "Implement Distributed Queue System with Kafka/RabbitMQ",
+      "priority": "high",
+      "assigned_agents": ["gpt", "deepseek"],
+      "files_to_create": [
+        "cli/queue-manager.js",
+        "cli/kafka-adapter.js",
+        "cli/rabbitmq-adapter.js",
+        "cli/dead-letter-handler.js",
+        "config/queue-config.json"
+      ],
+      "files_to_modify": [
+        "cli/runner.js",
+        "cli/enqueue.js",
+        "agents/*/index.js",
+        "docker-compose.yaml"
+      ],
+      "tasks": [
+        {
+          "file": "cli/queue-manager.js",
+          "agent": "gpt",
+          "prompt": "Create a QueueManager class that abstracts queue operations and supports both Kafka and RabbitMQ backends. Include methods for: publish, subscribe, acknowledge, reject, and dead letter queue handling. Implement connection pooling and automatic reconnection."
+        },
+        {
+          "file": "cli/kafka-adapter.js",
+          "agent": "gpt",
+          "prompt": "Implement a Kafka adapter for the queue system using kafkajs. Include topic management, consumer groups, partition assignment, and offset management. Support for transactional messaging and exactly-once semantics."
+        },
+        {
+          "file": "cli/rabbitmq-adapter.js",
+          "agent": "deepseek",
+          "prompt": "Implement a RabbitMQ adapter using amqplib. Include exchange and queue setup, routing, dead letter exchanges, and priority queues. Add connection recovery and channel pooling."
+        },
+        {
+          "file": "docker-compose.yaml",
+          "agent": "deepseek",
+          "prompt": "Update docker-compose.yaml to include Kafka (with Zookeeper) and RabbitMQ services. Add proper networking, volumes, and environment configuration for both message brokers."
+        }
+      ]
+    },
+    "observability-stack": {
+      "id": "ENH-002",
+      "title": "Add Comprehensive Observability Stack",
+      "priority": "critical",
+      "assigned_agents": ["claude", "mistral"],
+      "files_to_create": [
+        "cli/telemetry.js",
+        "cli/metrics-collector.js",
+        "cli/logger.js",
+        "dashboard/pages/api/metrics.js",
+        "deployment/observability/docker-compose-monitoring.yaml",
+        "config/otel-config.yaml",
+        "config/prometheus.yml",
+        "config/grafana-dashboards/"
+      ],
+      "files_to_modify": [
+        "cli/runner.js",
+        "agents/*/index.js",
+        "dashboard/src/MainDashboard.jsx"
+      ],
+      "tasks": [
+        {
+          "file": "cli/telemetry.js",
+          "agent": "claude",
+          "prompt": "Create a comprehensive telemetry system using OpenTelemetry. Implement distributed tracing with automatic context propagation, span creation for all major operations, and integration with Jaeger/Zipkin. Include performance metrics collection."
+        },
+        {
+          "file": "cli/logger.js",
+          "agent": "claude",
+          "prompt": "Implement a structured logging system using Winston or Pino. Include log levels, context injection, correlation IDs, and automatic error tracking. Support for multiple transports (console, file, Elasticsearch)."
+        },
+        {
+          "file": "cli/metrics-collector.js",
+          "agent": "mistral",
+          "prompt": "Create a metrics collection system using Prometheus client. Track: job processing times, queue depths, API call latencies, token usage, error rates, and resource utilization. Include custom business metrics."
+        },
+        {
+          "file": "deployment/observability/docker-compose-monitoring.yaml",
+          "agent": "mistral",
+          "prompt": "Create a Docker Compose configuration for the monitoring stack including: Prometheus, Grafana, Jaeger, Elasticsearch, Logstash, and Kibana. Include proper networking and persistent volumes."
+        }
+      ]
+    },
+    "intelligent-orchestration": {
+      "id": "ENH-003",
+      "title": "Implement Intelligent Task Orchestration Engine",
+      "priority": "medium",
+      "assigned_agents": ["claude", "gpt"],
+      "files_to_create": [
+        "cli/orchestration-engine.js",
+        "cli/task-scheduler.js",
+        "cli/ml-agent-selector.js",
+        "cli/dependency-resolver.js",
+        "cli/cost-optimizer.js",
+        "shared/agent-performance-data.json"
+      ],
+      "files_to_modify": [
+        "cli/runner.js",
+        "cli/enqueue.js",
+        "shared/filemap.json"
+      ],
+      "tasks": [
+        {
+          "file": "cli/orchestration-engine.js",
+          "agent": "claude",
+          "prompt": "Build an intelligent orchestration engine that replaces simple queue polling. Include: task dependency graphs, priority queues with dynamic adjustment, resource allocation, and workflow management. Support for DAG-based task execution."
+        },
+        {
+          "file": "cli/ml-agent-selector.js",
+          "agent": "claude",
+          "prompt": "Implement ML-based agent selection using historical performance data. Track agent success rates, execution times, and specializations. Use a simple neural network or decision tree to predict best agent for each task type."
+        },
+        {
+          "file": "cli/cost-optimizer.js",
+          "agent": "gpt",
+          "prompt": "Create a cost optimization module that routes tasks to the most cost-effective agent/model combination. Consider token costs, execution time, and quality requirements. Implement fallback strategies for budget constraints."
+        },
+        {
+          "file": "cli/dependency-resolver.js",
+          "agent": "gpt",
+          "prompt": "Build a dependency resolution system for complex multi-step tasks. Parse task dependencies, create execution graphs, handle circular dependencies, and manage task prerequisites. Support for parallel execution where possible."
+        }
+      ]
+    },
+    "security-layer": {
+      "id": "ENH-004",
+      "title": "Add Enterprise Security Layer",
+      "priority": "critical",
+      "assigned_agents": ["gpt", "claude"],
+      "files_to_create": [
+        "cli/auth-service.js",
+        "cli/vault-client.js",
+        "cli/encryption-service.js",
+        "cli/audit-logger.js",
+        "cli/rbac-manager.js",
+        "dashboard/middleware/auth.js",
+        "config/security-policies.json"
+      ],
+      "files_to_modify": [
+        "cli/runner.js",
+        "agents/*/index.js",
+        "dashboard/pages/api/*.js",
+        ".env.example"
+      ],
+      "tasks": [
+        {
+          "file": "cli/vault-client.js",
+          "agent": "gpt",
+          "prompt": "Implement HashiCorp Vault integration for secrets management. Include: dynamic secret generation, secret rotation, encryption as a service, and audit logging. Support for both dev and production Vault configurations."
+        },
+        {
+          "file": "cli/auth-service.js",
+          "agent": "gpt",
+          "prompt": "Create an authentication service supporting OAuth2/OIDC. Implement JWT token generation/validation, refresh tokens, and session management. Include integration with popular providers (Auth0, Okta, Google)."
+        },
+        {
+          "file": "cli/rbac-manager.js",
+          "agent": "claude",
+          "prompt": "Build a Role-Based Access Control system. Define roles (admin, developer, viewer), permissions for resources (agents, tasks, files), and policy enforcement. Include attribute-based access control (ABAC) support."
+        },
+        {
+          "file": "cli/encryption-service.js",
+          "agent": "claude",
+          "prompt": "Implement end-to-end encryption for agent communications. Use AES-256 for data encryption and RSA for key exchange. Include message signing for integrity verification and replay attack prevention."
+        }
+      ]
+    },
+    "collaboration-framework": {
+      "id": "ENH-005",
+      "title": "Build Advanced Agent Collaboration Framework",
+      "priority": "medium",
+      "assigned_agents": ["claude", "gemini"],
+      "files_to_create": [
+        "cli/consensus-protocol.js",
+        "cli/knowledge-graph.js",
+        "cli/task-negotiation.js",
+        "cli/conflict-resolver.js",
+        "cli/collaboration-workflows.js",
+        "shared/agent-capabilities.json"
+      ],
+      "files_to_modify": [
+        "cli/coordination-service.js",
+        "cli/agent-communication.js",
+        "agents/*/index.js"
+      ],
+      "tasks": [
+        {
+          "file": "cli/consensus-protocol.js",
+          "agent": "claude",
+          "prompt": "Implement a consensus protocol (simplified Raft) for critical agent decisions. Include leader election, log replication, and safety guarantees. Support for voting on code changes and architectural decisions."
+        },
+        {
+          "file": "cli/knowledge-graph.js",
+          "agent": "claude",
+          "prompt": "Create a shared knowledge graph system using Neo4j or in-memory graph. Track agent learnings, code relationships, and domain knowledge. Include graph queries for finding relevant expertise and similar past solutions."
+        },
+        {
+          "file": "cli/task-negotiation.js",
+          "agent": "gemini",
+          "prompt": "Build a task negotiation protocol where agents can bid on tasks based on their capabilities and current load. Include negotiation strategies, capability matching, and workload balancing algorithms."
+        },
+        {
+          "file": "cli/conflict-resolver.js",
+          "agent": "gemini",
+          "prompt": "Implement a conflict resolution system for concurrent file edits. Include three-way merge algorithms, semantic conflict detection, and automated resolution strategies. Support for human escalation when needed."
+        }
+      ]
+    },
+    "self-healing-infrastructure": {
+      "id": "ENH-006",
+      "title": "Create Self-Healing and Auto-Scaling Infrastructure",
+      "priority": "high",
+      "assigned_agents": ["deepseek", "mistral"],
+      "files_to_create": [
+        "deployment/k8s/operator/",
+        "cli/health-checker.js",
+        "cli/auto-scaler.js",
+        "cli/circuit-breaker.js",
+        "cli/chaos-experiments.js",
+        "deployment/k8s/hpa-configs.yaml",
+        "deployment/k8s/pod-disruption-budgets.yaml"
+      ],
+      "files_to_modify": [
+        "deployment/k8s/agent-mesh-stack.yaml",
+        "agents/*/index.js",
+        "cli/runner.js"
+      ],
+      "tasks": [
+        {
+          "file": "deployment/k8s/operator/main.go",
+          "agent": "deepseek",
+          "prompt": "Create a Kubernetes Operator for Ez Aigent using Operator SDK. Implement custom resources for Agent and AgentPool. Include automatic scaling based on queue depth, health monitoring, and rolling updates."
+        },
+        {
+          "file": "cli/health-checker.js",
+          "agent": "deepseek",
+          "prompt": "Implement comprehensive health checks for all components. Include liveness probes (process running), readiness probes (can process tasks), and startup probes. Add self-diagnostic capabilities and automatic remediation."
+        },
+        {
+          "file": "cli/circuit-breaker.js",
+          "agent": "mistral",
+          "prompt": "Create a circuit breaker pattern implementation for external service calls. Include states (closed, open, half-open), failure thresholds, timeout handling, and fallback mechanisms. Support for bulkhead isolation."
+        },
+        {
+          "file": "cli/auto-scaler.js",
+          "agent": "mistral",
+          "prompt": "Build an auto-scaling service that monitors metrics and adjusts agent counts. Use predictive scaling based on historical patterns. Include scale-up/down policies, cooldown periods, and cost awareness."
+        }
+      ]
+    }
+  },
+  "implementation_order": [
+    "security-layer",
+    "observability-stack",
+    "distributed-queue-system",
+    "self-healing-infrastructure",
+    "intelligent-orchestration",
+    "collaboration-framework"
+  ],
+  "global_modifications": {
+    "all_agents": {
+      "prompt_prefix": "You are enhancing the Ez Aigent multi-agent orchestration system. Ensure your implementation follows these principles: 1) Backward compatibility with existing code, 2) Comprehensive error handling, 3) Detailed logging and metrics, 4) Security best practices, 5) Performance optimization, 6) Clear documentation with examples.",
+      "testing_requirements": "Include unit tests using Jest/Mocha and integration tests. Aim for 80% code coverage minimum.",
+      "documentation_requirements": "Add JSDoc comments for all public methods, README.md for new modules, and update CLAUDE.md with new features."
+    }
+  }
+}

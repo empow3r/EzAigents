@@ -7,7 +7,7 @@
 Create deployment configurations and infrastructure as code for local, cloud, and Kubernetes deployments.
 
 ## Context
-You are building deployment automation for EzAugent to scale from 1 to 100+ agents across different platforms. Focus ONLY on deployment files.
+You are building deployment automation for Ez Aigent to scale from 1 to 100+ agents across different platforms. Focus ONLY on deployment files.
 
 ## Assigned Files (ONLY EDIT THESE)
 - `deployment/docker/Dockerfile.agent`
