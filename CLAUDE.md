@@ -85,6 +85,17 @@ docker-compose logs -f # View logs
 npm run autoscaler     # Start auto-scaler
 npm run agent:claude   # Start individual agent
 
+# Enhanced agent spawning (with coordination)
+node agents/claude/wrapped-index.js     # Start wrapped Claude agent
+node agents/gpt/wrapped-index.js        # Start wrapped GPT agent
+node agents/deepseek/wrapped-index.js   # Start wrapped DeepSeek agent
+node agents/mistral/wrapped-index.js    # Start wrapped Mistral agent
+node agents/gemini/wrapped-index.js     # Start wrapped Gemini agent
+
+# Original agent spawning (fallback)
+node examples/enhanced-claude-agent.js  # Start enhanced Claude agent
+AGENT_ID=claude_001 node examples/enhanced-claude-agent.js  # Custom agent ID
+
 # Task operations
 cd cli && node enqueue.js  # Enqueue tasks
 ```
