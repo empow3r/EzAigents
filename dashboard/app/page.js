@@ -1,5 +1,8 @@
-import DashboardSelector from '../pages/dashboard-selector';
-
 export default function Home() {
-  return <DashboardSelector />;
+  return (
+    <div>
+      <h1>Ez Aigents Dashboard</h1>
+      <p>Dashboard is working!</p>
+    </div>
+  );
 }
