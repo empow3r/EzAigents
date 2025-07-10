@@ -113,6 +113,33 @@ class FileLockManager {
     }
   }
   
+  async checkLockStatus(filePath) {
+    const lockKey = `lock:${filePath}`;
+    const metaKey = `lock:meta:${filePath}`;
+    
+    const currentOwner = await this.redis.get(lockKey);
+    
+    if (!currentOwner) {
+      return {
+        locked: false,
+        owner: null,
+        ttl: 0,
+        message: `File ${filePath} is not locked`
+      };
+    }
+    
+    const ttl = await this.redis.ttl(lockKey);
+    const metadata = await this.redis.hgetall(metaKey);
+    
+    return {
+      locked: true,
+      owner: currentOwner,
+      ttl: ttl,
+      metadata: metadata,
+      message: `File ${filePath} is locked by ${currentOwner} (TTL: ${ttl}s)`
+    };
+  }
+  
   async forceLock(filePath, agentId, reason) {
     const lockKey = `lock:${filePath}`;
     const metaKey = `lock:meta:${filePath}`;

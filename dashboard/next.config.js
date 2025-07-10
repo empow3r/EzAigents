@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -124,17 +126,17 @@ const nextConfig = {
       };
     }
 
-    // Bundle analyzer
-    if (process.env.ANALYZE === 'true') {
-      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'static',
-          reportFilename: './analyze.html',
-          openAnalyzer: true,
-        })
-      );
-    }
+    // Bundle analyzer - commented out to avoid module issues
+    // if (process.env.ANALYZE === 'true') {
+    //   const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+    //   config.plugins.push(
+    //     new BundleAnalyzerPlugin({
+    //       analyzerMode: 'static',
+    //       reportFilename: './analyze.html',
+    //       openAnalyzer: true,
+    //     })
+    //   );
+    // }
 
     return config;
   },
@@ -157,4 +159,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
