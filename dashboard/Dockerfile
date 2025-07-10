@@ -6,7 +6,7 @@ RUN npm ci --only=production
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-COPY --from=dependencies /app/node_modules ./node_modules
+RUN npm ci
 COPY . .
 
 # Set environment variables for build
