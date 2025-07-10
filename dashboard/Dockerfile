@@ -1,12 +1,14 @@
-FROM node:18-alpine AS dependencies
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
 FROM node:18-alpine AS builder
 WORKDIR /app
+
+# Accept build args for npm install command
+ARG NPM_INSTALL_CMD="npm ci --legacy-peer-deps"
+
+# Install dependencies with legacy peer deps to resolve conflicts
 COPY package*.json ./
-RUN npm ci
+RUN ${NPM_INSTALL_CMD}
+
+# Copy source code
 COPY . .
 
 # Set environment variables for build
@@ -25,6 +27,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+
+# Install only production dependencies
+COPY package*.json ./
+RUN npm ci --only=production --legacy-peer-deps && npm cache clean --force
 
 # Copy built application
 COPY --from=builder /app/.next/standalone ./
