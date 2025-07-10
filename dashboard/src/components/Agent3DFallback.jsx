@@ -45,15 +45,18 @@ export default function Agent3DFallback({ darkMode = true }) {
   };
 
   const loadFullWorkspace = async () => {
+    soundService.play('loading');
     setLoadingFullVersion(true);
     try {
       // Dynamic import of the full 3D workspace
       const { default: Agent3DWorkspace } = await import('../Agent3DWorkspace');
       setThreeWorkspace(() => Agent3DWorkspace);
       setCurrentMode('3d');
+      soundService.play('success');
       console.log('Full 3D workspace loaded');
     } catch (error) {
       console.warn('Could not load full 3D workspace:', error);
+      soundService.play('error');
       alert('3D workspace could not be loaded. Staying in 2D mode.');
     } finally {
       setLoadingFullVersion(false);
@@ -61,6 +64,7 @@ export default function Agent3DFallback({ darkMode = true }) {
   };
 
   const switchTo2D = () => {
+    soundService.play('swoosh');
     setCurrentMode('2d');
   };
 
@@ -113,6 +117,7 @@ export default function Agent3DFallback({ darkMode = true }) {
           <div className="flex space-x-2 flex-shrink-0">
             <button
               onClick={switchTo2D}
+              onMouseEnter={() => soundService.play('buttonHover')}
               disabled={currentMode === '2d'}
               className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg transition-all flex items-center space-x-2 text-sm sm:text-base ${
                 currentMode === '2d'
@@ -129,6 +134,7 @@ export default function Agent3DFallback({ darkMode = true }) {
             
             <button
               onClick={loadFullWorkspace}
+              onMouseEnter={() => soundService.play('buttonHover')}
               disabled={loadingFullVersion || currentMode === '3d'}
               className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg transition-all flex items-center space-x-2 disabled:opacity-50 text-sm sm:text-base ${
                 currentMode === '3d'
