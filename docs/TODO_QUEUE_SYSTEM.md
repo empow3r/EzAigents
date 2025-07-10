@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Todo Queue System enables agents to automatically check for and process tasks during idle periods. Agents check the todo queue every 10 seconds when idle and assign themselves available tasks.
+The Todo Queue System enables agents to automatically check for and process tasks during idle periods. Agents check the todo queue every 10 seconds when idle and assign themselves available tasks. The system includes an Orchestrator Agent role that delegates tasks with proper context and expected results, ensuring system safety through multi-agent consensus for destructive operations.
 
 ## Features
 
@@ -13,12 +13,25 @@ The Todo Queue System enables agents to automatically check for and process task
 - **Priority System**: High, medium, and low priority task support
 - **Metrics Tracking**: Comprehensive metrics for monitoring performance
 - **Multi-Agent Support**: Multiple agents can process tasks concurrently
+- **Orchestrator Agent**: Dedicated agent role for task delegation and coordination
+- **Code Safety**: Backup/snapshot mechanism before destructive operations
+- **Consensus Requirements**: Multi-agent agreement for file deletion or major refactoring
 
 ## Architecture
 
 ```
-┌─────────────────┐     ┌──────────────┐     ┌─────────────────┐
-│   Todo Queue    │────▶│ Idle Checker │────▶│     Agent       │
+┌───────────────────┐
+│  Orchestrator     │────── Delegates tasks with context
+│     Agent         │       and expected results
+└────────┬──────────┘
+         │
+    ┌────▼────┐
+    │ Consensus│────── Multi-agent agreement for
+    │  System  │       destructive operations
+    └────┬────┘
+         │
+┌────────▼────────┐     ┌──────────────┐     ┌─────────────────┐
+│   Todo Queue    │────▶│ Idle Checker │────▶│  Worker Agent   │
 │  (Redis List)   │     │  (10s timer) │     │  (Processing)   │
 └─────────────────┘     └──────────────┘     └─────────────────┘
         │                                              │
@@ -27,6 +40,12 @@ The Todo Queue System enables agents to automatically check for and process task
 ┌─────────────────┐                          ┌─────────────────┐
 │ Processing Queue│                          │ Completed Tasks │
 └─────────────────┘                          └─────────────────┘
+        │
+        ▼
+┌─────────────────┐
+│ Backup/Snapshot │────── Code safety mechanism
+│     Storage     │
+└─────────────────┘
 ```
 
 ## Usage
@@ -94,6 +113,8 @@ The system supports specialized task types:
 4. **documentation** - Generate docs and comments
 5. **optimization** - Performance improvements
 6. **general** - Generic tasks
+7. **orchestration** - Task delegation and coordination
+8. **destructive_operation** - File deletion or major changes (requires consensus)
 
 ## Adding Tasks
 
@@ -196,6 +217,105 @@ TODO_QUEUE_NAME=queue:todos
 }
 ```
 
+## Orchestrator Agent Role
+
+The Orchestrator Agent is a specialized agent responsible for:
+
+1. **Task Delegation**: Breaking down complex tasks into subtasks
+2. **Context Management**: Providing proper context and expected results
+3. **Resource Allocation**: Assigning tasks to appropriate agent types
+4. **Progress Monitoring**: Tracking task completion and dependencies
+5. **Quality Assurance**: Ensuring deliverables meet requirements
+
+### Task Delegation Format
+
+```javascript
+{
+  id: 'task_123',
+  type: 'orchestration',
+  description: 'Build user authentication system',
+  subtasks: [
+    {
+      id: 'subtask_1',
+      type: 'architecture_analysis',
+      assigned_to: 'claude',
+      context: {
+        requirements: ['OAuth2', 'JWT', 'Session management'],
+        constraints: ['Must support 10k concurrent users'],
+        dependencies: []
+      },
+      expected_results: {
+        deliverables: ['architecture_diagram.md', 'tech_spec.md'],
+        acceptance_criteria: ['Scalable design', 'Security best practices']
+      }
+    },
+    {
+      id: 'subtask_2',
+      type: 'code_review',
+      assigned_to: 'gpt',
+      context: {
+        previous_task: 'subtask_1',
+        focus_areas: ['Security vulnerabilities', 'Performance bottlenecks']
+      },
+      expected_results: {
+        deliverables: ['security_review.md'],
+        acceptance_criteria: ['No critical vulnerabilities']
+      }
+    }
+  ]
+}
+```
+
+## Safety Mechanisms
+
+### 1. Backup/Snapshot System
+
+Before any destructive operation:
+
+```javascript
+const snapshot = await BackupSystem.createSnapshot({
+  files: ['src/auth.js', 'src/user.js'],
+  reason: 'Major refactoring of authentication system',
+  initiated_by: 'agent_orchestrator_001',
+  approval_required: true
+});
+```
+
+### 2. Multi-Agent Consensus
+
+For destructive operations (file deletion, major refactoring):
+
+```javascript
+const consensus = await ConsensusSystem.requestApproval({
+  operation: 'delete_files',
+  files: ['deprecated/old_auth.js'],
+  reason: 'Removing deprecated authentication module',
+  required_approvals: 2,
+  timeout: 300000 // 5 minutes
+});
+
+if (consensus.approved && consensus.approvers.length >= 2) {
+  // Proceed with operation
+  await performDestructiveOperation();
+}
+```
+
+### 3. Testing Requirements
+
+All changes must be tested before implementation:
+
+```javascript
+const testResults = await TestRunner.validate({
+  changes: ['src/auth.js', 'src/user.js'],
+  test_suites: ['unit', 'integration', 'security'],
+  coverage_threshold: 80
+});
+
+if (testResults.passed && testResults.coverage >= 80) {
+  // Safe to proceed
+}
+```
+
 ## Best Practices
 
 1. **Idle Detection**: Ensure agents properly report idle state
@@ -203,6 +323,11 @@ TODO_QUEUE_NAME=queue:todos
 3. **Error Handling**: Always handle task failures gracefully
 4. **Monitoring**: Track metrics to optimize performance
 5. **Priority**: Use priority levels appropriately
+6. **Context Preservation**: Always provide sufficient context for delegated tasks
+7. **Testing First**: Test all changes before applying to production code
+8. **Consensus for Destruction**: Require multi-agent agreement for deletions
+9. **Backup Everything**: Create snapshots before major changes
+10. **Document Decisions**: Record why changes were made
 
 ## Troubleshooting
 

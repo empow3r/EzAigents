@@ -167,12 +167,24 @@ class AgentCoordinator {
   }
   
   async getActiveAgents() {
-    const keys = await this.redis.keys('agent:*');
     const agents = [];
+    const stream = this.redis.scanStream({ match: 'agent:*', count: 100 });
     
-    for (const key of keys) {
-      const agentData = await this.redis.hgetall(key);
-      if (agentData.status === 'active') {
+    const pipeline = this.redis.pipeline();
+    const keys = [];
+    
+    for await (const batch of stream) {
+      keys.push(...batch);
+      batch.forEach(key => pipeline.hgetall(key));
+    }
+    
+    if (keys.length === 0) return agents;
+    
+    const results = await pipeline.exec();
+    
+    for (let i = 0; i < results.length; i++) {
+      const [err, agentData] = results[i];
+      if (!err && agentData.status === 'active') {
         agents.push({
           id: agentData.id,
           capabilities: JSON.parse(agentData.capabilities || '[]'),
@@ -186,14 +198,33 @@ class AgentCoordinator {
   }
   
   async getFileLocks() {
-    const keys = await this.redis.keys('lock:*');
     const locks = {};
+    const stream = this.redis.scanStream({ match: 'lock:*', count: 100 });
     
-    for (const key of keys) {
+    const pipeline = this.redis.pipeline();
+    const keys = [];
+    
+    for await (const batch of stream) {
+      keys.push(...batch);
+      batch.forEach(key => {
+        pipeline.get(key);
+        pipeline.ttl(key);
+      });
+    }
+    
+    if (keys.length === 0) return locks;
+    
+    const results = await pipeline.exec();
+    
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
       const filePath = key.replace('lock:', '');
-      const owner = await this.redis.get(key);
-      const ttl = await this.redis.ttl(key);
-      locks[filePath] = { owner, ttl };
+      const [ownerErr, owner] = results[i * 2];
+      const [ttlErr, ttl] = results[i * 2 + 1];
+      
+      if (!ownerErr && !ttlErr) {
+        locks[filePath] = { owner, ttl };
+      }
     }
     
     return locks;

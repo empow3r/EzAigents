@@ -12,8 +12,22 @@ const redis = new Redis(process.env.REDIS_URL);
 const FILEMAP_PATH = process.env.FILEMAP_PATH || '../shared/filemap.json';
 const TOKENPOOL_PATH = process.env.TOKENPOOL_PATH || '../shared/tokenpool.json';
 
-const fileMap = JSON.parse(fs.readFileSync(FILEMAP_PATH, 'utf-8'));
-const tokenPool = JSON.parse(fs.readFileSync(TOKENPOOL_PATH, 'utf-8'));
+let fileMap, tokenPool;
+
+// Async initialization
+const initializeConfig = async () => {
+  try {
+    const [fileMapData, tokenPoolData] = await Promise.all([
+      fs.promises.readFile(FILEMAP_PATH, 'utf-8'),
+      fs.promises.readFile(TOKENPOOL_PATH, 'utf-8')
+    ]);
+    fileMap = JSON.parse(fileMapData);
+    tokenPool = JSON.parse(tokenPoolData);
+  } catch (error) {
+    console.error('Failed to load configuration files:', error);
+    process.exit(1);
+  }
+};
 
 // Initialize coordination services
 const ORCHESTRATOR_ID = `orchestrator-${Date.now()}`;
@@ -21,14 +35,20 @@ const lockManager = new FileLockManager();
 const communication = new AgentCommunication(ORCHESTRATOR_ID);
 
 const dequeueJob = async () => {
-  // Check all model queues for jobs
+  // Use blocking multi-queue pop for efficiency
   const models = ['claude-3-opus', 'gpt-4o', 'deepseek-coder', 'command-r-plus', 'gemini-pro'];
-  for (const model of models) {
-    const job = await redis.lpop(`queue:${model}`);
-    if (job) {
+  const queueKeys = models.map(model => `queue:${model}`);
+  
+  try {
+    const result = await redis.blpop(...queueKeys, 1); // 1 second timeout
+    if (result) {
+      const [queueName, job] = result;
+      const model = queueName.replace('queue:', '');
       const parsed = JSON.parse(job);
       return { ...parsed, model };
     }
+  } catch (error) {
+    console.error('Error dequeuing job:', error);
   }
   return null;
 };
@@ -71,7 +91,7 @@ const submitTask = async (job) => {
     }
     
     const token = assignToken(model);
-    const content = fs.readFileSync(path.join('./src', file), 'utf-8');
+    const content = await fs.promises.readFile(path.join('./src', file), 'utf-8');
 
     const payload = {
       model,
@@ -124,6 +144,9 @@ const submitTask = async (job) => {
 (async () => {
   console.log(`🎯 Enhanced Multi-Agent Orchestrator starting (ID: ${ORCHESTRATOR_ID})`);
   
+  // Initialize configuration files
+  await initializeConfig();
+  
   // Announce orchestrator startup
   await communication.broadcastMessage(
     `Multi-Agent Orchestrator ${ORCHESTRATOR_ID} online. Coordinating agent tasks.`,
@@ -152,9 +175,8 @@ const submitTask = async (job) => {
       if (job) {
         console.log(`📋 Processing job: ${job.file} with ${job.model}`);
         await submitTask(job);
-      } else {
-        await new Promise((r) => setTimeout(r, 500));
       }
+      // No need for timeout - BLPOP handles blocking
     } catch (err) {
       console.error('❌ Job Error:', err.message);
       

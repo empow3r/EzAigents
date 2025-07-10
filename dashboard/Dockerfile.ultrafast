@@ -44,5 +44,5 @@ USER nextjs
 
 EXPOSE 3000
 
-# Start with npm start (fastest startup)
-CMD ["npm", "start"]
+# Start with npm start binding to all interfaces
+CMD ["npm", "start", "--", "-H", "0.0.0.0"]

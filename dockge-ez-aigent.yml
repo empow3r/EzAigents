@@ -38,13 +38,13 @@ services:
   dashboard:
     build: 
       context: https://github.com/empow3r/EzAigents.git#main:dashboard
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.ultrafast
       args:
-        - NPM_INSTALL_CMD=npm ci --legacy-peer-deps
+        - BUILDKIT_INLINE_CACHE=1
     container_name: ez-aigent-dashboard
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "0.0.0.0:3000:3000"
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
       interval: 30s
@@ -60,8 +60,10 @@ services:
       # Dashboard Configuration
       - DASHBOARD_PORT="3000"
       - DASHBOARD_HOST="0.0.0.0"
-      - DASHBOARD_URL="http://localhost:3000"
-      - NEXT_PUBLIC_API_URL="http://localhost:3000"
+      - DASHBOARD_URL="http://0.0.0.0:3000"
+      - HOSTNAME="0.0.0.0"
+      - PORT="3000"
+      - NEXT_PUBLIC_API_URL="http://0.0.0.0:3000"
       - NEXT_PUBLIC_BUILD_ENV="production"
       
       # API Keys - Multiple LLMs with Rotation
