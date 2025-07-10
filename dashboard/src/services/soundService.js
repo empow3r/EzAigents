@@ -7,6 +7,11 @@ class SoundService {
     this.volume = 0.3;
     this.initialized = false;
     
+    // Track active oscillators and intervals for cleanup
+    this.activeOscillators = new Set();
+    this.activeIntervals = new Set();
+    this.isDestroyed = false;
+    
     // ADDICTION MECHANICS
     this.interactionCount = 0;
     this.lastInteractionTime = 0;
@@ -84,90 +89,67 @@ class SoundService {
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       await this.generateSounds();
       this.initialized = true;
-      console.log('🔊 Sound Service initialized');
-      
-      // Initialize dynamic environment system
-      this.initializeEnvironmentSystem();
+      console.log('🔊 Sound Service initialized - Quirky mode enabled!');
     } catch (error) {
       console.warn('Sound Service failed to initialize:', error);
     }
   }
 
-  // Generate pleasant UI sounds using Web Audio API
+  // Generate quirky UI sounds using Web Audio API
   async generateSounds() {
     const sounds = {
-      // Navigation sounds
-      tabSwitch: () => this.createTone([440, 554.37], 0.15, 'sine', 0.1),
-      buttonClick: () => this.createTone([523.25], 0.1, 'sine', 0.08),
-      buttonHover: () => this.createTone([659.25], 0.08, 'sine', 0.05),
+      // Simple navigation sounds (short & sweet)
+      tabSwitch: () => this.createQuirkyTone([440, 554.37], 0.12, 'triangle', 0.08),
+      buttonClick: () => this.createQuirkyTone([800], 0.08, 'square', 0.06),
+      buttonHover: () => this.createQuirkyTone([1200], 0.05, 'sine', 0.04),
 
-      // ADDICTIVE REWARD SOUNDS - Dopamine triggers
-      sparkle: () => this.createSparkle(),
-      coinDrop: () => this.createCoinDrop(),
-      miniSuccess: () => this.createMiniSuccess(),
-      perfectClick: () => this.createPerfectClick(),
-      satisfyingPop: () => this.createSatisfyingPop(),
-      dopamineHit: () => this.createDopamineHit(),
-      quickWin: () => this.createQuickWin(),
-      streakBonus: () => this.createStreakBonus(),
-      comboBonus: () => this.createComboBonus(),
-      exploration: () => this.createExploration(),
-      microReward: () => this.createMicroReward(),
-      engagement: () => this.createEngagement(),
+      // Fun quirky event sounds (short & playful)
+      sparkle: () => this.createQuirkySparkle(),
+      coinDrop: () => this.createQuirkyCoin(),
+      miniSuccess: () => this.createQuirkySuccess(),
+      perfectClick: () => this.createQuirkyPop(),
+      satisfyingPop: () => this.createQuirkyBoop(),
+      quickWin: () => this.createQuirkyWin(),
+      notification: () => this.createQuirkyNotification(),
+      error: () => this.createQuirkyError(),
+      warning: () => this.createQuirkyWarning(),
       
-      // Success/completion sounds
-      success: () => this.createChord([523.25, 659.25, 783.99], 0.3, 'sine'),
-      taskComplete: () => this.createSequence([
-        { freq: 523.25, duration: 0.1 },
-        { freq: 659.25, duration: 0.1 },
-        { freq: 783.99, duration: 0.2 }
-      ]),
+      // Simple success sounds
+      success: () => this.createQuirkySuccess(),
+      taskComplete: () => this.createQuirkyWin(),
       
-      // Notification sounds
-      notification: () => this.createTone([880, 1108.73], 0.2, 'sine', 0.12),
-      alert: () => this.createTone([1046.50, 1244.51], 0.25, 'triangle', 0.15),
+      // Simple notification sounds  
+      notification: () => this.createQuirkyNotification(),
+      alert: () => this.createQuirkyWarning(),
       
-      // Interaction sounds
-      scroll: () => this.createTone([220], 0.05, 'sine', 0.03),
-      menuOpen: () => this.createSlide(220, 440, 0.2),
-      menuClose: () => this.createSlide(440, 220, 0.15),
+      // Simple interaction sounds
+      scroll: () => this.createQuirkyTone([800], 0.03, 'sine', 0.02),
+      menuOpen: () => this.createQuirkyTone([440, 660], 0.15, 'triangle', 0.05),
+      menuClose: () => this.createQuirkyTone([660, 440], 0.12, 'triangle', 0.05),
       
-      // Agent/system sounds
-      agentActivate: () => this.createChord([329.63, 415.30, 523.25], 0.25, 'sine'),
-      agentComplete: () => this.createSequence([
-        { freq: 659.25, duration: 0.08 },
-        { freq: 783.99, duration: 0.08 },
-        { freq: 1046.50, duration: 0.15 }
-      ]),
+      // Simple agent sounds
+      agentActivate: () => this.createQuirkySuccess(),
+      agentComplete: () => this.createQuirkyWin(),
       
-      // Error/warning sounds
-      error: () => this.createTone([207.65], 0.3, 'sawtooth', 0.1),
-      warning: () => this.createTone([311.13, 369.99], 0.2, 'triangle', 0.08),
+      // Simple error/warning sounds
+      error: () => this.createQuirkyError(),
+      warning: () => this.createQuirkyWarning(),
       
       // Fun/quirky sounds
-      pop: () => this.createPop(),
-      swoosh: () => this.createSwoosh(),
-      click: () => this.createClick(),
-      ding: () => this.createTone([1760], 0.15, 'sine', 0.1),
+      pop: () => this.createQuirkyPop(),
+      swoosh: () => this.createQuirkyBoop(),
+      click: () => this.createQuirkyTone([1200], 0.05, 'square', 0.06),
+      ding: () => this.createQuirkyNotification(),
       
-      // Loading/progress sounds
-      loading: () => this.createSequence([
-        { freq: 440, duration: 0.1 },
-        { freq: 493.88, duration: 0.1 },
-        { freq: 523.25, duration: 0.1 }
-      ]),
+      // Simple loading sound
+      loading: () => this.createQuirkyTone([440, 494, 523], 0.2, 'sine', 0.04),
       
-      // Theme toggle
-      themeSwitch: () => this.createSlide(523.25, 1046.50, 0.2),
+      // Simple theme toggle
+      themeSwitch: () => this.createQuirkyTone([523, 1047], 0.15, 'triangle', 0.06),
       
-      // Achievement sounds
-      levelUp: () => this.createSequence([
-        { freq: 523.25, duration: 0.1 },
-        { freq: 659.25, duration: 0.1 },
-        { freq: 783.99, duration: 0.1 },
-        { freq: 1046.50, duration: 0.3 }
-      ]),
-      achievement: () => this.createChord([659.25, 830.61, 1046.50, 1318.51], 0.4, 'sine'),
+      // Simple achievement sounds
+      levelUp: () => this.createQuirkyWin(),
+      achievement: () => this.createQuirkySparkle(),
 
       // ENHANCED NEURAL OPTIMIZATION SOUNDS
       neuralSync: () => this.createNeuralSync(),
@@ -186,16 +168,10 @@ class SoundService {
       adaptiveSuccess: () => this.createAdaptiveSuccess(),
       behaviorOptimized: () => this.createBehaviorOptimized(),
       
-      // SOCIAL PROOF SOUNDS
-      peerSuccess: () => this.createPeerSuccess(),
-      communityWin: () => this.createCommunityWin(),
-      leaderboardClimb: () => this.createLeaderboardClimb(),
-      
-      // BINAURAL ENHANCEMENT
-      binauralFocus: () => this.createBinauralFocus(),
-      alphaWaves: () => this.createAlphaWaves(),
-      betaStimulation: () => this.createBetaStimulation(),
-      gammaBoost: () => this.createGammaBoost()
+      // Social sounds (simplified)
+      peerSuccess: () => this.createQuirkySuccess(),
+      communityWin: () => this.createQuirkySparkle(),
+      leaderboardClimb: () => this.createQuirkyWin()
     };
 
     // Generate and store all sounds
@@ -228,6 +204,13 @@ class SoundService {
         gainNode.gain.linearRampToValueAtTime(volume * this.volume, now + 0.01);
         gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
         
+        // Track and cleanup oscillator properly
+        this.activeOscillators.add(oscillator);
+        oscillator.addEventListener('ended', () => {
+          oscillator.disconnect();
+          this.activeOscillators.delete(oscillator);
+        });
+        
         oscillator.start(now + index * 0.01);
         oscillator.stop(now + duration);
       });
@@ -255,9 +238,126 @@ class SoundService {
         gainNode.gain.linearRampToValueAtTime(volume * this.volume, now + 0.02);
         gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
         
+        // Track and cleanup oscillator properly
+        this.activeOscillators.add(oscillator);
+        oscillator.addEventListener('ended', () => {
+          oscillator.disconnect();
+          this.activeOscillators.delete(oscillator);
+        });
+        
         oscillator.start(now);
         oscillator.stop(now + duration);
       });
+    };
+  }
+
+  // Create quirky, short sound effects
+  createQuirkyTone(frequencies, duration, waveType = 'sine', volume = 0.08) {
+    return () => {
+      if (!this.canPlay()) return;
+
+      const now = this.audioContext.currentTime;
+      
+      frequencies.forEach((freq, index) => {
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.type = waveType;
+        oscillator.frequency.setValueAtTime(freq, now);
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        // Quick envelope for short, punchy sound
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(volume * this.volume, now + 0.005);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        
+        // Track and cleanup oscillator properly
+        this.activeOscillators.add(oscillator);
+        oscillator.addEventListener('ended', () => {
+          oscillator.disconnect();
+          this.activeOscillators.delete(oscillator);
+        });
+        
+        oscillator.start(now + index * 0.02);
+        oscillator.stop(now + duration);
+      });
+    };
+  }
+
+  // Quirky sparkle sound (high pitched arpeggio)
+  createQuirkySparkle() {
+    return () => {
+      if (!this.canPlay()) return;
+      const frequencies = [1760, 2093, 2637]; // High C, C#, E
+      this.createQuirkyTone(frequencies, 0.15, 'sine', 0.06)();
+    };
+  }
+
+  // Quirky coin sound (descending)
+  createQuirkyCoin() {
+    return () => {
+      if (!this.canPlay()) return;
+      const frequencies = [1318, 1047, 880]; // E, C, A (descending)
+      this.createQuirkyTone(frequencies, 0.2, 'square', 0.08)();
+    };
+  }
+
+  // Quirky success sound (upbeat chord)
+  createQuirkySuccess() {
+    return () => {
+      if (!this.canPlay()) return;
+      const frequencies = [523, 659, 784]; // C major chord
+      this.createQuirkyTone(frequencies, 0.25, 'triangle', 0.07)();
+    };
+  }
+
+  // Quirky pop sound
+  createQuirkyPop() {
+    return () => {
+      if (!this.canPlay()) return;
+      this.createQuirkyTone([1200], 0.08, 'square', 0.1)();
+    };
+  }
+
+  // Quirky boop sound
+  createQuirkyBoop() {
+    return () => {
+      if (!this.canPlay()) return;
+      this.createQuirkyTone([800], 0.12, 'sine', 0.08)();
+    };
+  }
+
+  // Quirky win sound (quick ascending)
+  createQuirkyWin() {
+    return () => {
+      if (!this.canPlay()) return;
+      const frequencies = [440, 554, 659, 880]; // Ascending notes
+      this.createQuirkyTone(frequencies, 0.3, 'sine', 0.06)();
+    };
+  }
+
+  // Quirky notification (gentle ding)
+  createQuirkyNotification() {
+    return () => {
+      if (!this.canPlay()) return;
+      this.createQuirkyTone([1047, 1319], 0.18, 'sine', 0.07)(); // C, E
+    };
+  }
+
+  // Quirky error sound (low, descending)
+  createQuirkyError() {
+    return () => {
+      if (!this.canPlay()) return;
+      this.createQuirkyTone([220, 180], 0.4, 'sawtooth', 0.08)();
+    };
+  }
+
+  // Quirky warning sound (wobble)
+  createQuirkyWarning() {
+    return () => {
+      if (!this.canPlay()) return;
+      this.createQuirkyTone([440, 494, 440], 0.25, 'triangle', 0.07)();
     };
   }
 
@@ -563,6 +663,7 @@ class SoundService {
   // Set volume (0-1)
   setVolume(volume) {
     this.volume = Math.max(0, Math.min(1, volume));
+    console.log(`🔊 Quirky sounds volume: ${Math.round(this.volume * 100)}%`);
   }
 
   // Get current settings
@@ -1168,6 +1269,19 @@ class SoundService {
     rightGain.gain.linearRampToValueAtTime(0, now + duration - 2);
     masterGain.gain.linearRampToValueAtTime(0, now + duration - 1);
     
+    // Track oscillators for cleanup
+    this.activeOscillators.add(leftOsc);
+    this.activeOscillators.add(rightOsc);
+    
+    leftOsc.addEventListener('ended', () => {
+      leftOsc.disconnect();
+      rightOsc.disconnect();
+      merger.disconnect();
+      masterGain.disconnect();
+      this.activeOscillators.delete(leftOsc);
+      this.activeOscillators.delete(rightOsc);
+    });
+    
     // Start and stop
     leftOsc.start(now);
     rightOsc.start(now);
@@ -1317,7 +1431,14 @@ class SoundService {
     };
     
     // Check every 30 minutes
-    setInterval(checkAndUpdateEnvironment, 30 * 60 * 1000);
+    const environmentInterval = setInterval(() => {
+      if (this.isDestroyed) {
+        clearInterval(environmentInterval);
+        return;
+      }
+      checkAndUpdateEnvironment();
+    }, 30 * 60 * 1000);
+    this.activeIntervals.add(environmentInterval);
   }
   
   // Get recommended environment based on time of day
@@ -1351,9 +1472,14 @@ class SoundService {
     };
     
     // Update circadian state every 15 minutes
-    setInterval(() => {
+    const circadianInterval = setInterval(() => {
+      if (this.isDestroyed) {
+        clearInterval(circadianInterval);
+        return;
+      }
       this.updateCircadianState();
     }, 15 * 60 * 1000);
+    this.activeIntervals.add(circadianInterval);
     
     // Initial calculation
     this.updateCircadianState();
@@ -1879,10 +2005,111 @@ class SoundService {
       setTimeout(() => this.createFocusBoost()(), 300);
     };
   }
+
+  // Cleanup methods to prevent audio hanging
+  stopAllOscillators() {
+    // Stop and disconnect all active oscillators
+    this.activeOscillators.forEach(oscillator => {
+      try {
+        if (oscillator.state !== 'closed') {
+          oscillator.stop();
+          oscillator.disconnect();
+        }
+      } catch (error) {
+        console.warn('Error stopping oscillator:', error);
+      }
+    });
+    this.activeOscillators.clear();
+  }
+
+  clearAllIntervals() {
+    // Clear all tracked intervals
+    this.activeIntervals.forEach(interval => {
+      clearInterval(interval);
+    });
+    this.activeIntervals.clear();
+  }
+
+  stopCurrentEnvironment() {
+    // Stop current ambient environment
+    this.stopAllOscillators();
+    this.ambientLayers.clear();
+    this.environmentTransitioning = false;
+  }
+
+  destroy() {
+    // Complete cleanup of the sound service
+    if (this.isDestroyed) return;
+    
+    this.isDestroyed = true;
+    this.stopAllOscillators();
+    this.clearAllIntervals();
+    this.stopCurrentEnvironment();
+    
+    if (this.audioContext && this.audioContext.state !== 'closed') {
+      this.audioContext.close();
+    }
+    
+    console.log('🔇 Sound Service destroyed and cleaned up');
+  }
+
+  // Emergency stop all audio - for immediate use when audio hangs
+  emergencyStop() {
+    console.log('🚨 Emergency audio stop triggered');
+    
+    // Stop all oscillators immediately
+    this.stopAllOscillators();
+    
+    // Stop all Web Speech API
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    
+    // Suspend audio context
+    if (this.audioContext && this.audioContext.state === 'running') {
+      this.audioContext.suspend();
+    }
+    
+    // Clear all timers
+    this.clearAllIntervals();
+    
+    console.log('🔇 Emergency stop completed');
+  }
 }
 
-// Create singleton instance
-const soundService = new SoundService();
+// Create singleton instance only in browser
+let soundService;
+
+if (typeof window !== 'undefined') {
+  soundService = new SoundService();
+  
+  // Add global emergency stop function for debugging
+  window.stopAllAudio = () => {
+    soundService.emergencyStop();
+    
+    // Also clean up any other potential audio sources
+    const allAudioElements = document.querySelectorAll('audio, video');
+    allAudioElements.forEach(element => {
+      element.pause();
+      element.currentTime = 0;
+    });
+    
+    console.log('🔇 Global audio cleanup completed');
+  };
+} else {
+  // SSR fallback with dummy methods
+  soundService = {
+    play: () => {},
+    playDirect: () => {},
+    stopCurrentEnvironment: () => {},
+    destroy: () => {},
+    stopAllOscillators: () => {},
+    clearAllIntervals: () => {},
+    emergencyStop: () => {},
+    enabled: false,
+    initialized: false
+  };
+}
 
 // Export the service
 export default soundService;

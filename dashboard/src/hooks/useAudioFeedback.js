@@ -9,6 +9,7 @@ export function useAudioFeedback() {
   
   const audioContextRef = useRef(null);
   const soundCacheRef = useRef({});
+  const activeOscillatorsRef = useRef(new Set());
 
   useEffect(() => {
     // Check if Web Audio API is supported
@@ -17,6 +18,27 @@ export function useAudioFeedback() {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       audioContextRef.current = new AudioContext();
     }
+    
+    // Cleanup on unmount
+    return () => {
+      // Stop all active oscillators
+      activeOscillatorsRef.current.forEach(oscillator => {
+        try {
+          if (oscillator.state !== 'closed') {
+            oscillator.stop();
+            oscillator.disconnect();
+          }
+        } catch (error) {
+          console.warn('Error stopping oscillator:', error);
+        }
+      });
+      activeOscillatorsRef.current.clear();
+      
+      // Close audio context
+      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+        audioContextRef.current.close();
+      }
+    };
   }, []);
 
   // Sound definitions for different themes
@@ -91,6 +113,14 @@ export function useAudioFeedback() {
     gainNode.gain.setValueAtTime(actualVolume, audioContext.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration / 1000);
 
+    // Track oscillator for cleanup
+    activeOscillatorsRef.current.add(oscillator);
+    
+    oscillator.addEventListener('ended', () => {
+      oscillator.disconnect();
+      activeOscillatorsRef.current.delete(oscillator);
+    });
+    
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + duration / 1000);
 
