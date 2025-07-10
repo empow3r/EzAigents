@@ -45,15 +45,30 @@ export function useVoiceCommands() {
   useEffect(() => {
     // Check if Speech Recognition is supported
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      setIsSupported(true);
-      recognitionRef.current = new SpeechRecognition();
-      
-      const recognition = recognitionRef.current;
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = 'en-US';
-      recognition.maxAlternatives = 3;
+    
+    // Additional checks for browser support
+    const isSecureContext = window.isSecureContext || window.location.protocol === 'https:' || window.location.hostname === 'localhost';
+    const hasNavigator = typeof navigator !== 'undefined';
+    const hasMediaDevices = hasNavigator && 'mediaDevices' in navigator;
+    
+    console.log('Voice recognition support check:', {
+      SpeechRecognition: !!SpeechRecognition,
+      isSecureContext,
+      hasNavigator,
+      hasMediaDevices,
+      userAgent: navigator?.userAgent
+    });
+    
+    if (SpeechRecognition && isSecureContext) {
+      try {
+        setIsSupported(true);
+        recognitionRef.current = new SpeechRecognition();
+        
+        const recognition = recognitionRef.current;
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+        recognition.maxAlternatives = 3;
 
       recognition.onstart = () => {
         setIsListening(true);
@@ -95,6 +110,18 @@ export function useVoiceCommands() {
         setIsListening(false);
         console.log('Voice recognition ended');
       };
+      } catch (error) {
+        console.error('Failed to initialize speech recognition:', error);
+        setIsSupported(false);
+        setError('Failed to initialize voice recognition');
+      }
+    } else {
+      setIsSupported(false);
+      if (!SpeechRecognition) {
+        setError('Speech Recognition API not available in this browser');
+      } else if (!isSecureContext) {
+        setError('Voice recognition requires HTTPS or localhost');
+      }
     }
 
     return () => {

@@ -1,0 +1,44 @@
+const path = require('path');
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  output: 'standalone',
+  outputFileTracingRoot: path.join(__dirname, '../../'),
+  webpack: (config, { isServer }) => {
+    // Fix for chunk loading errors
+    if (!isServer) {
+      config.output.publicPath = '/_next/';
+    }
+    
+    // Improve chunk splitting
+    config.optimization.splitChunks = {
+      chunks: 'all',
+      cacheGroups: {
+        default: false,
+        vendors: false,
+        vendor: {
+          name: 'vendor',
+          chunks: 'all',
+          test: /node_modules/,
+          priority: 20,
+        },
+        common: {
+          name: 'common',
+          minChunks: 2,
+          chunks: 'all',
+          priority: 10,
+          reuseExistingChunk: true,
+          enforce: true,
+        },
+      },
+    };
+    
+    return config;
+  },
+}
+
+module.exports = nextConfig

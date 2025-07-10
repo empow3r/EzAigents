@@ -242,7 +242,7 @@ export default function EnhancementDashboard({
   }
 
   return (
-    <div className={`${isMobile ? 'p-3' : isTablet ? 'p-4' : 'p-6'} ${getSpacingClasses('md')}`}>
+    <div className={`p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6 max-w-full overflow-x-hidden`}>
       {/* Header */}
       <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'items-center justify-between'}`}>
         <div>
@@ -328,24 +328,24 @@ export default function EnhancementDashboard({
       </div>
 
       {/* Enhancement Grid */}
-      <div className={getGridClasses(1, 2, 3)}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
         {enhancements.map((enhancement) => {
           const Icon = enhancement.icon;
           return (
             <Card 
               key={enhancement.id}
-              className="cursor-pointer hover:shadow-lg transition-all"
+              className="cursor-pointer hover:shadow-lg transition-all min-w-0"
               onClick={() => setSelectedEnhancement(enhancement)}
             >
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className={`p-2 rounded-lg ${enhancement.bgColor}`}>
-                      <Icon className={`w-5 h-5 ${enhancement.color}`} />
+              <CardHeader className="pb-3 p-4 sm:p-6">
+                <div className="flex items-center justify-between min-w-0">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <div className={`p-2 rounded-lg flex-shrink-0 ${enhancement.bgColor}`}>
+                      <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${enhancement.color}`} />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-sm">{enhancement.name}</h3>
-                      <p className="text-xs text-gray-600 mt-1">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-xs sm:text-sm break-words">{enhancement.name}</h3>
+                      <p className="text-xs text-gray-600 mt-1 break-words">
                         {enhancement.completedCount}/{enhancement.components.length} completed
                       </p>
                     </div>

@@ -6,7 +6,7 @@ import {
   Wifi, 
   WifiOff, 
   Bell, 
-  Sync, 
+  RefreshCw as Sync, 
   Navigation,
   Vibrate,
   Battery,

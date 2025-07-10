@@ -1,11 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Trash2, Plus, Save, Send } from '@/components/ui/icons';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
+import { Trash2, Plus, Save, Send } from 'lucide-react';
 
 const AGENT_SPECIALISTS = {
   'claude-3-opus': {
@@ -83,7 +82,7 @@ const SPECIALIST_PROMPT_TEMPLATES = {
   }
 };
 
-export default function PromptManager() {
+export default function PromptManager({ darkMode = false }) {
   const [tasks, setTasks] = useState({});
   const [newTask, setNewTask] = useState({ file: '', model: '', prompt: '' });
   const [editingTask, setEditingTask] = useState(null);
@@ -206,52 +205,54 @@ export default function PromptManager() {
     const templates = task.model ? SPECIALIST_PROMPT_TEMPLATES[task.model] : null;
     
     return (
-      <Card className="mb-4">
+      <Card className={`mb-4 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'}`}>
         <CardHeader>
-          <CardTitle>{isEditing ? 'Edit Task' : 'Add New Task'}</CardTitle>
+          <CardTitle className={darkMode ? 'text-white' : 'text-gray-900'}>{isEditing ? 'Edit Task' : 'Add New Task'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">File Path</label>
+            <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>File Path</label>
             <Input
-              value={task.file}
-              onChange={(e) => isEditing ? 
-                setEditingTask({ ...task, file: e.target.value }) : 
-                setNewTask({ ...task, file: e.target.value })
-              }
+              value={task.file || ''}
+              onChange={(e) => {
+                const newFile = e.target.value;
+                if (isEditing) {
+                  setEditingTask({ ...task, file: newFile });
+                } else {
+                  setNewTask({ ...task, file: newFile });
+                }
+              }}
               placeholder="e.g., src/components/Button.jsx"
+              className={darkMode ? 'bg-gray-800 border-gray-600 text-white placeholder:text-gray-400' : ''}
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium mb-2">AI Specialist Agent</label>
-            <Select value={task.model} onValueChange={handleModelChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a specialist agent" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(AGENT_SPECIALISTS).map(([key, agent]) => (
-                  <SelectItem key={key} value={key}>
-                    <span className="flex items-center gap-2">
-                      <span>{agent.badge}</span>
-                      <span>{agent.name}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>AI Specialist Agent</label>
+            <select 
+              value={task.model || ''} 
+              onChange={(e) => handleModelChange(e.target.value)}
+              className={`w-full p-2 border rounded-md ${darkMode ? 'bg-gray-800 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
+            >
+              <option value="">Select a specialist agent</option>
+              {Object.entries(AGENT_SPECIALISTS).map(([key, agent]) => (
+                <option key={key} value={key}>
+                  {agent.badge} {agent.name}
+                </option>
+              ))}
+            </select>
             
             {specialist && (
-              <div className="mt-3 p-3 bg-gray-50 rounded-md">
+              <div className={`mt-3 p-3 rounded-md ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
                 <div className="flex items-center gap-2 mb-2">
                   <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white ${specialist.color}`}>
                     {specialist.badge} {specialist.identity}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mb-2">{specialist.objective}</p>
+                <p className={`text-sm mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{specialist.objective}</p>
                 <div className="flex flex-wrap gap-1">
                   {specialist.specializations.map((spec, index) => (
-                    <span key={index} className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-800 text-xs">
+                    <span key={index} className={`inline-flex items-center px-2 py-1 rounded-md text-xs ${darkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'}`}>
                       {spec}
                     </span>
                   ))}
@@ -262,32 +263,36 @@ export default function PromptManager() {
           
           {templates && (
             <div>
-              <label className="block text-sm font-medium mb-2">Prompt Template</label>
-              <Select onValueChange={handleTemplateChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose a prompt template" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(templates).map(([key, template]) => (
-                    <SelectItem key={key} value={key}>
-                      <span className="capitalize">{key.replace('_', ' ')}</span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Prompt Template</label>
+              <select 
+                onChange={(e) => handleTemplateChange(e.target.value)}
+                className={`w-full p-2 border rounded-md ${darkMode ? 'bg-gray-800 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
+              >
+                <option value="">Choose a prompt template</option>
+                {Object.entries(templates).map(([key, template]) => (
+                  <option key={key} value={key}>
+                    {key.replace('_', ' ').charAt(0).toUpperCase() + key.replace('_', ' ').slice(1)}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
           
           <div>
-            <label className="block text-sm font-medium mb-2">Custom Instructions</label>
+            <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Task Instructions & Requirements</label>
             <Textarea
-              value={task.prompt}
-              onChange={(e) => isEditing ? 
-                setEditingTask({ ...task, prompt: e.target.value }) : 
-                setNewTask({ ...task, prompt: e.target.value })
-              }
-              placeholder="Customize the prompt or use template above..."
+              value={task.prompt || ''}
+              onChange={(e) => {
+                const newPrompt = e.target.value;
+                if (isEditing) {
+                  setEditingTask({ ...task, prompt: newPrompt });
+                } else {
+                  setNewTask({ ...task, prompt: newPrompt });
+                }
+              }}
+              placeholder="Describe what you want the AI agent to do with this file..."
               rows={6}
+              className={darkMode ? 'bg-gray-800 border-gray-600 text-white placeholder:text-gray-400' : ''}
             />
           </div>
           
@@ -311,15 +316,15 @@ export default function PromptManager() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Agent Prompt Manager</h1>
+    <div className={`max-w-4xl mx-auto p-4 min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+      <h1 className={`text-2xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Agent Prompt Manager</h1>
       
       {message && (
-        <div className="mb-4 p-3 bg-blue-100 border border-blue-200 rounded-md">
+        <div className={`mb-4 p-3 rounded-md border ${darkMode ? 'bg-blue-900 border-blue-700 text-blue-100' : 'bg-blue-100 border-blue-200 text-blue-800'}`}>
           {message}
           <button 
             onClick={() => setMessage('')}
-            className="ml-2 text-blue-600 hover:text-blue-800"
+            className={`ml-2 ${darkMode ? 'text-blue-300 hover:text-blue-100' : 'text-blue-600 hover:text-blue-800'}`}
           >
             ×
           </button>
@@ -344,13 +349,13 @@ export default function PromptManager() {
       )}
       
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Current Tasks</h2>
+        <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Current Tasks</h2>
         
         {Object.entries(tasks).length === 0 ? (
-          <Card>
+          <Card className={darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'}>
             <CardContent className="text-center py-8">
-              <p className="text-muted-foreground">No tasks configured yet.</p>
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>No tasks configured yet.</p>
+              <p className={`text-sm mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                 Add your first task above to get started!
               </p>
             </CardContent>
@@ -359,13 +364,13 @@ export default function PromptManager() {
           Object.entries(tasks).map(([file, task]) => {
             const specialist = AGENT_SPECIALISTS[task.model];
             return (
-              <Card key={file} className="border-l-4" style={{ borderLeftColor: specialist ? specialist.color.replace('bg-', '#') : '#gray' }}>
+              <Card key={file} className={`border-l-4 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'}`} style={{ borderLeftColor: specialist ? specialist.color.replace('bg-', '#') : '#gray' }}>
                 <CardContent className="pt-6">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-semibold">{file}</h3>
-                        <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
+                        <span className={`text-xs px-2 py-1 rounded-full ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
                           {file.split('/').pop()?.split('.').pop()?.toUpperCase()}
                         </span>
                       </div>
@@ -378,19 +383,19 @@ export default function PromptManager() {
                         </div>
                       )}
                       
-                      <p className="text-sm text-muted-foreground mb-2">
+                      <p className={`text-sm mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         {specialist?.objective || 'AI Agent Task'}
                       </p>
                       
                       {specialist && (
                         <div className="flex flex-wrap gap-1">
                           {specialist.specializations.slice(0, 3).map((spec, index) => (
-                            <span key={index} className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-blue-100 text-blue-800 text-xs">
+                            <span key={index} className={`inline-flex items-center px-1.5 py-0.5 rounded-md text-xs ${darkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'}`}>
                               {spec}
                             </span>
                           ))}
                           {specialist.specializations.length > 3 && (
-                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-600 text-xs">
+                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded-md text-xs ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>
                               +{specialist.specializations.length - 3} more
                             </span>
                           )}
@@ -425,9 +430,9 @@ export default function PromptManager() {
                     </div>
                   </div>
                   
-                  <div className="bg-gray-50 p-3 rounded-md">
-                    <p className="text-sm font-medium text-gray-700 mb-1">Task Instructions:</p>
-                    <p className="text-sm text-gray-600">{task.prompt}</p>
+                  <div className={`p-3 rounded-md ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                    <p className={`text-sm font-medium mb-1 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Task Instructions:</p>
+                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{task.prompt}</p>
                   </div>
                 </CardContent>
               </Card>

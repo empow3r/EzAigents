@@ -93,8 +93,8 @@ const ResponsiveLayout = ({
   }, [onTabChange, isMobile]);
 
   const getSidebarWidth = () => {
-    if (screenWidth < 481) return '100vw';
-    if (screenWidth < 769) return '320px';
+    if (screenWidth < 481) return '85vw'; // Not full width on small screens for better UX
+    if (screenWidth < 769) return '280px';
     if (screenWidth < 1440) return '280px';
     return '320px';
   };
@@ -140,15 +140,15 @@ const ResponsiveLayout = ({
             }}
           >
             {/* Sidebar Header */}
-            <div className={`flex items-center justify-between p-4 border-b ${
+            <div className={`flex items-center justify-between p-3 sm:p-4 border-b ${
               darkMode ? 'border-gray-700' : 'border-gray-200'
             } flex-shrink-0`}>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2 sm:space-x-3">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
                   <Zap className="text-white" size={16} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h2 className={`font-semibold text-sm truncate ${
+                  <h2 className={`font-semibold text-base sm:text-sm truncate ${
                     darkMode ? 'text-white' : 'text-gray-900'
                   }`}>
                     Ez Aigent
@@ -187,7 +187,7 @@ const ResponsiveLayout = ({
                   <button
                     key={tab.id}
                     onClick={() => handleTabClick(tab.id)}
-                    className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    className={`w-full flex items-center space-x-2 sm:space-x-3 px-3 py-2.5 sm:py-2 rounded-lg text-sm font-medium transition-all ${
                       isActive
                         ? darkMode
                           ? 'bg-blue-600 text-white shadow-lg'
@@ -198,8 +198,8 @@ const ResponsiveLayout = ({
                     }`}
                     aria-current={isActive ? 'page' : undefined}
                   >
-                    <Icon size={16} className="flex-shrink-0" />
-                    <span className="truncate">{tab.name}</span>
+                    <Icon size={18} className="flex-shrink-0" />
+                    <span className="truncate text-sm sm:text-base">{tab.name}</span>
                   </button>
                 );
               })}
@@ -234,23 +234,23 @@ const ResponsiveLayout = ({
             ? 'bg-gray-900/95 border-gray-700' 
             : 'bg-white/95 border-gray-200'
         } flex-shrink-0`}>
-          <div className="flex items-center justify-between px-4 py-3">
-            <div className="flex items-center space-x-3 flex-1 min-w-0">
+          <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3">
+            <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
               {/* Menu Toggle Button */}
               <button
                 onClick={toggleSidebar}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
                   darkMode 
                     ? 'text-gray-400 hover:text-white hover:bg-gray-800' 
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
                 aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
               >
-                {sidebarOpen ? <ChevronLeft size={20} /> : <Menu size={20} />}
+                {sidebarOpen && (isMobile || isTablet) ? <ChevronLeft size={20} /> : <Menu size={20} />}
               </button>
 
               {/* Current Page Title */}
-              <h1 className={`text-xl font-semibold truncate ${
+              <h1 className={`text-base sm:text-xl font-semibold truncate ${
                 darkMode ? 'text-white' : 'text-gray-900'
               }`}>
                 {tabs.find(tab => tab.id === activeTab)?.name || 'Dashboard'}
@@ -261,14 +261,14 @@ const ResponsiveLayout = ({
               {/* Theme Toggle */}
               <button
                 onClick={onToggleTheme}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
                   darkMode 
                     ? 'text-yellow-400 hover:text-yellow-300 hover:bg-gray-800' 
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
                 aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
               >
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                {darkMode ? <Sun size={18} className="sm:w-5 sm:h-5" /> : <Moon size={18} className="sm:w-5 sm:h-5" />}
               </button>
             </div>
           </div>

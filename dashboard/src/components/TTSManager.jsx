@@ -34,7 +34,7 @@ export default function TTSManager({ darkMode = true }) {
   });
   
   const [isPlaying, setIsPlaying] = useState(false);
-  const [testText, setTestText] = useState('Hello, this is a test of the text-to-speech system.');
+  const [testText, setTestText] = useState('');
   const [healthStatus, setHealthStatus] = useState({ status: 'unknown' });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -147,26 +147,26 @@ export default function TTSManager({ darkMode = true }) {
   };
 
   return (
-    <div className={`p-6 space-y-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+    <div className={`p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0"
       >
-        <div>
-          <h2 className="text-2xl font-bold mb-2">Text-to-Speech Manager</h2>
-          <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+        <div className="min-w-0 flex-1">
+          <h2 className="text-xl sm:text-2xl font-bold mb-2 break-words">Text-to-Speech Manager</h2>
+          <p className={`text-sm sm:text-base ${darkMode ? 'text-gray-300' : 'text-gray-600'} break-words`}>
             Configure and manage voice synthesis capabilities
           </p>
         </div>
         
-        <div className={`flex items-center space-x-2 ${getStatusColor(healthStatus.status)}`}>
+        <div className={`flex items-center space-x-2 flex-shrink-0 ${getStatusColor(healthStatus.status)}`}>
           {getStatusIcon(healthStatus.status)}
-          <span className="font-medium capitalize">{healthStatus.status}</span>
+          <span className="font-medium capitalize text-sm sm:text-base">{healthStatus.status}</span>
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
         {/* TTS Configuration */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -175,17 +175,17 @@ export default function TTSManager({ darkMode = true }) {
         >
           <Card className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className={`flex items-center space-x-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 <Settings className="w-5 h-5" />
                 <span>Configuration</span>
               </CardTitle>
-              <CardDescription>
+              <CardDescription className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
                 Manage TTS settings and preferences
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="tts-enabled">Enable TTS</Label>
+            <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                <Label htmlFor="tts-enabled" className={`text-sm sm:text-base ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Enable TTS</Label>
                 <Switch
                   id="tts-enabled"
                   checked={ttsConfig.enabled}
@@ -194,12 +194,12 @@ export default function TTSManager({ darkMode = true }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="voice-model">Voice Model</Label>
+                <Label htmlFor="voice-model" className={`text-sm sm:text-base ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Voice Model</Label>
                 <Select
                   value={ttsConfig.voiceModel}
                   onValueChange={(value) => updateTTSConfig({ voiceModel: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm">
                     <SelectValue placeholder="Select voice model" />
                   </SelectTrigger>
                   <SelectContent>
@@ -211,12 +211,12 @@ export default function TTSManager({ darkMode = true }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="language">Language</Label>
+                <Label htmlFor="language" className={`text-sm sm:text-base ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Language</Label>
                 <Select
                   value={ttsConfig.language}
                   onValueChange={(value) => updateTTSConfig({ language: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm">
                     <SelectValue placeholder="Select language" />
                   </SelectTrigger>
                   <SelectContent>
@@ -230,7 +230,7 @@ export default function TTSManager({ darkMode = true }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="speed">Speed: {ttsConfig.speed.toFixed(1)}x</Label>
+                <Label htmlFor="speed" className={`text-sm sm:text-base ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Speed: {ttsConfig.speed.toFixed(1)}x</Label>
                 <Slider
                   id="speed"
                   min={0.5}
@@ -243,7 +243,7 @@ export default function TTSManager({ darkMode = true }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="pitch">Pitch: {ttsConfig.pitch.toFixed(1)}</Label>
+                <Label htmlFor="pitch" className={`text-sm sm:text-base ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Pitch: {ttsConfig.pitch.toFixed(1)}</Label>
                 <Slider
                   id="pitch"
                   min={0.5}
@@ -255,8 +255,8 @@ export default function TTSManager({ darkMode = true }) {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <Label htmlFor="voice-notifications">Voice Notifications</Label>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                <Label htmlFor="voice-notifications" className={`text-sm sm:text-base ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Voice Notifications</Label>
                 <Switch
                   id="voice-notifications"
                   checked={ttsConfig.voiceNotifications}
@@ -264,8 +264,8 @@ export default function TTSManager({ darkMode = true }) {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <Label htmlFor="voice-commands">Voice Commands</Label>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                <Label htmlFor="voice-commands" className={`text-sm sm:text-base ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Voice Commands</Label>
                 <Switch
                   id="voice-commands"
                   checked={ttsConfig.voiceCommands}
@@ -284,49 +284,76 @@ export default function TTSManager({ darkMode = true }) {
         >
           <Card className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className={`flex items-center space-x-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 <Speaker className="w-5 h-5" />
                 <span>Test TTS</span>
               </CardTitle>
-              <CardDescription>
+              <CardDescription className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
                 Test the text-to-speech functionality
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
               <div className="space-y-2">
-                <Label htmlFor="test-text">Test Text</Label>
-                <Input
+                <Label htmlFor="test-text" className={`text-sm sm:text-base ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Test Text</Label>
+                <textarea
                   id="test-text"
                   value={testText}
                   onChange={(e) => setTestText(e.target.value)}
-                  placeholder="Enter text to synthesize..."
-                  className={`${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}
+                  placeholder="Enter text to synthesize... Try typing something like 'Hello, this is a test of the text-to-speech system.'"
+                  className={`flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm transition-colors resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'}`}
+                  autoComplete="off"
+                  rows={3}
                 />
+                
+                {/* Example text buttons */}
+                <div className="flex flex-wrap gap-1 sm:gap-2">
+                  <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Quick examples:</span>
+                  {[
+                    'Hello, this is a test of the text-to-speech system.',
+                    'The AI agents are working efficiently.',
+                    'Welcome to the Ez Aigent dashboard.'
+                  ].map((example, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setTestText(example)}
+                      className={`text-xs px-2 py-1 rounded transition-colors ${
+                        darkMode 
+                          ? 'bg-gray-600 hover:bg-gray-500 text-gray-200' 
+                          : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                      }`}
+                    >
+                      Example {index + 1}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <Button
-                onClick={testTTS}
-                disabled={!ttsConfig.enabled || isLoading || !testText.trim()}
-                className="w-full"
-              >
-                {isLoading ? (
-                  <Activity className="w-4 h-4 mr-2 animate-spin" />
-                ) : isPlaying ? (
-                  <Pause className="w-4 h-4 mr-2" />
-                ) : (
-                  <Play className="w-4 h-4 mr-2" />
-                )}
-                {isLoading ? 'Synthesizing...' : isPlaying ? 'Playing...' : 'Test TTS'}
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                <Button
+                  onClick={testTTS}
+                  disabled={!ttsConfig.enabled || isLoading || !testText.trim()}
+                  className="flex-1 text-sm sm:text-base"
+                >
+                  {isLoading ? (
+                    <Activity className="w-4 h-4 mr-2 animate-spin" />
+                  ) : isPlaying ? (
+                    <Pause className="w-4 h-4 mr-2" />
+                  ) : (
+                    <Play className="w-4 h-4 mr-2" />
+                  )}
+                  {isLoading ? 'Synthesizing...' : isPlaying ? 'Playing...' : 'Test TTS'}
+                </Button>
 
-              <Button
-                variant="outline"
-                onClick={checkTTSHealth}
-                className="w-full"
-              >
-                <Activity className="w-4 h-4 mr-2" />
-                Check Health
-              </Button>
+                <Button
+                  variant="outline"
+                  onClick={checkTTSHealth}
+                  className="flex-1 text-sm sm:text-base"
+                >
+                  <Activity className="w-4 h-4 mr-2" />
+                  Check Health
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -340,16 +367,16 @@ export default function TTSManager({ darkMode = true }) {
       >
         <Card className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
+            <CardTitle className={`flex items-center space-x-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               <Mic className="w-5 h-5" />
               <span>Voice Commands</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
               Available voice commands when voice control is enabled
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {[
                 { command: 'status', description: 'Get system status' },
                 { command: 'scale up', description: 'Scale up agents' },
@@ -361,12 +388,12 @@ export default function TTSManager({ darkMode = true }) {
               ].map(({ command, description }) => (
                 <div
                   key={command}
-                  className={`p-3 rounded-lg border ${
+                  className={`p-3 rounded-lg border min-w-0 ${
                     darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'
                   }`}
                 >
-                  <div className="font-medium text-sm mb-1">"{command}"</div>
-                  <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <div className={`font-medium text-sm mb-1 break-words ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>"{command}"</div>
+                  <div className={`text-xs break-words ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     {description}
                   </div>
                 </div>

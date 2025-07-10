@@ -1,408 +1,334 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useApiWithLoading } from '../hooks/useApiWithLoading';
+'use client';
+import React, { useState, useRef, memo, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Card, CardContent } from '@/components/ui/card';
 import { 
-  Activity, 
-  AlertTriangle, 
-  CheckCircle, 
+  Zap, 
   Clock, 
-  TrendingUp, 
-  Users, 
-  DollarSign,
-  Zap,
-  Target,
-  Brain,
-  Shield,
-  Eye,
-  GitBranch,
-  Settings,
-  BarChart3
+  Activity, 
+  TrendingDown, 
+  TrendingUp,
+  Users,
+  AlertTriangle,
+  CheckCircle,
+  DollarSign
 } from 'lucide-react';
 
-const EnhancementCommandCenter = () => {
-  const [analyticsData, setAnalyticsData] = useState(null);
-  const [coordinationData, setCoordinationData] = useState(null);
-  const [realTimeMetrics, setRealTimeMetrics] = useState({});
-  const [selectedEnhancement, setSelectedEnhancement] = useState(null);
-  const { loading, fetchWithLoading } = useApiWithLoading();
+// Icon mapping for better readability
+const icons = {
+  zap: Zap,
+  clock: Clock,
+  activity: Activity,
+  down: TrendingDown,
+  up: TrendingUp,
+  users: Users,
+  alert: AlertTriangle,
+  check: CheckCircle,
+  dollar: DollarSign
+};
 
-  // Enhancement icons mapping
-  const enhancementIcons = {
-    'security-layer': Shield,
-    'observability-stack': Eye,
-    'distributed-queue-system': GitBranch,
-    'intelligent-orchestration': Brain,
-    'collaboration-framework': Users,
-    'self-healing-infrastructure': Settings
-  };
+// Component styles
+const getStyles = (darkMode) => ({
+  container: `p-3 sm:p-4 lg:p-6 space-y-4 min-h-screen ${
+    darkMode 
+      ? 'bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900' 
+      : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'
+  }`,
+  card: `backdrop-blur-sm border rounded-xl ${
+    darkMode 
+      ? 'bg-white/10 border-white/20' 
+      : 'bg-white/80 border-gray-200'
+  }`,
+  text: {
+    primary: darkMode ? 'text-white' : 'text-gray-900',
+    secondary: darkMode ? 'text-gray-300' : 'text-gray-600',
+    accent: darkMode ? 'text-blue-400' : 'text-blue-600',
+    muted: darkMode ? 'text-gray-400' : 'text-gray-500'
+  },
+  button: (active) => `px-3 py-1.5 text-xs sm:text-sm rounded-lg transition-all ${
+    active
+      ? darkMode
+        ? 'bg-blue-600 text-white shadow-lg'
+        : 'bg-blue-50 text-blue-600 border border-blue-200'
+      : darkMode
+        ? 'text-gray-300 hover:text-white hover:bg-white/10'
+        : 'text-gray-600 hover:text-gray-900 hover:bg-black/5'
+  }`
+});
 
-  // Enhancement colors
-  const enhancementColors = {
-    'security-layer': 'from-red-500 to-pink-500',
-    'observability-stack': 'from-blue-500 to-cyan-500',
-    'distributed-queue-system': 'from-green-500 to-emerald-500',
-    'intelligent-orchestration': 'from-purple-500 to-violet-500',
-    'collaboration-framework': 'from-orange-500 to-yellow-500',
-    'self-healing-infrastructure': 'from-indigo-500 to-blue-500'
-  };
+// Global cache
+let cache = {};
+let lastFetch = 0;
+let mountedRef;
+
+// Data fetching function
+const fetchData = async () => {
+  if (Date.now() - lastFetch < 60000 && cache.data) return;
+  
+  try {
+    const [analytics, coordination] = await Promise.all([
+      fetch('/api/enhancement-analytics').then(r => r.json()).catch(() => ({})),
+      fetch('/api/enhancement-coordination').then(r => r.json()).catch(() => ({}))
+    ]);
+    
+    if (mountedRef?.current) {
+      cache.data = { analytics, coordination };
+      lastFetch = Date.now();
+    }
+  } catch (error) {
+    console.warn('Failed to fetch enhancement data:', error);
+    // Provide fallback data
+    cache.data = {
+      analytics: {
+        overview: { inProgressTasks: 0, completedTasks: 0 },
+        costs: { totalCost: 0 },
+        quality: { overallQualityScore: 0 },
+        agents: {},
+        recommendations: [],
+        performance: { bottlenecks: [] }
+      },
+      coordination: {
+        overall_progress: 0,
+        enhancements: {}
+      }
+    };
+  }
+};
+
+const ProgressBar = ({ progress, className = "" }) => (
+  <div className={`w-full bg-gray-700 rounded-full h-2 ${className}`}>
+    <div 
+      className="bg-blue-500 h-2 rounded-full transition-all duration-300" 
+      style={{ width: `${Math.min(progress || 0, 100)}%` }}
+    />
+  </div>
+);
+
+const LoadingSpinner = ({ darkMode }) => (
+  <div className="flex items-center justify-center h-96">
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+      className={`w-8 h-8 border-2 border-t-transparent rounded-full ${
+        darkMode ? 'border-blue-400' : 'border-blue-600'
+      }`}
+    />
+  </div>
+);
+
+export default memo(function EnhancementCommandCenter({ darkMode = true }) {
+  const [data, setData] = useState(null);
+  const [activeView, setActiveView] = useState(0);
+  mountedRef = useRef(true);
+
+  const styles = getStyles(darkMode);
 
   useEffect(() => {
-    fetchAnalytics();
-    fetchCoordination();
+    fetchData().then(() => setData(cache.data));
     const interval = setInterval(() => {
-      fetchRealTimeMetrics();
-    }, 5000);
-    return () => clearInterval(interval);
+      fetchData().then(() => setData(cache.data));
+    }, 30000);
+    
+    return () => {
+      mountedRef.current = false;
+      clearInterval(interval);
+    };
   }, []);
 
-  const fetchAnalytics = async () => {
-    try {
-      const data = await fetchWithLoading('/api/enhancement-analytics');
-      setAnalyticsData(data);
-    } catch (error) {
-      console.error('Failed to fetch analytics:', error);
-    }
-  };
+  if (!data) return <LoadingSpinner darkMode={darkMode} />;
 
-  const fetchCoordination = async () => {
-    try {
-      const data = await fetchWithLoading('/api/enhancement-coordination');
-      setCoordinationData(data);
-    } catch (error) {
-      console.error('Failed to fetch coordination data:', error);
-    }
-  };
-
-  const fetchRealTimeMetrics = async () => {
-    try {
-      const data = await fetchWithLoading('/api/real-time-metrics');
-      setRealTimeMetrics(data);
-    } catch (error) {
-      console.error('Failed to fetch real-time metrics:', error);
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'completed': return 'text-green-400';
-      case 'in_progress': return 'text-blue-400';
-      case 'pending': return 'text-yellow-400';
-      case 'failed': return 'text-red-400';
-      default: return 'text-gray-400';
-    }
-  };
-
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'CRITICAL': return 'bg-red-500';
-      case 'HIGH': return 'bg-orange-500';
-      case 'MEDIUM': return 'bg-yellow-500';
-      case 'LOW': return 'bg-green-500';
-      default: return 'bg-gray-500';
-    }
-  };
-
-  if (loading || !analyticsData || !coordinationData) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-center">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="w-12 h-12 border-3 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"
-          />
-          <p className="text-gray-300">Loading enhancement data...</p>
-        </div>
-      </div>
-    );
-  }
+  const { analytics, coordination } = data;
+  const progress = coordination.overall_progress || 0;
+  const enhancements = Object.entries(coordination.enhancements || {}).slice(0, 6);
 
   return (
-    <div className="p-6 space-y-6 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 min-h-screen">
+    <div className={styles.container}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
+        className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0"
       >
-        <div>
-          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center"
-            >
-              <Zap className="text-white" size={20} />
-            </motion.div>
-            Enhancement Command Center
+        <div className="flex items-center space-x-2">
+          <Zap className={`w-6 h-6 ${styles.text.accent}`} />
+          <h1 className={`text-xl sm:text-2xl font-bold ${styles.text.primary}`}>
+            Command Center
           </h1>
-          <p className="text-gray-300 mt-1">Real-time monitoring and analytics for system enhancements</p>
         </div>
-        <div className="flex items-center gap-4">
-          <motion.div
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg border border-green-500/30"
-          >
-            System Online
-          </motion.div>
-        </div>
-      </motion.div>
-
-      {/* Key Metrics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Overall Progress */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <Target className="text-blue-400" size={24} />
-            <span className="text-2xl font-bold text-white">
-              {coordinationData.overall_progress}%
-            </span>
-          </div>
-          <h3 className="text-lg font-semibold text-white mb-2">Overall Progress</h3>
-          <div className="w-full bg-gray-700 rounded-full h-2">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${coordinationData.overall_progress}%` }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full"
-            />
-          </div>
-        </motion.div>
-
-        {/* Active Tasks */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <Activity className="text-green-400" size={24} />
-            <span className="text-2xl font-bold text-white">
-              {analyticsData.overview.inProgressTasks}
-            </span>
-          </div>
-          <h3 className="text-lg font-semibold text-white mb-2">Active Tasks</h3>
-          <p className="text-gray-300 text-sm">
-            {analyticsData.overview.completedTasks} completed
-          </p>
-        </motion.div>
-
-        {/* Cost Efficiency */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <DollarSign className="text-yellow-400" size={24} />
-            <span className="text-2xl font-bold text-white">
-              ${analyticsData.costs.totalCost.toFixed(2)}
-            </span>
-          </div>
-          <h3 className="text-lg font-semibold text-white mb-2">Total Cost</h3>
-          <p className="text-gray-300 text-sm">
-            ${analyticsData.costs.averageCostPerTask.toFixed(2)} per task
-          </p>
-        </motion.div>
-
-        {/* Quality Score */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <CheckCircle className="text-purple-400" size={24} />
-            <span className="text-2xl font-bold text-white">
-              {analyticsData.quality.overallQualityScore}%
-            </span>
-          </div>
-          <h3 className="text-lg font-semibold text-white mb-2">Quality Score</h3>
-          <p className="text-gray-300 text-sm">
-            Across all enhancements
-          </p>
-        </motion.div>
-      </div>
-
-      {/* Enhancement Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {Object.entries(coordinationData.enhancements).map(([enhancementId, enhancement]) => {
-          const Icon = enhancementIcons[enhancementId] || Settings;
-          const colorClass = enhancementColors[enhancementId] || 'from-gray-500 to-gray-600';
-          
-          return (
-            <motion.div
-              key={enhancementId}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{ scale: 1.02 }}
-              onClick={() => setSelectedEnhancement(enhancementId)}
-              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 cursor-pointer hover:border-white/40 transition-all"
+        
+        <div className="flex space-x-1 sm:space-x-2">
+          {['Overview', 'Agents', 'Alerts'].map((tab, index) => (
+            <button
+              key={tab}
+              onClick={() => setActiveView(index)}
+              className={styles.button(activeView === index)}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${colorClass} flex items-center justify-center`}>
-                  <Icon className="text-white" size={24} />
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${getPriorityColor(enhancement.priority)}`} />
-                  <span className="text-xs text-gray-300 uppercase tracking-wide">
-                    {enhancement.priority}
-                  </span>
-                </div>
-              </div>
-              
-              <h3 className="text-lg font-semibold text-white mb-2 capitalize">
-                {enhancementId.replace(/-/g, ' ')}
-              </h3>
-              
-              <div className="space-y-3">
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-300">Progress</span>
-                    <span className="text-white font-medium">{enhancement.progress}%</span>
-                  </div>
-                  <div className="w-full bg-gray-700 rounded-full h-2">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${enhancement.progress}%` }}
-                      transition={{ duration: 1, ease: "easeOut" }}
-                      className={`bg-gradient-to-r ${colorClass} h-2 rounded-full`}
-                    />
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between text-sm">
-                  <span className={`${getStatusColor(enhancement.status)} capitalize font-medium`}>
-                    {enhancement.status.replace(/_/g, ' ')}
-                  </span>
-                  <span className="text-gray-400">
-                    {enhancement.availableAgents.length} agents
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Recommendations */}
-      {analyticsData.recommendations.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
-        >
-          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <TrendingUp className="text-blue-400" size={24} />
-            AI Recommendations
-          </h2>
-          <div className="space-y-4">
-            {analyticsData.recommendations.slice(0, 3).map((rec, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="flex items-start gap-4 p-4 bg-white/5 rounded-lg border border-white/10"
-              >
-                <div className={`w-2 h-2 rounded-full mt-2 ${getPriorityColor(rec.priority.toUpperCase())}`} />
-                <div className="flex-1">
-                  <h4 className="font-semibold text-white mb-1">{rec.title}</h4>
-                  <p className="text-gray-300 text-sm mb-2">{rec.description}</p>
-                  <p className="text-blue-400 text-sm font-medium">{rec.action}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      )}
-
-      {/* Agent Status */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
-      >
-        <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-          <Users className="text-green-400" size={24} />
-          Agent Network Status
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {Object.entries(analyticsData.agents).map(([agentName, agent]) => (
-            <div
-              key={agentName}
-              className="p-4 bg-white/5 rounded-lg border border-white/10"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold text-white capitalize">{agentName}</h4>
-                <div className={`w-2 h-2 rounded-full ${
-                  agent.status === 'active' ? 'bg-green-400' : 'bg-gray-400'
-                }`} />
-              </div>
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-300">Completed:</span>
-                  <span className="text-white">{agent.tasksCompleted}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-300">Success Rate:</span>
-                  <span className="text-white">{agent.successRate}%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-300">Queued:</span>
-                  <span className="text-white">{agent.tasksQueued}</span>
-                </div>
-              </div>
-            </div>
+              {tab}
+            </button>
           ))}
         </div>
       </motion.div>
 
-      {/* Performance Metrics */}
-      {analyticsData.performance.bottlenecks.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
-        >
-          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <AlertTriangle className="text-orange-400" size={24} />
-            Performance Alerts
-          </h2>
-          <div className="space-y-3">
-            {analyticsData.performance.bottlenecks.map((bottleneck, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-4 bg-orange-500/10 rounded-lg border border-orange-500/30"
-              >
-                <div>
-                  <h4 className="font-semibold text-white">{bottleneck.model} Bottleneck</h4>
-                  <p className="text-orange-300 text-sm">
-                    Queue: {bottleneck.queueDepth} | Processing: {bottleneck.processingCount}
-                  </p>
-                </div>
-                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  bottleneck.severity === 'high' 
-                    ? 'bg-red-500/20 text-red-400' 
-                    : 'bg-orange-500/20 text-orange-400'
-                }`}>
-                  {bottleneck.severity.toUpperCase()}
-                </div>
+      {/* Metrics Grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+      >
+        <Card className={styles.card}>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex justify-between items-center mb-2">
+              <Clock className={`w-5 h-5 ${styles.text.accent}`} />
+              <span className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}>
+                {progress}%
+              </span>
+            </div>
+            <p className={`text-xs ${styles.text.secondary}`}>Progress</p>
+          </CardContent>
+        </Card>
+
+        <Card className={styles.card}>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex justify-between items-center mb-2">
+              <Activity className={`w-5 h-5 ${styles.text.accent}`} />
+              <span className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}>
+                {analytics.overview?.inProgressTasks || 0}
+              </span>
+            </div>
+            <p className={`text-xs ${styles.text.secondary}`}>Active</p>
+            <p className={`text-xs ${styles.text.muted}`}>
+              {analytics.overview?.completedTasks || 0} done
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className={styles.card}>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex justify-between items-center mb-2">
+              <DollarSign className={`w-5 h-5 ${styles.text.accent}`} />
+              <span className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}>
+                ${Math.round(analytics.costs?.totalCost || 0)}
+              </span>
+            </div>
+            <p className={`text-xs ${styles.text.secondary}`}>Cost</p>
+          </CardContent>
+        </Card>
+
+        <Card className={styles.card}>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex justify-between items-center mb-2">
+              <TrendingUp className={`w-5 h-5 ${styles.text.accent}`} />
+              <span className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}>
+                {analytics.quality?.overallQualityScore || 0}%
+              </span>
+            </div>
+            <p className={`text-xs ${styles.text.secondary}`}>Quality</p>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Content Views */}
+      <motion.div
+        key={activeView}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {activeView === 0 && (
+          <div className="space-y-4">
+            {/* Enhancements Grid */}
+            {enhancements.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                {enhancements.map(([id, enhancement]) => (
+                  <Card key={id} className={styles.card}>
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className={`text-sm font-medium ${styles.text.primary}`}>
+                          {id.split('-')[0]}
+                        </span>
+                        <span className={`text-xs ${styles.text.accent}`}>
+                          {enhancement.progress || 0}%
+                        </span>
+                      </div>
+                      <ProgressBar progress={enhancement.progress} className="mb-2" />
+                      <span className={`text-xs ${styles.text.muted}`}>
+                        {enhancement.availableAgents?.length || 0} agents
+                      </span>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
+            )}
+
+            {/* Recommendations */}
+            {analytics.recommendations?.length > 0 && (
+              <Card className={styles.card}>
+                <CardContent className="p-3 sm:p-4">
+                  <h2 className={`text-sm font-bold ${styles.text.primary} mb-2`}>
+                    Recommended Actions
+                  </h2>
+                  <div className="space-y-2">
+                    {analytics.recommendations.slice(0, 2).map((rec, index) => (
+                      <p key={index} className={`text-xs ${styles.text.secondary}`}>
+                        {rec.title?.slice(0, 60)}...
+                      </p>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )}
+
+        {activeView === 1 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+            {Object.entries(analytics.agents || {}).map(([name, agent]) => (
+              <Card key={name} className={styles.card}>
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className={`text-sm font-medium ${styles.text.primary}`}>
+                      {name}
+                    </span>
+                    <div className={`w-2 h-2 rounded-full ${
+                      agent.status === 'active' ? 'bg-green-400' : 'bg-gray-400'
+                    }`} />
+                  </div>
+                  <p className={`text-xs ${styles.text.muted}`}>
+                    Done: {agent.tasksCompleted || 0}
+                  </p>
+                  <p className={`text-xs ${styles.text.muted}`}>
+                    Rate: {agent.successRate || 0}%
+                  </p>
+                </CardContent>
+              </Card>
             ))}
           </div>
-        </motion.div>
-      )}
+        )}
+
+        {activeView === 2 && analytics.performance?.bottlenecks?.length > 0 && (
+          <div className="space-y-2">
+            {analytics.performance.bottlenecks.slice(0, 3).map((bottleneck, index) => (
+              <Card key={index} className="bg-orange-500/10 border border-orange-500/30">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex justify-between items-center">
+                    <span className={`text-sm ${styles.text.primary}`}>
+                      {bottleneck.model} (Queue: {bottleneck.queueDepth})
+                    </span>
+                    <span className={`px-2 py-1 rounded text-xs ${
+                      bottleneck.severity === 'high' 
+                        ? 'bg-red-500/20 text-red-400' 
+                        : 'bg-orange-500/20 text-orange-400'
+                    }`}>
+                      {bottleneck.severity}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </motion.div>
     </div>
   );
-};
-
-export default EnhancementCommandCenter;
+});

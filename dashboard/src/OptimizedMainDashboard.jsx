@@ -2,6 +2,16 @@
 import React, { useState, lazy, Suspense, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from './components/ui/hooks/useTheme';
+import { 
+  LoadingSpinner, 
+  AnimatedCard, 
+  TabNavigation, 
+  ThemeToggle,
+  animations 
+} from './components/ui';
+import ResponsiveLayout from './components/ResponsiveLayout';
+import ChunkErrorBoundary from './components/ChunkErrorBoundary';
 import { 
   BarChart3, 
   Zap, 
@@ -9,45 +19,78 @@ import {
   GitCompare, 
   Trophy, 
   Settings,
-  Moon,
-  Sun,
   Sparkles,
   GitBranch,
   MessageCircle,
-  Loader2
+  Volume2
 } from 'lucide-react';
 
-// Lazy load components for better performance
-const AgentDashboard = lazy(() => import('./AgentDashboard'));
-const EnhancedAgentDashboard = lazy(() => import('./EnhancedAgentDashboard'));
-const Agent3DWorkspace = lazy(() => import('./Agent3DWorkspace'));
-const CodeDiffViewer = lazy(() => import('./CodeDiffViewer'));
-const GameficationDashboard = lazy(() => import('./GameficationDashboard'));
-const ProjectDashboard = lazy(() => import('./ProjectDashboard'));
-const PromptManager = lazy(() => import('./PromptManager'));
-const EnhancementDashboard = lazy(() => import('./components/EnhancementDashboard'));
-const EnhancementCommandCenter = lazy(() => import('./components/EnhancementCommandCenter'));
-const ChatDashboard = lazy(() => import('./components/ChatDashboard'));
-
-// Loading component
-const LoadingSpinner = () => (
-  <div className="flex items-center justify-center h-64">
-    <motion.div
-      animate={{ rotate: 360 }}
-      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-      className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full"
-    />
-  </div>
+// Lazy load components with retry mechanism
+const lazyWithRetry = (componentImport) => lazy(() => 
+  componentImport().catch((error) => {
+    console.error('Component loading error:', error);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        componentImport()
+          .then(resolve)
+          .catch(() => {
+            resolve({ 
+              default: () => (
+                <AnimatedCard className="text-center p-8">
+                  <p className="text-gray-500">Component failed to load. Please refresh the page.</p>
+                </AnimatedCard>
+              )
+            });
+          });
+      }, 1000);
+    });
+  })
 );
 
-// Error boundary
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
+// Lazy load dashboard components
+const AgentDashboard = lazyWithRetry(() => import('./AgentDashboard'));
+const EnhancedAgentDashboard = lazyWithRetry(() => import('./EnhancedAgentDashboard'));
+const Agent3DWorkspace = lazyWithRetry(() => import('./Agent3DWorkspace'));
+const CodeDiffViewer = lazyWithRetry(() => import('./CodeDiffViewer'));
+const GameficationDashboard = lazyWithRetry(() => import('./GameficationDashboard'));
+const ProjectDashboard = lazyWithRetry(() => import('./ProjectDashboard'));
+const PromptManager = lazyWithRetry(() => import('./PromptManager'));
+const EnhancementDashboard = lazyWithRetry(() => import('./components/EnhancementDashboard'));
+const EnhancementCommandCenter = lazyWithRetry(() => import('./components/EnhancementCommandCenter'));
+const ChatDashboard = lazyWithRetry(() => import('./components/ChatDashboard'));
+const TTSManager = lazyWithRetry(() => import('./components/TTSManager'));
 
-  static getDerivedStateFromError(error) {
+// Tab configuration
+const tabConfig = [
+  { id: 'command', name: 'Command Center', icon: Zap },
+  { id: 'project', name: 'Project Status', icon: GitBranch },
+  { id: 'enhanced', name: 'Enhanced Dashboard', icon: Sparkles },
+  { id: 'chat', name: 'Agent Chat', icon: MessageCircle },
+  { id: 'tts', name: 'Text-to-Speech', icon: Volume2 },
+  { id: 'dashboard', name: 'Classic Dashboard', icon: BarChart3 },
+  { id: 'workspace', name: '3D Workspace', icon: Box },
+  { id: 'diffs', name: 'Code Diffs', icon: GitCompare },
+  { id: 'gamification', name: 'Achievements', icon: Trophy },
+  { id: 'prompts', name: 'Prompt Manager', icon: Settings },
+  { id: 'enhancements', name: 'Enhancements', icon: Settings }
+];
+
+// Component mapping
+const componentMap = {
+  command: EnhancementCommandCenter,
+  project: ProjectDashboard,
+  enhanced: EnhancedAgentDashboard,
+  chat: ChatDashboard,
+  tts: TTSManager,
+  dashboard: AgentDashboard,
+  workspace: Agent3DWorkspace,
+  diffs: CodeDiffViewer,
+  gamification: GameficationDashboard,
+  prompts: PromptManager,
+  enhancements: EnhancementDashboard
+};
+
+function DashboardContent() {
     return { hasError: true };
   }
 

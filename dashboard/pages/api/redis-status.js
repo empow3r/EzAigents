@@ -10,7 +10,17 @@ export default async function handler(req, res) {
     const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
     
     // Test Redis connection
-    await redis.ping();
+    const pingResult = await redis.ping();
+    
+    // Get Redis info
+    const info = await redis.info();
+    const infoObj = {};
+    info.split('\r\n').forEach(line => {
+      if (line.includes(':')) {
+        const [key, value] = line.split(':');
+        infoObj[key] = value;
+      }
+    });
     
     // Get queue lengths
     const queueKeys = await redis.keys('queue:*');
@@ -51,9 +61,20 @@ export default async function handler(req, res) {
     
     res.status(200).json({
       connected: true,
+      ping: pingResult,
+      info: {
+        redis_version: infoObj.redis_version,
+        used_memory_human: infoObj.used_memory_human,
+        connected_clients: infoObj.connected_clients,
+        total_commands_processed: infoObj.total_commands_processed,
+        keyspace_hits: infoObj.keyspace_hits,
+        keyspace_misses: infoObj.keyspace_misses,
+        uptime_in_seconds: infoObj.uptime_in_seconds
+      },
       queues: queueStatus,
       agents: agentStatus,
       locks: lockStatus,
+      totalKeys: Object.keys(queueStatus).length + Object.keys(agentStatus).length + Object.keys(lockStatus).length,
       timestamp: new Date().toISOString()
     });
     

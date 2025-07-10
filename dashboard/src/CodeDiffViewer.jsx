@@ -17,10 +17,9 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function CodeDiffViewer() {
+export default function CodeDiffViewer({ darkMode = true }) {
   const [diffs, setDiffs] = useState([]);
   const [selectedDiff, setSelectedDiff] = useState(null);
-  const [darkMode, setDarkMode] = useState(true);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [filter, setFilter] = useState('all');
 
@@ -191,25 +190,25 @@ export default function CodeDiffViewer() {
   });
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} transition-colors duration-300`}>
+    <div className={`min-h-screen p-3 sm:p-4 lg:p-6 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} transition-colors duration-300`}>
       {/* Header */}
-      <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b p-4`}>
-        <div className="flex justify-between items-center">
+      <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-3 sm:p-4 mb-4`}>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
           <div>
-            <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              🔍 Real-time Code Diff Viewer
+            <h1 className={`text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              🔍 <span className="hidden sm:inline">Real-time</span> Code Diff Viewer
             </h1>
-            <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            <p className={`text-sm sm:text-base ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Live agent code changes and modifications
             </p>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Agent Filter */}
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className={`px-3 py-2 rounded-lg border ${
+              className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border text-sm ${
                 darkMode 
                   ? 'bg-gray-700 border-gray-600 text-white' 
                   : 'bg-white border-gray-300 text-gray-900'
@@ -228,43 +227,30 @@ export default function CodeDiffViewer() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setAutoRefresh(!autoRefresh)}
-              className={`p-2 rounded-lg ${
+              className={`p-1.5 sm:p-2 rounded-lg ${
                 autoRefresh 
                   ? 'bg-green-500 text-white' 
                   : darkMode 
                     ? 'bg-gray-700 text-gray-300' 
                     : 'bg-gray-200 text-gray-600'
               }`}
+              title={autoRefresh ? 'Auto-refresh enabled' : 'Auto-refresh disabled'}
             >
-              <RefreshCw size={20} className={autoRefresh ? 'animate-spin' : ''} />
-            </motion.button>
-
-            {/* Theme toggle */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setDarkMode(!darkMode)}
-              className={`p-2 rounded-lg ${
-                darkMode 
-                  ? 'bg-yellow-500 text-black' 
-                  : 'bg-gray-800 text-white'
-              }`}
-            >
-              {darkMode ? '☀️' : '🌙'}
+              <RefreshCw size={18} className={`sm:w-5 sm:h-5 ${autoRefresh ? 'animate-spin' : ''}`} />
             </motion.button>
           </div>
         </div>
       </div>
 
-      <div className="flex h-screen">
+      <div className="flex flex-col lg:flex-row gap-4 h-[calc(100vh-200px)] lg:h-screen">
         {/* Diff List Sidebar */}
-        <div className={`w-1/3 ${darkMode ? 'bg-gray-800' : 'bg-white'} border-r ${darkMode ? 'border-gray-700' : 'border-gray-200'} overflow-y-auto`}>
-          <div className="p-4">
-            <h2 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+        <div className={`w-full lg:w-1/3 ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} rounded-lg overflow-y-auto max-h-64 lg:max-h-none`}>
+          <div className="p-3 sm:p-4">
+            <h2 className={`text-base sm:text-lg font-semibold mb-3 sm:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               Recent Changes ({filteredDiffs.length})
             </h2>
             
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <AnimatePresence>
                 {filteredDiffs.map((diff, index) => {
                   const AgentIcon = getAgentIcon(diff.agent);
@@ -277,7 +263,7 @@ export default function CodeDiffViewer() {
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ delay: index * 0.1 }}
                       onClick={() => setSelectedDiff(diff)}
-                      className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                      className={`p-2 sm:p-3 rounded-lg border cursor-pointer transition-all ${
                         selectedDiff?.id === diff.id
                           ? darkMode
                             ? 'bg-blue-900 border-blue-600'
@@ -288,10 +274,10 @@ export default function CodeDiffViewer() {
                       }`}
                     >
                       <div className="flex items-start justify-between">
-                        <div className="flex items-center space-x-2 flex-1">
-                          <AgentIcon size={16} className={getAgentColor(diff.agent)} />
+                        <div className="flex items-center space-x-2 flex-1 min-w-0">
+                          <AgentIcon size={14} className={`${getAgentColor(diff.agent)} flex-shrink-0`} />
                           <div className="flex-1 min-w-0">
-                            <div className={`text-sm font-medium truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            <div className={`text-xs sm:text-sm font-medium truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                               {diff.filename}
                             </div>
                             <div className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -300,10 +286,14 @@ export default function CodeDiffViewer() {
                           </div>
                         </div>
                         
-                        <div className={`px-2 py-1 rounded text-xs ${
+                        <div className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs flex-shrink-0 ${
                           diff.status === 'completed'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-yellow-100 text-yellow-800'
+                            ? darkMode
+                              ? 'bg-green-900/50 text-green-400'
+                              : 'bg-green-100 text-green-800'
+                            : darkMode
+                              ? 'bg-yellow-900/50 text-yellow-400' 
+                              : 'bg-yellow-100 text-yellow-800'
                         }`}>
                           {diff.status}
                         </div>
@@ -333,33 +323,37 @@ export default function CodeDiffViewer() {
         </div>
 
         {/* Diff Viewer */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 lg:flex-none lg:w-2/3 overflow-hidden">
           {selectedDiff ? (
             <div className="h-full flex flex-col">
               {/* File header */}
-              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b p-4`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <FileText className={getAgentColor(selectedDiff.agent)} size={20} />
-                    <div>
-                      <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-t-lg p-3 sm:p-4`}>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                  <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                    <FileText className={`${getAgentColor(selectedDiff.agent)} flex-shrink-0`} size={18} />
+                    <div className="min-w-0">
+                      <h3 className={`font-semibold text-sm sm:text-base break-words ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         {selectedDiff.filename}
                       </h3>
-                      <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                      <p className={`text-xs sm:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                         Modified by {selectedDiff.agent.toUpperCase()} • {formatTimestamp(selectedDiff.timestamp)}
                       </p>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-4 text-sm">
+                    <div className="flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm">
                       <span className="flex items-center text-green-500">
-                        <Plus size={16} className="mr-1" />
-                        {selectedDiff.additions} additions
+                        <Plus size={14} className="mr-1" />
+                        <span className="hidden sm:inline">additions</span>
+                        <span className="sm:hidden">+</span>
+                        {selectedDiff.additions}
                       </span>
                       <span className="flex items-center text-red-500">
-                        <Minus size={16} className="mr-1" />
-                        {selectedDiff.deletions} deletions
+                        <Minus size={14} className="mr-1" />
+                        <span className="hidden sm:inline">deletions</span>
+                        <span className="sm:hidden">-</span>
+                        {selectedDiff.deletions}
                       </span>
                     </div>
                   </div>
@@ -368,10 +362,10 @@ export default function CodeDiffViewer() {
 
               {/* Code diff */}
               <div className="flex-1 overflow-y-auto">
-                <div className="grid grid-cols-2 h-full">
+                <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
                   {/* Before */}
-                  <div className={`${darkMode ? 'bg-gray-900' : 'bg-red-50'} border-r ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                    <div className={`px-4 py-2 text-sm font-medium ${darkMode ? 'bg-red-900 text-red-200' : 'bg-red-100 text-red-800'} border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                  <div className={`${darkMode ? 'bg-gray-900' : 'bg-red-50'} lg:border-r ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                    <div className={`px-3 sm:px-4 py-2 text-sm font-medium ${darkMode ? 'bg-red-900 text-red-200' : 'bg-red-100 text-red-800'} border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                       Before
                     </div>
                     <SyntaxHighlighter
@@ -381,9 +375,9 @@ export default function CodeDiffViewer() {
                       wrapLines
                       customStyle={{
                         margin: 0,
-                        padding: '1rem',
+                        padding: '0.75rem',
                         background: 'transparent',
-                        fontSize: '14px'
+                        fontSize: '12px'
                       }}
                     >
                       {selectedDiff.oldCode}
@@ -392,7 +386,7 @@ export default function CodeDiffViewer() {
 
                   {/* After */}
                   <div className={darkMode ? 'bg-gray-900' : 'bg-green-50'}>
-                    <div className={`px-4 py-2 text-sm font-medium ${darkMode ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800'} border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                    <div className={`px-3 sm:px-4 py-2 text-sm font-medium ${darkMode ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800'} border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                       After
                     </div>
                     <SyntaxHighlighter
@@ -402,9 +396,9 @@ export default function CodeDiffViewer() {
                       wrapLines
                       customStyle={{
                         margin: 0,
-                        padding: '1rem',
+                        padding: '0.75rem',
                         background: 'transparent',
-                        fontSize: '14px'
+                        fontSize: '12px'
                       }}
                     >
                       {selectedDiff.newCode}
