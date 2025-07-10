@@ -17,7 +17,8 @@ import {
   Sparkles,
   GitBranch,
   MessageCircle,
-  Volume2
+  Volume2,
+  Crown
 } from 'lucide-react';
 
 const CompactHeader = ({ 
@@ -45,7 +46,16 @@ const CompactHeader = ({
   const activeTabInfo = tabs.find(tab => tab.id === activeTab);
 
   const handleTabSelect = (tabId) => {
-    soundService.play('tabSwitch');
+    // Enhanced neural optimization for navigation
+    soundService.play('perfectClick');
+    setTimeout(() => soundService.play('focusBoost'), 80);
+    setTimeout(() => soundService.play('miniSuccess'), 150);
+    
+    // Trigger flow state for rapid navigation
+    if (soundService.getNeuralState && soundService.getNeuralState().flowState) {
+      setTimeout(() => soundService.play('neuralSync'), 250);
+    }
+    
     onTabChange(tabId);
     setMenuOpen(false);
   };
@@ -54,13 +64,17 @@ const CompactHeader = ({
     if (menuOpen) {
       soundService.play('menuClose');
     } else {
-      soundService.play('menuOpen');
+      soundService.play('engagement');
+      setTimeout(() => soundService.play('socialBoost'), 100);
+      setTimeout(() => soundService.play('sparkle'), 200);
     }
     setMenuOpen(!menuOpen);
   };
 
   const handleThemeToggle = () => {
-    soundService.play('themeSwitch');
+    soundService.play('satisfyingPop');
+    setTimeout(() => soundService.play('personalizedReward'), 150);
+    setTimeout(() => soundService.play('euphoria'), 300);
     onToggleTheme();
   };
 
@@ -105,21 +119,39 @@ const CompactHeader = ({
               />
             </div>
 
-            {/* Theme Toggle */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onMouseEnter={() => soundService.play('buttonHover')}
-              onClick={handleThemeToggle}
-              className={`p-2 rounded-lg transition-all ${
-                darkMode 
-                  ? 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30' 
-                  : 'bg-blue-500/20 text-blue-600 hover:bg-blue-500/30'
-              }`}
-              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </motion.button>
+            <div className="flex items-center gap-2">
+              {/* Executive Mode Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onMouseEnter={() => soundService.play('buttonHover')}
+                onClick={() => window.location.href = '/executive'}
+                className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-bold rounded-lg hover:from-yellow-400 hover:to-orange-400 transition-all shadow-lg flex items-center gap-2"
+                style={{
+                  boxShadow: '0 0 20px rgba(251, 191, 36, 0.4)'
+                }}
+                aria-label="Switch to Executive Command Center"
+              >
+                <Crown size={18} />
+                EXECUTIVE
+              </motion.button>
+
+              {/* Theme Toggle */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onMouseEnter={() => soundService.play('buttonHover')}
+                onClick={handleThemeToggle}
+                className={`p-2 rounded-lg transition-all ${
+                  darkMode 
+                    ? 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30' 
+                    : 'bg-blue-500/20 text-blue-600 hover:bg-blue-500/30'
+                }`}
+                aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+              </motion.button>
+            </div>
           </div>
 
           {/* Navigation Bar - Desktop */}
@@ -138,7 +170,7 @@ const CompactHeader = ({
                     key={tab.id}
                     whileHover={{ scale: 1.02, y: -1 }}
                     whileTap={{ scale: 0.98 }}
-                    onMouseEnter={() => soundService.play('buttonHover')}
+                    onMouseEnter={() => soundService.play('microReward')}
                     onClick={() => handleTabSelect(tab.id)}
                     className={`relative flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${
                       isActive
@@ -208,7 +240,7 @@ const CompactHeader = ({
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onMouseEnter={() => soundService.play('buttonHover')}
+                    onMouseEnter={() => soundService.play('microReward')}
                     onClick={() => {
                       soundService.play('buttonClick');
                       setMenuOpen(false);
@@ -238,7 +270,7 @@ const CompactHeader = ({
                       transition={{ delay: index * 0.05 }}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onMouseEnter={() => soundService.play('buttonHover')}
+                      onMouseEnter={() => soundService.play('microReward')}
                       onClick={() => handleTabSelect(tab.id)}
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all ${
                         isActive

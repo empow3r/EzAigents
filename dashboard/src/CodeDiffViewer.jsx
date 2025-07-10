@@ -2,7 +2,27 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+// Using a simple fallback instead of problematic style imports
+const defaultStyle = {
+  'code[class*="language-"]': {
+    color: '#f8f8f2',
+    background: 'none',
+    fontFamily: 'Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace',
+    fontSize: '1em',
+    lineHeight: '1.5',
+  },
+  'pre[class*="language-"]': {
+    color: '#f8f8f2',
+    background: '#282a36',
+    fontFamily: 'Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace',
+    fontSize: '1em',
+    lineHeight: '1.5',
+    padding: '1em',
+    margin: '.5em 0',
+    overflow: 'auto',
+    borderRadius: '0.3em',
+  },
+};
 import { 
   FileText, 
   GitBranch, 
@@ -370,7 +390,7 @@ export default function CodeDiffViewer({ darkMode = true }) {
                     </div>
                     <SyntaxHighlighter
                       language={selectedDiff.language}
-                      style={darkMode ? oneDark : oneLight}
+                      style={defaultStyle}
                       showLineNumbers
                       wrapLines
                       customStyle={{
@@ -391,7 +411,7 @@ export default function CodeDiffViewer({ darkMode = true }) {
                     </div>
                     <SyntaxHighlighter
                       language={selectedDiff.language}
-                      style={darkMode ? oneDark : oneLight}
+                      style={defaultStyle}
                       showLineNumbers
                       wrapLines
                       customStyle={{

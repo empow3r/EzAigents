@@ -8,7 +8,7 @@ import {
   Settings, 
   MessageSquare,
   Headphones,
-  AudioWaveform as Waveform,
+  Waves as Waveform,
   Play,
   Pause,
   RotateCcw,

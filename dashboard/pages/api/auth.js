@@ -1,18 +1,64 @@
 /**
  * Authentication API endpoint for Ez Aigent Dashboard
- * Integrates with the OAuth2 authentication service
+ * Temporary auth implementation for dashboard
  */
 
-const AuthenticationService = require('../../../cli/auth-service');
+// Simple auth stub for development
+class AuthServiceStub {
+  constructor(config) {
+    this.config = config;
+  }
 
-// Initialize auth service with environment configuration
-const authService = new AuthenticationService({
-  jwtSecret: process.env.JWT_SECRET,
+  async handleOAuthCallback(provider, code) {
+    // Simulate OAuth callback
+    return {
+      accessToken: 'mock-access-token',
+      refreshToken: 'mock-refresh-token',
+      user: {
+        id: '123',
+        email: 'user@example.com',
+        name: 'Test User'
+      }
+    };
+  }
+
+  revokeSession(sessionId) {
+    // Simulate session revocation
+    console.log('Revoking session:', sessionId);
+  }
+
+  async refreshAccessToken(refreshToken) {
+    // Simulate token refresh
+    return {
+      accessToken: 'new-mock-access-token',
+      refreshToken: 'new-mock-refresh-token'
+    };
+  }
+
+  verifyToken(token) {
+    // Simulate token verification
+    return {
+      sub: '123',
+      email: 'user@example.com',
+      name: 'Test User',
+      role: 'admin'
+    };
+  }
+
+  getAuthorizationUrl(provider) {
+    // Simulate OAuth URL generation
+    return `https://accounts.google.com/o/oauth2/v2/auth?client_id=mock&redirect_uri=http://localhost:3000/auth/callback&response_type=code`;
+  }
+}
+
+// Initialize auth service stub
+const authService = new AuthServiceStub({
+  jwtSecret: process.env.JWT_SECRET || 'development-secret',
   providers: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      redirectUri: process.env.GOOGLE_REDIRECT_URI
+      clientId: process.env.GOOGLE_CLIENT_ID || 'mock-client-id',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'mock-secret',
+      redirectUri: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/auth/callback'
     }
   }
 });

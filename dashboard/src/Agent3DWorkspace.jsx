@@ -3,7 +3,7 @@ import React, { useState, useEffect, Suspense, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Activity } from 'lucide-react';
 import Agent3DFallback from './components/Agent3DFallback';
-import soundService from './services/soundService';
+import soundService from './services/optimizedSoundService';
 
 // Enhanced 3D Workspace with error handling
 export default function Agent3DWorkspace({ darkMode = true, onBackTo2D = null }) {

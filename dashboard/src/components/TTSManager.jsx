@@ -90,38 +90,30 @@ export default function TTSManager({ darkMode = true }) {
     setIsPlaying(true);
     
     try {
-      const response = await fetch('/api/tts/synthesize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: testText,
-          voice: ttsConfig.voiceModel,
-          language: ttsConfig.language,
-          speed: ttsConfig.speed,
-          pitch: ttsConfig.pitch
-        })
+      // Import TTS service dynamically
+      const { default: ttsService } = await import('../services/ttsService');
+      
+      // Configure TTS with current settings
+      ttsService.setConfig({
+        enabled: ttsConfig.enabled,
+        rate: ttsConfig.speed,
+        pitch: ttsConfig.pitch,
+        language: ttsConfig.language
       });
-
-      if (response.ok) {
-        const audioBlob = await response.blob();
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioUrl);
-        
-        audio.onended = () => {
-          setIsPlaying(false);
-          URL.revokeObjectURL(audioUrl);
-        };
-        
-        audio.play();
-        toast.success('Playing TTS audio');
-      } else {
-        throw new Error('TTS synthesis failed');
-      }
+      
+      // Speak the text
+      await ttsService.speak(testText);
+      toast.success('TTS playback completed');
+      
     } catch (error) {
-      toast.error('Failed to synthesize speech');
+      if (error.message.includes('not supported')) {
+        toast.error('TTS is not supported in your browser');
+      } else {
+        toast.error('Failed to synthesize speech');
+      }
       console.error(error);
-      setIsPlaying(false);
     } finally {
+      setIsPlaying(false);
       setIsLoading(false);
     }
   };

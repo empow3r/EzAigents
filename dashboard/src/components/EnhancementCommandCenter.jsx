@@ -2,6 +2,8 @@
 import React, { useState, useRef, memo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
+import { AnimatedTile } from '@/components/ui/AnimatedTile';
+import { cascadeCards, elasticScale, smoothCounter, tileFloat } from '@/components/ui/animations';
 import { 
   Zap, 
   Clock, 
@@ -171,61 +173,83 @@ export default memo(function EnhancementCommandCenter({ darkMode = true }) {
 
       {/* Metrics Grid */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        {...cascadeCards.container}
         className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
       >
-        <Card className={styles.card}>
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex justify-between items-center mb-2">
-              <Clock className={`w-5 h-5 ${styles.text.accent}`} />
-              <span className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}>
-                {progress}%
-              </span>
-            </div>
-            <p className={`text-xs ${styles.text.secondary}`}>Progress</p>
-          </CardContent>
-        </Card>
+        <AnimatedTile delay={0}>
+          <Card className={styles.card}>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex justify-between items-center mb-2">
+                <Clock className={`w-5 h-5 ${styles.text.accent}`} />
+                <motion.span 
+                  className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}
+                  {...smoothCounter}
+                  key={progress}
+                >
+                  {progress}%
+                </motion.span>
+              </div>
+              <p className={`text-xs ${styles.text.secondary}`}>Progress</p>
+            </CardContent>
+          </Card>
+        </AnimatedTile>
 
-        <Card className={styles.card}>
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex justify-between items-center mb-2">
-              <Activity className={`w-5 h-5 ${styles.text.accent}`} />
-              <span className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}>
-                {analytics.overview?.inProgressTasks || 0}
-              </span>
-            </div>
-            <p className={`text-xs ${styles.text.secondary}`}>Active</p>
-            <p className={`text-xs ${styles.text.muted}`}>
-              {analytics.overview?.completedTasks || 0} done
-            </p>
-          </CardContent>
-        </Card>
+        <AnimatedTile delay={0.1}>
+          <Card className={styles.card}>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex justify-between items-center mb-2">
+                <Activity className={`w-5 h-5 ${styles.text.accent}`} />
+                <motion.span 
+                  className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}
+                  {...smoothCounter}
+                  key={analytics.overview?.inProgressTasks}
+                >
+                  {analytics.overview?.inProgressTasks || 0}
+                </motion.span>
+              </div>
+              <p className={`text-xs ${styles.text.secondary}`}>Active</p>
+              <p className={`text-xs ${styles.text.muted}`}>
+                {analytics.overview?.completedTasks || 0} done
+              </p>
+            </CardContent>
+          </Card>
+        </AnimatedTile>
 
-        <Card className={styles.card}>
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex justify-between items-center mb-2">
-              <DollarSign className={`w-5 h-5 ${styles.text.accent}`} />
-              <span className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}>
-                ${Math.round(analytics.costs?.totalCost || 0)}
-              </span>
-            </div>
-            <p className={`text-xs ${styles.text.secondary}`}>Cost</p>
-          </CardContent>
-        </Card>
+        <AnimatedTile delay={0.2}>
+          <Card className={styles.card}>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex justify-between items-center mb-2">
+                <DollarSign className={`w-5 h-5 ${styles.text.accent}`} />
+                <motion.span 
+                  className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}
+                  {...smoothCounter}
+                  key={Math.round(analytics.costs?.totalCost || 0)}
+                >
+                  ${Math.round(analytics.costs?.totalCost || 0)}
+                </motion.span>
+              </div>
+              <p className={`text-xs ${styles.text.secondary}`}>Cost</p>
+            </CardContent>
+          </Card>
+        </AnimatedTile>
 
-        <Card className={styles.card}>
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex justify-between items-center mb-2">
-              <TrendingUp className={`w-5 h-5 ${styles.text.accent}`} />
-              <span className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}>
-                {analytics.quality?.overallQualityScore || 0}%
-              </span>
-            </div>
-            <p className={`text-xs ${styles.text.secondary}`}>Quality</p>
-          </CardContent>
-        </Card>
+        <AnimatedTile delay={0.3}>
+          <Card className={styles.card}>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex justify-between items-center mb-2">
+                <TrendingUp className={`w-5 h-5 ${styles.text.accent}`} />
+                <motion.span 
+                  className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}
+                  {...smoothCounter}
+                  key={analytics.quality?.overallQualityScore}
+                >
+                  {analytics.quality?.overallQualityScore || 0}%
+                </motion.span>
+              </div>
+              <p className={`text-xs ${styles.text.secondary}`}>Quality</p>
+            </CardContent>
+          </Card>
+        </AnimatedTile>
       </motion.div>
 
       {/* Content Views */}

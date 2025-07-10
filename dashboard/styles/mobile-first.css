@@ -1,0 +1,314 @@
+/* Mobile-First Responsive Styles for EzAigents Dashboard */
+
+/* Base styles - Mobile first (320px+) */
+.container {
+  width: 100%;
+  padding: 0.5rem;
+  margin: 0 auto;
+}
+
+/* Touch-friendly interactive elements */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile navigation */
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  padding: 0.5rem;
+}
+
+.mobile-nav.dark {
+  background: rgba(17, 24, 39, 0.95);
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive grid */
+.grid-responsive {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+/* Typography - Mobile first */
+.heading-responsive {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.text-responsive {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Cards - Mobile optimized */
+.card-mobile {
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.card-mobile:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Form inputs - Touch friendly */
+.input-mobile {
+  min-height: 44px;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  font-size: 16px; /* Prevents zoom on iOS */
+}
+
+/* Buttons - Touch optimized */
+.btn-mobile {
+  min-height: 44px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-mobile:active {
+  transform: scale(0.95);
+}
+
+/* Loading states */
+.loading-mobile {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+/* Breakpoint: Small phones (375px+) */
+@media (min-width: 375px) {
+  .container {
+    padding: 0.75rem;
+  }
+  
+  .heading-responsive {
+    font-size: 1.75rem;
+  }
+  
+  .grid-responsive {
+    gap: 1.25rem;
+  }
+}
+
+/* Breakpoint: Large phones (414px+) */
+@media (min-width: 414px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .card-mobile {
+    padding: 1.25rem;
+  }
+}
+
+/* Breakpoint: Small tablets (568px+) */
+@media (min-width: 568px) {
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .heading-responsive {
+    font-size: 2rem;
+  }
+  
+  .mobile-nav {
+    display: none;
+  }
+}
+
+/* Breakpoint: Tablets (768px+) */
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+    padding: 1.5rem;
+  }
+  
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  .heading-responsive {
+    font-size: 2.25rem;
+  }
+  
+  .text-responsive {
+    font-size: 1rem;
+  }
+  
+  .card-mobile {
+    padding: 1.5rem;
+  }
+}
+
+/* Breakpoint: Large tablets (1024px+) */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+    padding: 2rem;
+  }
+  
+  .grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .heading-responsive {
+    font-size: 2.5rem;
+  }
+}
+
+/* Breakpoint: Desktop (1280px+) */
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+  
+  .grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+  }
+  
+  .heading-responsive {
+    font-size: 3rem;
+  }
+  
+  .card-mobile {
+    padding: 2rem;
+  }
+}
+
+/* Breakpoint: Large desktop (1536px+) */
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px;
+  }
+  
+  .grid-responsive {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Utility classes for responsive behavior */
+.hide-mobile {
+  display: none;
+}
+
+.show-mobile {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile {
+    display: block;
+  }
+  
+  .show-mobile {
+    display: none;
+  }
+  
+  .hide-tablet {
+    display: none;
+  }
+  
+  .show-tablet {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hide-tablet {
+    display: block;
+  }
+  
+  .show-tablet {
+    display: none;
+  }
+  
+  .hide-desktop {
+    display: none;
+  }
+  
+  .show-desktop {
+    display: block;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card-mobile {
+    border: 2px solid;
+  }
+  
+  .btn-mobile {
+    border: 2px solid;
+  }
+}
+
+/* Dark mode preferences */
+@media (prefers-color-scheme: dark) {
+  .card-mobile {
+    background: rgba(17, 24, 39, 0.8);
+    border-color: rgba(75, 85, 99, 0.3);
+  }
+  
+  .input-mobile {
+    background: rgba(17, 24, 39, 0.8);
+    border-color: rgba(75, 85, 99, 0.3);
+    color: #f9fafb;
+  }
+}
+
+/* Print styles */
+@media print {
+  .mobile-nav,
+  .btn-mobile,
+  .hide-print {
+    display: none !important;
+  }
+  
+  .card-mobile {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}

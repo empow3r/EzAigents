@@ -1,5 +1,5 @@
-import CleanMainDashboard from '../src/CleanMainDashboard';
+import DashboardSelector from '../pages/dashboard-selector';
 
 export default function Home() {
-  return <CleanMainDashboard />;
+  return <DashboardSelector />;
 }

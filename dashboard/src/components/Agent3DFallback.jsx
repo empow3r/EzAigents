@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import soundService from '../services/soundService';
+import soundService from '../services/optimizedSoundService';
 import { 
   Box, 
   Cpu, 
@@ -45,14 +45,16 @@ export default function Agent3DFallback({ darkMode = true }) {
   };
 
   const loadFullWorkspace = async () => {
-    soundService.play('loading');
+    soundService.play('exploration');
+    setTimeout(() => soundService.play('engagement'), 300);
     setLoadingFullVersion(true);
     try {
       // Dynamic import of the full 3D workspace
       const { default: Agent3DWorkspace } = await import('../Agent3DWorkspace');
       setThreeWorkspace(() => Agent3DWorkspace);
       setCurrentMode('3d');
-      soundService.play('success');
+      soundService.play('dopamineHit');
+      setTimeout(() => soundService.play('quickWin'), 200);
       console.log('Full 3D workspace loaded');
     } catch (error) {
       console.warn('Could not load full 3D workspace:', error);

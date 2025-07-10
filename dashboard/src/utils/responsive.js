@@ -71,6 +71,8 @@ export const breakpoints = {
   desktop: '(min-width: 1024px)',
 };
 
+import React from 'react';
+
 export const useMediaQuery = (query) => {
   const [matches, setMatches] = React.useState(false);
 

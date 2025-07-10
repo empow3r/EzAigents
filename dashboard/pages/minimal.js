@@ -1,5 +1,5 @@
-import MinimalDashboard from '../src/MinimalDashboard';
+import ConsolidatedDashboard from '../src/ConsolidatedDashboard';
 
 export default function Minimal() {
-  return <MinimalDashboard />;
+  return <ConsolidatedDashboard />;
 }

@@ -623,7 +623,7 @@ class RecoveryManager {
     console.log(`Recovery completed for ${checkName}`);
   }
 
-  async retryWithBackoff() {
+  async retryWithBackoff(attempts = 0) {
     const delay = Math.min(1000 * Math.pow(2, attempts), 30000);
     await new Promise(resolve => setTimeout(resolve, delay));
   }
