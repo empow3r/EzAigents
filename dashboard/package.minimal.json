@@ -1,0 +1,17 @@
+{
+  "name": "ez-aigent-dashboard",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev -H 0.0.0.0 -p 3000",
+    "build": "next build",
+    "start": "next start -H 0.0.0.0 -p 3000"
+  },
+  "dependencies": {
+    "next": "^15.3.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  }
+}

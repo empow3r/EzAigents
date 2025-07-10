@@ -1,0 +1,33 @@
+# Absolute minimal dashboard - fastest possible build
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install wget for health check
+RUN apk add --no-cache wget
+
+# Copy minimal package.json
+COPY package.minimal.json package.json
+
+# Install only essential deps
+RUN npm install --no-audit --no-fund
+
+# Copy only essential files
+COPY next.config.js ./
+COPY app/ ./app/
+COPY pages/ ./pages/
+COPY src/ ./src/
+
+# Minimal build
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npx next build
+
+# Create user and set permissions
+RUN addgroup -S nodejs && adduser -S nextjs -G nodejs && \
+    chown -R nextjs:nodejs /app
+
+USER nextjs
+
+EXPOSE 3000
+CMD ["npm", "start"]

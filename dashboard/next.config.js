@@ -2,8 +2,8 @@ const crypto = require('crypto');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  poweredByHeader: false, // Remove X-Powered-By header
+  reactStrictMode: false, // Disable for faster builds
+  poweredByHeader: false,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -15,13 +15,19 @@ const nextConfig = {
   output: 'standalone',
   compress: true,
   
-  // Fast build optimizations
+  // Ultra-fast build optimizations
   swcMinify: true,
   modularizeImports: {
     'lucide-react': {
       transform: 'lucide-react/dist/esm/icons/{{member}}',
     },
   },
+  
+  // Skip optimization for speed
+  optimizeFonts: false,
+  
+  // Minimal bundle analysis
+  generateBuildId: () => 'build',
   
   
   // Disable source maps in production for faster builds
@@ -33,60 +39,16 @@ const nextConfig = {
     domains: ['localhost'],
   },
   
-  // Webpack optimizations
-  webpack: (config, { isServer, dev }) => {
-    // Production optimizations
+  // Ultra-fast webpack config - minimal processing
+  webpack: (config, { dev }) => {
     if (!dev) {
-      // Minimize bundle size
-      config.optimization.minimize = true;
-      
-      // Split chunks for better caching
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          default: false,
-          vendors: false,
-          framework: {
-            name: 'framework',
-            chunks: 'all',
-            test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
-            priority: 40,
-            enforce: true,
-          },
-          lib: {
-            test(module) {
-              return module.size() > 160000 &&
-                /node_modules[\\/]/.test(module.identifier());
-            },
-            name(module) {
-              const hash = crypto.createHash('sha1');
-              hash.update(module.identifier());
-              return hash.digest('hex').substring(0, 8);
-            },
-            priority: 30,
-            minChunks: 1,
-            reuseExistingChunk: true,
-          },
-          commons: {
-            name: 'commons',
-            minChunks: 2,
-            priority: 20,
-          },
-          shared: {
-            name(module, chunks) {
-              return crypto
-                .createHash('sha1')
-                .update(chunks.reduce((acc, chunk) => acc + chunk.name, ''))
-                .digest('hex') + (isServer ? '-server' : '');
-            },
-            priority: 10,
-            minChunks: 2,
-            reuseExistingChunk: true,
-          },
-        },
-      };
+      // Disable optimization for speed
+      config.optimization.minimize = false;
+      config.optimization.splitChunks = false;
+      config.optimization.removeAvailableModules = false;
+      config.optimization.removeEmptyChunks = false;
+      config.optimization.mergeDuplicateChunks = false;
     }
-    
     return config;
   },
   
