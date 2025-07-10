@@ -16,15 +16,11 @@ const nextConfig = {
   compress: true,
   
   // Ultra-fast build optimizations
-  swcMinify: true,
   modularizeImports: {
     'lucide-react': {
       transform: 'lucide-react/dist/esm/icons/{{member}}',
     },
   },
-  
-  // Skip optimization for speed
-  optimizeFonts: false,
   
   // Minimal bundle analysis
   generateBuildId: () => 'build',
