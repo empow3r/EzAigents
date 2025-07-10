@@ -1,23 +1,26 @@
-# Build artifacts
+# Build artifacts and cache
 .next
 out
 dist
 build
+.cache
+.turbo
 
 # Dependencies
 node_modules
 *.node
+.npm
+.yarn
+.pnp.*
 
-# Cache and logs
+# Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 lerna-debug.log*
-.npm
-.yarn
-.pnp.*
+logs/
 
 # Environment files
 .env
@@ -32,12 +35,14 @@ lerna-debug.log*
 .idea
 .vscode
 *.sublime-*
+Thumbs.db
 
-# Testing
+# Testing and coverage
 coverage
 .nyc_output
 *.lcov
-.cache
+test-results/
+playwright-report/
 
 # Development files
 .git
@@ -47,6 +52,11 @@ README.md
 docker-compose*.yml
 Dockerfile*
 .dockerignore
+
+# Large static assets (if any)
+public/large-files/
+public/videos/
+public/datasets/
 
 # Temporary files
 tmp
@@ -66,3 +76,19 @@ documentation/
 *.pdf
 *.doc
 *.docx
+
+# Source maps
+*.map
+
+# Package manager files
+package-lock.json.bak
+yarn.lock.bak
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

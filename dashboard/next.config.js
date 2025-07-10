@@ -15,6 +15,14 @@ const nextConfig = {
   output: 'standalone',
   compress: true,
   
+  // Fast build optimizations
+  swcMinify: true,
+  modularizeImports: {
+    'lucide-react': {
+      transform: 'lucide-react/dist/esm/icons/{{member}}',
+    },
+  },
+  
   
   // Disable source maps in production for faster builds
   productionBrowserSourceMaps: false,
