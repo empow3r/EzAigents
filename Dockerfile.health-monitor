@@ -7,7 +7,6 @@ RUN apk add --no-cache \
     curl \
     jq \
     bash \
-    docker-cli \
     ca-certificates
 
 # Copy package files
@@ -87,7 +86,7 @@ RUN chmod +x /app/start-health-monitor.sh
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S ezaigent && \
-    adduser -S ezaigent -u 1001 -G ezaigent -G docker
+    adduser -S ezaigent -u 1001 -G ezaigent
 
 # Change ownership
 RUN chown -R ezaigent:ezaigent /app
