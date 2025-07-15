@@ -18,6 +18,7 @@ const PromptManager = lazy(() => import('../PromptManager'));
 const EnhancementDashboard = lazy(() => import('./EnhancementDashboard'));
 const ChatDashboard = lazy(() => import('./ChatDashboard'));
 const PerformanceDashboard = lazy(() => import('./PerformanceDashboard'));
+const ResearchPage = lazy(() => import('../pages/ResearchPage'));
 
 // Loading component
 const LoadingSpinner = memo(() => (
@@ -92,6 +93,7 @@ const OptimizedMainDashboard = memo(() => {
   const tabs = [
     { id: 'project', name: 'Project Status', icon:Icons.GitBranch, component: ProjectDashboard },
     { id: 'enhanced', name: 'Enhanced Dashboard', icon:Icons.Sparkles, component: EnhancedAgentDashboard },
+    { id: 'research', name: 'Research Hub', icon:Icons.Brain, component: ResearchPage },
     { id: 'chat', name: 'Agent Chat', icon:Icons.MessageCircle, component: ChatDashboard },
     { id: 'performance', name: 'Performance', icon:Icons.Activity, component: PerformanceDashboard },
     { id: 'dashboard', name: 'Classic Dashboard', icon:Icons.BarChart3, component: AgentDashboard },

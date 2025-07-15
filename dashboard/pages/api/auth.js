@@ -231,11 +231,10 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error('Authentication API error:', error);
-    const { createErrorResponse } = require('../../../src/utils/errorHandler');
-    const { response, statusCode } = createErrorResponse(
-      'Authentication service error',
-      error.message
-    );
-    res.status(statusCode).json(response);
+    res.status(500).json({
+      success: false,
+      error: 'Authentication service error',
+      details: error.message
+    });
   }
 }

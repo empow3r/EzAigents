@@ -1,9 +1,13 @@
 'use client';
 import React, { useState } from 'react';
+import LLMStatusMonitor from '../src/components/LLMStatusMonitor';
+import EnhancedUnifiedDashboard from '../src/components/EnhancedUnifiedDashboard';
+import LLMCredentialsManagerSimple from '../src/components/LLMCredentialsManagerSimple';
+import AgentEnrollmentManager from '../src/components/AgentEnrollmentManager';
 // import '../src/styles/animations.css';
 
 export default function Home() {
-  const [dashboardMode, setDashboardMode] = useState('simple');
+  const [dashboardMode, setDashboardMode] = useState('unified');
   const [showSelector, setShowSelector] = useState(false);
   const [taskDescription, setTaskDescription] = useState('');
   const [filePath, setFilePath] = useState('');
@@ -45,6 +49,12 @@ export default function Home() {
 
   const dashboardModes = [
     {
+      id: 'unified',
+      name: 'Enhanced Unified Dashboard',
+      description: 'Complete workflow-oriented interface with all features integrated',
+      features: ['all-features', 'unified-workflow', 'real-time', 'enhanced-ux']
+    },
+    {
       id: 'simple',
       name: 'Simple Dashboard',
       description: 'Unified agent system management and task submission',
@@ -85,6 +95,18 @@ export default function Home() {
       name: 'Niche Research & Ideation',
       description: 'Deep market research, trend analysis, and content ideation platform',
       features: ['research', 'trends', 'competitors', 'keywords', 'ideation', 'analytics']
+    },
+    {
+      id: 'agents',
+      name: 'Agent Management',
+      description: 'Enroll and manage multiple AI agents across different platforms',
+      features: ['enrollment', 'api-keys', 'testing', 'multiple-agents', 'platform-shortcuts']
+    },
+    {
+      id: 'llm-credentials',
+      name: 'LLM Credentials Manager',
+      description: 'Securely manage API keys and settings for different LLM providers',
+      features: ['encryption', 'secure-storage', 'api-testing', 'provider-management']
     }
   ];
 
@@ -130,7 +152,7 @@ export default function Home() {
               onClick={() => setShowSelector(false)}
               className="text-blue-600 hover:text-blue-800 font-medium"
             >
-              Use Default Simple Mode
+              Use Default Unified Mode
             </button>
           </div>
         </div>
@@ -142,6 +164,8 @@ export default function Home() {
 
   const renderDashboardContent = () => {
     switch(dashboardMode) {
+      case 'unified':
+        return <EnhancedUnifiedDashboard />;
       case 'simple':
         return renderSimpleDashboard();
       case 'executive':
@@ -156,8 +180,12 @@ export default function Home() {
         return renderContentDashboard();
       case 'research':
         return renderResearchDashboard();
+      case 'agents':
+        return renderAgentManagement();
+      case 'llm-credentials':
+        return renderLLMCredentials();
       default:
-        return renderSimpleDashboard();
+        return <EnhancedUnifiedDashboard />;
     }
   };
 
@@ -186,17 +214,9 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Agent Monitor */}
+          {/* LLM Agent Status Monitor */}
           <div className="mb-8">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Agent Monitor</h2>
-                <div className="text-sm text-gray-500">0 agents online</div>
-              </div>
-              <div className="text-center py-8 text-gray-500">
-                No agents currently active
-              </div>
-            </div>
+            <LLMStatusMonitor />
           </div>
 
           {/* Queue Statistics */}
@@ -691,6 +711,18 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+
+  const renderAgentManagement = () => (
+    <AgentEnrollmentManager />
+  );
+
+  const renderLLMCredentials = () => (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="container mx-auto px-4">
+        <LLMCredentialsManagerSimple />
       </div>
     </div>
   );
