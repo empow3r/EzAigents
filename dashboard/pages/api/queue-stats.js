@@ -7,13 +7,15 @@ let QueueEnhancer;
 let queueEnhancer;
 
 try {
-  QueueEnhancer = require('../../../cli/queue-enhancer');
-  queueEnhancer = new QueueEnhancer(redis, {
-    enableFeatures: {
-      priorities: process.env.ENABLE_PRIORITIES !== 'false',
-      analytics: true
-    }
-  });
+  // Temporarily disabled due to Next.js module resolution issues
+  // QueueEnhancer = require('../../../cli/queue-enhancer');
+  // queueEnhancer = new QueueEnhancer(redis, {
+  //   enableFeatures: {
+  //     priorities: process.env.ENABLE_PRIORITIES !== 'false',
+  //     analytics: true
+  //   }
+  // });
+  console.log('Queue enhancer temporarily disabled - using legacy stats');
 } catch (e) {
   console.log('Queue enhancer not available, using legacy stats');
 }

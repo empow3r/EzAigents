@@ -1,6 +1,6 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import TestSimple from './TestSimple';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+const TestSimple = lazy(() => import('./TestSimple'));
 import PriorityQueueController from './PriorityQueueController';
 import ContentReviewDashboard from './ContentReviewDashboard';
 import ScrapingFeedsPage from './ScrapingFeedsPage';
@@ -78,26 +78,30 @@ const UnifiedDashboard = ({
       case 'executive':
         return (
           <div className="executive-layout">
-            <TestSimple 
-              agents={data.agents}
-              stats={data.stats}
-              queues={data.queues}
-              health={data.health}
-              onTaskSubmit={loadDashboardData}
-            />
+            <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 rounded"></div>}>
+              <TestSimple 
+                agents={data.agents}
+                stats={data.stats}
+                queues={data.queues}
+                health={data.health}
+                onTaskSubmit={loadDashboardData}
+              />
+            </Suspense>
           </div>
         );
       
       case 'minimal':
         return (
           <div className="minimal-layout">
-            <TestSimple 
-              agents={data.agents}
-              stats={data.stats}
-              queues={data.queues}
-              health={data.health}
-              onTaskSubmit={loadDashboardData}
-            />
+            <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 rounded"></div>}>
+              <TestSimple 
+                agents={data.agents}
+                stats={data.stats}
+                queues={data.queues}
+                health={data.health}
+                onTaskSubmit={loadDashboardData}
+              />
+            </Suspense>
           </div>
         );
       
@@ -135,7 +139,9 @@ const UnifiedDashboard = ({
             }} />
             {(features.includes('agents') || features.includes('tasks') || features.includes('queues') || features.includes('health')) && (
               <div className="mt-8">
-                <TestSimple />
+                <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 rounded"></div>}>
+                  <TestSimple />
+                </Suspense>
               </div>
             )}
           </div>
@@ -229,7 +235,9 @@ const UnifiedDashboard = ({
           ) : (
             <div className="tab-content">
               {activeTab === 'agents' && (
-                <TestSimple />
+                <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 rounded"></div>}>
+                  <TestSimple />
+                </Suspense>
               )}
               {activeTab === 'reviews' && features.includes('reviews') && (
                 <ContentReviewDashboard />
