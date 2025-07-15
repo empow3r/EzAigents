@@ -1,0 +1,665 @@
+{
+  "projectId": "c39cc3fd-7249-49e3-8c76-6e1021aaf3d5",
+  "projectName": "Test SaaS Platform",
+  "projectType": "saas",
+  "description": "A test SaaS platform for demonstrating the Ez Aigent system capabilities",
+  "features": [
+    "User Authentication",
+    "Dashboard",
+    "API Integration",
+    "Payment Processing"
+  ],
+  "timeline": "24",
+  "budget": "balanced",
+  "techStack": [
+    "Next.js",
+    "Node.js",
+    "PostgreSQL",
+    "Redis"
+  ],
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Project Setup & Architecture",
+      "description": "Initialize project, set up development environment, and design architecture",
+      "duration": "2 hours"
+    },
+    {
+      "id": "phase-2",
+      "name": "Core Infrastructure",
+      "description": "Build foundational components, database schema, and API structure",
+      "duration": "4 hours"
+    },
+    {
+      "id": "phase-3",
+      "name": "Feature Implementation",
+      "description": "Implement main features and business logic",
+      "duration": "8 hours"
+    },
+    {
+      "id": "phase-4",
+      "name": "Frontend Development",
+      "description": "Create user interface and connect to backend",
+      "duration": "6 hours"
+    },
+    {
+      "id": "phase-5",
+      "name": "Testing & Optimization",
+      "description": "Write tests, optimize performance, and fix bugs",
+      "duration": "3 hours"
+    },
+    {
+      "id": "phase-6",
+      "name": "Deployment & Documentation",
+      "description": "Deploy to production and create documentation",
+      "duration": "1 hour"
+    }
+  ],
+  "taskBreakdown": [
+    {
+      "id": "task-1",
+      "phaseId": "phase-1",
+      "name": "Initialize Git repository",
+      "description": "Set up version control",
+      "estimatedTime": "5m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "setup"
+    },
+    {
+      "id": "task-2",
+      "phaseId": "phase-1",
+      "name": "Create project structure",
+      "description": "Set up directory structure and boilerplate",
+      "estimatedTime": "15m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "setup"
+    },
+    {
+      "id": "task-3",
+      "phaseId": "phase-1",
+      "name": "Design system architecture",
+      "description": "Create architecture diagrams and technical spec",
+      "estimatedTime": "30m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "architecture"
+    },
+    {
+      "id": "task-4",
+      "phaseId": "phase-1",
+      "name": "Set up development environment",
+      "description": "Configure Docker, environment variables",
+      "estimatedTime": "20m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "setup"
+    },
+    {
+      "id": "task-5",
+      "phaseId": "phase-1",
+      "name": "Initialize package managers",
+      "description": "Set up npm/yarn and dependencies",
+      "estimatedTime": "10m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "setup"
+    },
+    {
+      "id": "task-6",
+      "phaseId": "phase-2",
+      "name": "Design database schema",
+      "description": "Create database models and relationships",
+      "estimatedTime": "45m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "backend"
+    },
+    {
+      "id": "task-7",
+      "phaseId": "phase-2",
+      "name": "Set up API framework",
+      "description": "Initialize Express/FastAPI/etc",
+      "estimatedTime": "30m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "backend"
+    },
+    {
+      "id": "task-8",
+      "phaseId": "phase-2",
+      "name": "Create authentication system",
+      "description": "Implement user auth and JWT",
+      "estimatedTime": "1h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "backend"
+    },
+    {
+      "id": "task-9",
+      "phaseId": "phase-2",
+      "name": "Build core API endpoints",
+      "description": "Create CRUD operations",
+      "estimatedTime": "1.5h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "backend"
+    },
+    {
+      "id": "task-10",
+      "phaseId": "phase-2",
+      "name": "Set up Redis for caching",
+      "description": "Configure Redis and caching layer",
+      "estimatedTime": "30m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "backend"
+    },
+    {
+      "id": "task-11",
+      "phaseId": "phase-3",
+      "name": "Implement business logic",
+      "description": "Core feature implementation",
+      "estimatedTime": "3h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "backend"
+    },
+    {
+      "id": "task-12",
+      "phaseId": "phase-3",
+      "name": "Create data models",
+      "description": "Implement domain models",
+      "estimatedTime": "1h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "backend"
+    },
+    {
+      "id": "task-13",
+      "phaseId": "phase-3",
+      "name": "Build service layer",
+      "description": "Create business services",
+      "estimatedTime": "2h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "backend"
+    },
+    {
+      "id": "task-14",
+      "phaseId": "phase-3",
+      "name": "Implement validation",
+      "description": "Add input validation and sanitization",
+      "estimatedTime": "1h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "backend"
+    },
+    {
+      "id": "task-15",
+      "phaseId": "phase-3",
+      "name": "Create background jobs",
+      "description": "Set up job queues and workers",
+      "estimatedTime": "1h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "backend"
+    },
+    {
+      "id": "task-16",
+      "phaseId": "phase-4",
+      "name": "Set up frontend framework",
+      "description": "Initialize React/Vue/Angular",
+      "estimatedTime": "30m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "frontend"
+    },
+    {
+      "id": "task-17",
+      "phaseId": "phase-4",
+      "name": "Create component library",
+      "description": "Build reusable UI components",
+      "estimatedTime": "2h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "frontend"
+    },
+    {
+      "id": "task-18",
+      "phaseId": "phase-4",
+      "name": "Implement routing",
+      "description": "Set up client-side routing",
+      "estimatedTime": "30m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "frontend"
+    },
+    {
+      "id": "task-19",
+      "phaseId": "phase-4",
+      "name": "Build main pages",
+      "description": "Create primary application pages",
+      "estimatedTime": "2h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "frontend"
+    },
+    {
+      "id": "task-20",
+      "phaseId": "phase-4",
+      "name": "Connect to backend API",
+      "description": "Integrate frontend with backend",
+      "estimatedTime": "1h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "frontend"
+    },
+    {
+      "id": "task-21",
+      "phaseId": "phase-5",
+      "name": "Write unit tests",
+      "description": "Create unit test suite",
+      "estimatedTime": "1h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "testing"
+    },
+    {
+      "id": "task-22",
+      "phaseId": "phase-5",
+      "name": "Write integration tests",
+      "description": "Create integration test suite",
+      "estimatedTime": "1h",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "testing"
+    },
+    {
+      "id": "task-23",
+      "phaseId": "phase-5",
+      "name": "Performance optimization",
+      "description": "Optimize queries and bundle size",
+      "estimatedTime": "45m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "optimization"
+    },
+    {
+      "id": "task-24",
+      "phaseId": "phase-5",
+      "name": "Security audit",
+      "description": "Review and fix security issues",
+      "estimatedTime": "15m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "security"
+    },
+    {
+      "id": "task-25",
+      "phaseId": "phase-6",
+      "name": "Create deployment config",
+      "description": "Set up CI/CD pipeline",
+      "estimatedTime": "20m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "devops"
+    },
+    {
+      "id": "task-26",
+      "phaseId": "phase-6",
+      "name": "Deploy to staging",
+      "description": "Deploy and test in staging",
+      "estimatedTime": "20m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "devops"
+    },
+    {
+      "id": "task-27",
+      "phaseId": "phase-6",
+      "name": "Write documentation",
+      "description": "Create README and API docs",
+      "estimatedTime": "20m",
+      "dependencies": [],
+      "priority": "medium",
+      "type": "documentation"
+    }
+  ],
+  "agentAssignments": {
+    "task-1": {
+      "primaryAgent": "claude",
+      "backupAgent": "gpt",
+      "reason": "Claude excels at architecture"
+    },
+    "task-2": {
+      "primaryAgent": "claude",
+      "backupAgent": "gpt",
+      "reason": "Claude excels at architecture"
+    },
+    "task-3": {
+      "primaryAgent": "claude",
+      "backupAgent": "gpt",
+      "reason": "Claude excels at architecture"
+    },
+    "task-4": {
+      "primaryAgent": "claude",
+      "backupAgent": "gpt",
+      "reason": "Claude excels at architecture"
+    },
+    "task-5": {
+      "primaryAgent": "claude",
+      "backupAgent": "gpt",
+      "reason": "Claude excels at architecture"
+    },
+    "task-6": {
+      "primaryAgent": "gpt",
+      "backupAgent": "claude",
+      "reason": "GPT specializes in backend development"
+    },
+    "task-7": {
+      "primaryAgent": "gpt",
+      "backupAgent": "claude",
+      "reason": "GPT specializes in backend development"
+    },
+    "task-8": {
+      "primaryAgent": "gpt",
+      "backupAgent": "claude",
+      "reason": "GPT specializes in backend development"
+    },
+    "task-9": {
+      "primaryAgent": "gpt",
+      "backupAgent": "claude",
+      "reason": "GPT specializes in backend development"
+    },
+    "task-10": {
+      "primaryAgent": "gpt",
+      "backupAgent": "claude",
+      "reason": "GPT specializes in backend development"
+    },
+    "task-11": {
+      "primaryAgent": "gpt",
+      "backupAgent": "claude",
+      "reason": "GPT specializes in backend development"
+    },
+    "task-12": {
+      "primaryAgent": "gpt",
+      "backupAgent": "claude",
+      "reason": "GPT specializes in backend development"
+    },
+    "task-13": {
+      "primaryAgent": "gpt",
+      "backupAgent": "claude",
+      "reason": "GPT specializes in backend development"
+    },
+    "task-14": {
+      "primaryAgent": "gpt",
+      "backupAgent": "claude",
+      "reason": "GPT specializes in backend development"
+    },
+    "task-15": {
+      "primaryAgent": "gpt",
+      "backupAgent": "claude",
+      "reason": "GPT specializes in backend development"
+    },
+    "task-16": {
+      "primaryAgent": "mistral",
+      "backupAgent": "gpt",
+      "reason": "Mistral handles frontend and docs"
+    },
+    "task-17": {
+      "primaryAgent": "mistral",
+      "backupAgent": "gpt",
+      "reason": "Mistral handles frontend and docs"
+    },
+    "task-18": {
+      "primaryAgent": "mistral",
+      "backupAgent": "gpt",
+      "reason": "Mistral handles frontend and docs"
+    },
+    "task-19": {
+      "primaryAgent": "mistral",
+      "backupAgent": "gpt",
+      "reason": "Mistral handles frontend and docs"
+    },
+    "task-20": {
+      "primaryAgent": "mistral",
+      "backupAgent": "gpt",
+      "reason": "Mistral handles frontend and docs"
+    },
+    "task-21": {
+      "primaryAgent": "deepseek",
+      "backupAgent": "gemini",
+      "reason": "DeepSeek specializes in testing"
+    },
+    "task-22": {
+      "primaryAgent": "deepseek",
+      "backupAgent": "gemini",
+      "reason": "DeepSeek specializes in testing"
+    },
+    "task-23": {
+      "primaryAgent": "claude",
+      "backupAgent": "gpt",
+      "reason": "Default assignment"
+    },
+    "task-24": {
+      "primaryAgent": "gemini",
+      "backupAgent": "claude",
+      "reason": "Gemini handles security and DevOps"
+    },
+    "task-25": {
+      "primaryAgent": "gemini",
+      "backupAgent": "claude",
+      "reason": "Gemini handles security and DevOps"
+    },
+    "task-26": {
+      "primaryAgent": "gemini",
+      "backupAgent": "claude",
+      "reason": "Gemini handles security and DevOps"
+    },
+    "task-27": {
+      "primaryAgent": "mistral",
+      "backupAgent": "gpt",
+      "reason": "Mistral handles frontend and docs"
+    }
+  },
+  "schedule": [
+    {
+      "taskId": "task-1",
+      "startTime": 0,
+      "endTime": 5,
+      "duration": 5,
+      "parallel": false
+    },
+    {
+      "taskId": "task-2",
+      "startTime": 5,
+      "endTime": 20,
+      "duration": 15,
+      "parallel": false
+    },
+    {
+      "taskId": "task-3",
+      "startTime": 20,
+      "endTime": 50,
+      "duration": 30,
+      "parallel": false
+    },
+    {
+      "taskId": "task-4",
+      "startTime": 50,
+      "endTime": 70,
+      "duration": 20,
+      "parallel": false
+    },
+    {
+      "taskId": "task-5",
+      "startTime": 70,
+      "endTime": 80,
+      "duration": 10,
+      "parallel": false
+    },
+    {
+      "taskId": "task-6",
+      "startTime": 80,
+      "endTime": 125,
+      "duration": 45,
+      "parallel": true
+    },
+    {
+      "taskId": "task-7",
+      "startTime": 80,
+      "endTime": 110,
+      "duration": 30,
+      "parallel": true
+    },
+    {
+      "taskId": "task-8",
+      "startTime": 80,
+      "endTime": 140,
+      "duration": 60,
+      "parallel": true
+    },
+    {
+      "taskId": "task-9",
+      "startTime": 80,
+      "endTime": 140,
+      "duration": 60,
+      "parallel": true
+    },
+    {
+      "taskId": "task-10",
+      "startTime": 80,
+      "endTime": 110,
+      "duration": 30,
+      "parallel": true
+    },
+    {
+      "taskId": "task-11",
+      "startTime": 80,
+      "endTime": 260,
+      "duration": 180,
+      "parallel": true
+    },
+    {
+      "taskId": "task-12",
+      "startTime": 80,
+      "endTime": 140,
+      "duration": 60,
+      "parallel": true
+    },
+    {
+      "taskId": "task-13",
+      "startTime": 80,
+      "endTime": 200,
+      "duration": 120,
+      "parallel": true
+    },
+    {
+      "taskId": "task-14",
+      "startTime": 80,
+      "endTime": 140,
+      "duration": 60,
+      "parallel": true
+    },
+    {
+      "taskId": "task-15",
+      "startTime": 80,
+      "endTime": 140,
+      "duration": 60,
+      "parallel": true
+    },
+    {
+      "taskId": "task-16",
+      "startTime": 80,
+      "endTime": 110,
+      "duration": 30,
+      "parallel": true
+    },
+    {
+      "taskId": "task-17",
+      "startTime": 80,
+      "endTime": 200,
+      "duration": 120,
+      "parallel": true
+    },
+    {
+      "taskId": "task-18",
+      "startTime": 80,
+      "endTime": 110,
+      "duration": 30,
+      "parallel": true
+    },
+    {
+      "taskId": "task-19",
+      "startTime": 80,
+      "endTime": 200,
+      "duration": 120,
+      "parallel": true
+    },
+    {
+      "taskId": "task-20",
+      "startTime": 80,
+      "endTime": 140,
+      "duration": 60,
+      "parallel": true
+    },
+    {
+      "taskId": "task-21",
+      "startTime": 80,
+      "endTime": 140,
+      "duration": 60,
+      "parallel": true
+    },
+    {
+      "taskId": "task-22",
+      "startTime": 80,
+      "endTime": 140,
+      "duration": 60,
+      "parallel": true
+    },
+    {
+      "taskId": "task-23",
+      "startTime": 80,
+      "endTime": 125,
+      "duration": 45,
+      "parallel": true
+    },
+    {
+      "taskId": "task-24",
+      "startTime": 80,
+      "endTime": 95,
+      "duration": 15,
+      "parallel": true
+    },
+    {
+      "taskId": "task-25",
+      "startTime": 80,
+      "endTime": 100,
+      "duration": 20,
+      "parallel": true
+    },
+    {
+      "taskId": "task-26",
+      "startTime": 80,
+      "endTime": 100,
+      "duration": 20,
+      "parallel": true
+    },
+    {
+      "taskId": "task-27",
+      "startTime": 80,
+      "endTime": 100,
+      "duration": 20,
+      "parallel": true
+    }
+  ],
+  "estimatedCompletion": {
+    "totalTasks": 27,
+    "estimatedHours": 16,
+    "estimatedMinutes": 10,
+    "confidence": "high"
+  },
+  "createdAt": "2025-07-15T02:36:32.656Z"
+}

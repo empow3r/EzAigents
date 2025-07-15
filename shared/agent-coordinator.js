@@ -156,23 +156,58 @@ class AgentCoordinator {
       'health_monitoring'
     ];
     
-    // Add type-specific capabilities
-    switch (this.agentType) {
-      case 'claude':
-        return [...baseCapabilities, 'code_analysis', 'architecture', 'large_context'];
-      case 'gpt':
-        return [...baseCapabilities, 'api_development', 'backend_logic'];
-      case 'deepseek':
-        return [...baseCapabilities, 'testing', 'validation', 'code_generation'];
-      case 'mistral':
-        return [...baseCapabilities, 'documentation', 'summarization'];
-      case 'gemini':
-        return [...baseCapabilities, 'code_analysis', 'research'];
-      case 'webscraper':
-        return [...baseCapabilities, 'web_scraping', 'authentication', 'data_extraction'];
-      default:
-        return baseCapabilities;
-    }
+    // Enhanced agent type capabilities
+    const agentCapabilities = {
+      // Core AI Agents
+      'claude': ['code_analysis', 'architecture', 'large_context', 'complex_reasoning', 'refactoring'],
+      'gpt': ['api_development', 'backend_logic', 'general_programming', 'text_generation'],
+      'deepseek': ['testing', 'validation', 'code_generation', 'debugging', 'optimization'],
+      'mistral': ['documentation', 'summarization', 'technical_writing', 'translation'],
+      'gemini': ['code_analysis', 'research', 'multimodal', 'data_analysis'],
+      
+      // Specialized Agents
+      'webscraper': ['web_scraping', 'authentication', 'data_extraction', 'browser_automation'],
+      'ollama': ['local_inference', 'privacy_focused', 'offline_processing'],
+      'perplexity': ['web_search', 'fact_checking', 'real_time_data', 'research_synthesis'],
+      'anthropic-haiku': ['fast_responses', 'lightweight_tasks', 'quick_analysis'],
+      'cohere': ['embeddings', 'classification', 'semantic_search', 'clustering'],
+      
+      // Tool & Service Agents
+      'database': ['sql_queries', 'data_management', 'schema_design', 'migrations'],
+      'deployment': ['ci_cd', 'container_orchestration', 'infrastructure', 'monitoring'],
+      'security': ['vulnerability_scanning', 'penetration_testing', 'compliance', 'audit'],
+      'performance': ['profiling', 'optimization', 'load_testing', 'monitoring'],
+      'ui_ux': ['interface_design', 'user_experience', 'accessibility', 'prototyping'],
+      
+      // Domain-Specific Agents
+      'mobile': ['ios_development', 'android_development', 'react_native', 'flutter'],
+      'blockchain': ['smart_contracts', 'web3', 'cryptocurrency', 'defi'],
+      'ai_ml': ['machine_learning', 'deep_learning', 'model_training', 'data_science'],
+      'devops': ['infrastructure_automation', 'monitoring', 'logging', 'deployment'],
+      'frontend': ['react', 'vue', 'angular', 'css', 'javascript'],
+      'backend': ['node_js', 'python', 'java', 'microservices', 'apis'],
+      
+      // Specialized Function Agents
+      'translator': ['language_translation', 'localization', 'internationalization'],
+      'designer': ['graphic_design', 'ui_mockups', 'visual_assets', 'branding'],
+      'pm': ['project_management', 'planning', 'coordination', 'reporting'],
+      'qa': ['quality_assurance', 'test_automation', 'bug_tracking', 'test_planning'],
+      'analytics': ['data_analysis', 'reporting', 'metrics', 'business_intelligence'],
+      'content': ['content_creation', 'copywriting', 'seo', 'marketing'],
+      
+      // Integration Agents
+      'slack': ['team_communication', 'notifications', 'workflow_automation'],
+      'github': ['version_control', 'code_review', 'issue_tracking', 'ci_cd'],
+      'aws': ['cloud_services', 'infrastructure', 'serverless', 'storage'],
+      'azure': ['microsoft_cloud', 'enterprise_integration', 'active_directory'],
+      'gcp': ['google_cloud', 'big_data', 'machine_learning', 'analytics'],
+      
+      // Custom/Generic
+      'custom': ['custom_capabilities'],
+      'generic': []
+    };
+    
+    return [...baseCapabilities, ...(agentCapabilities[this.agentType] || [])];
   }
 
   async startMessageListener() {

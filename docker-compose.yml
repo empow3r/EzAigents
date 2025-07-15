@@ -219,6 +219,248 @@ services:
       - development
       - production
 
+  # Ollama Local Agent
+  ollama-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: ollama
+    container_name: ezaigents-ollama
+    command: ["node", "agents/ollama/enhanced-coordinated-index.js"]
+    environment:
+      - AGENT_ID=ollama-docker-001
+      - REDIS_URL=redis://redis:6379
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+      - MODEL=llama2
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/ollama:/app/.agent-memory/ollama
+      - ./agents/ollama/logs:/app/agents/ollama/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    profiles:
+      - development
+      - local
+      - privacy
+
+  # Perplexity Research Agent
+  perplexity-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: perplexity
+    container_name: ezaigents-perplexity
+    command: ["node", "agents/perplexity/enhanced-coordinated-index.js"]
+    environment:
+      - AGENT_ID=perplexity-docker-001
+      - REDIS_URL=redis://redis:6379
+      - PERPLEXITY_API_KEY=${PERPLEXITY_API_KEY}
+      - MODEL=pplx-7b-online
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/perplexity:/app/.agent-memory/perplexity
+      - ./agents/perplexity/logs:/app/agents/perplexity/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    profiles:
+      - development
+      - research
+      - production
+
+  # Database Management Agent
+  database-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: database
+    container_name: ezaigents-database
+    command: ["node", "agents/database/enhanced-coordinated-index.js"]
+    environment:
+      - AGENT_ID=database-docker-001
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_URL=${POSTGRES_URL}
+      - MONGO_URL=${MONGO_URL}
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/database:/app/.agent-memory/database
+      - ./agents/database/logs:/app/agents/database/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    profiles:
+      - development
+      - production
+      - database
+
+  # Security Scanner Agent
+  security-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: security
+    container_name: ezaigents-security
+    command: ["node", "agents/security/enhanced-coordinated-index.js"]
+    environment:
+      - AGENT_ID=security-docker-001
+      - REDIS_URL=redis://redis:6379
+      - SECURITY_API_KEY=${SECURITY_API_KEY}
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/security:/app/.agent-memory/security
+      - ./agents/security/logs:/app/agents/security/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges
+    profiles:
+      - development
+      - production
+      - security
+
+  # DevOps Automation Agent
+  devops-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: devops
+    container_name: ezaigents-devops
+    command: ["node", "agents/devops/enhanced-coordinated-index.js"]
+    environment:
+      - AGENT_ID=devops-docker-001
+      - REDIS_URL=redis://redis:6379
+      - DOCKER_HOST=/var/run/docker.sock
+      - KUBECTL_CONFIG=${KUBECTL_CONFIG}
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/devops:/app/.agent-memory/devops
+      - ./agents/devops/logs:/app/agents/devops/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    profiles:
+      - development
+      - production
+      - devops
+
+  # Frontend Development Agent
+  frontend-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: frontend
+    container_name: ezaigents-frontend
+    command: ["node", "agents/frontend/enhanced-coordinated-index.js"]
+    environment:
+      - AGENT_ID=frontend-docker-001
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=development
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/frontend:/app/.agent-memory/frontend
+      - ./agents/frontend/logs:/app/agents/frontend/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    profiles:
+      - development
+      - production
+      - frontend
+
+  # Mobile Development Agent
+  mobile-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: mobile
+    container_name: ezaigents-mobile
+    command: ["node", "agents/mobile/enhanced-coordinated-index.js"]
+    environment:
+      - AGENT_ID=mobile-docker-001
+      - REDIS_URL=redis://redis:6379
+      - MOBILE_SDK_PATH=${MOBILE_SDK_PATH}
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/mobile:/app/.agent-memory/mobile
+      - ./agents/mobile/logs:/app/agents/mobile/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    profiles:
+      - development
+      - mobile
+
+  # Analytics Agent
+  analytics-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: analytics
+    container_name: ezaigents-analytics
+    command: ["node", "agents/analytics/enhanced-coordinated-index.js"]
+    environment:
+      - AGENT_ID=analytics-docker-001
+      - REDIS_URL=redis://redis:6379
+      - ANALYTICS_DB_URL=${ANALYTICS_DB_URL}
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/analytics:/app/.agent-memory/analytics
+      - ./agents/analytics/logs:/app/agents/analytics/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    profiles:
+      - development
+      - production
+      - analytics
+
   # API Key Manager
   api-manager:
     build:

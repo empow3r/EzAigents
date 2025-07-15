@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code when working with the Ez Aigent codebase.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 **Ez Aigent** - An AI Multi-Agent SaaS Builder Orchestrator platform that coordinates 10-100+ cloud-based AI coding agents to build and scale SaaS products within 24 hours.
@@ -9,7 +9,7 @@ This file provides guidance to Claude Code when working with the Ez Aigent codeb
 
 **🎯 NEW: All agents now use the Universal Coordination System for:**
 - ✅ **Port Management** - Automatic port checking and reservation
-- ✅ **File Locking** - Conflict-free file operations
+- ✅ **File Locking** - Conflict-free file operations  
 - ✅ **Agent Communication** - Direct messaging and broadcasting
 - ✅ **Agent Discovery** - Find and collaborate with other agents
 - ✅ **Shared Memory** - Cross-agent state management
@@ -40,7 +40,7 @@ Ez Aigent/
 │   └── enhanced-base-agent.js # Enhanced base class
 ├── agents/                    # Individual agent containers
 │   ├── claude/               # Architecture and analysis
-│   ├── gpt/                  # Backend development
+│   ├── gpt/                  # Backend development  
 │   ├── deepseek/             # Testing and validation
 │   ├── mistral/              # Documentation
 │   ├── gemini/               # Code analysis
@@ -105,7 +105,7 @@ class MyAgent extends EnhancedBaseAgent {
 ./scripts/port-check.sh start
 ```
 
-### **Agent Health Monitoring**
+### **Agent Health Monitoring**  
 ```bash
 # View agent status
 ./scripts/agent-health-monitor.sh status
@@ -117,19 +117,174 @@ class MyAgent extends EnhancedBaseAgent {
 ./scripts/agent-health-monitor.sh auto-restart
 ```
 
+## System Enhancements (v2.0)
+
+### **🚀 New Enhanced Features**
+- ✅ **API Key Management** - Intelligent rotation and health monitoring
+- ✅ **Advanced Error Handling** - Circuit breaker and retry mechanisms  
+- ✅ **Real-time Monitoring** - Comprehensive metrics and alerting
+- ✅ **Load Balancing** - Smart agent selection and auto-scaling
+- ✅ **Analytics Engine** - Performance insights and data analytics
+
+### **Enhanced System Components**
+
+#### **API Key Manager** (`shared/api-key-manager.js`)
+```javascript
+// Intelligent API key management with health monitoring
+const keyManager = new APIKeyManager();
+const bestKey = keyManager.getBestKey('claude'); // Auto-selects healthiest key
+keyManager.recordKeyUsage(key, latency, success); // Track performance
+```
+- **Features**: Multi-key rotation, health-based selection, validation
+- **Strategies**: Round-robin, least-used, weighted, health-based
+- **Monitoring**: Real-time key health testing and latency tracking
+- **Auto-healing**: Automatic key rehabilitation and failure detection
+
+#### **Error Handler** (`shared/enhanced-error-handler.js`)
+```javascript
+// Circuit breaker and retry logic
+await errorHandler.executeWithBoth('api_claude', async () => {
+  return await apiCall();
+}, { maxRetries: 3, circuitBreakerOptions: { threshold: 5 } });
+```
+- **Circuit Breaker**: Prevents cascade failures with configurable thresholds
+- **Retry Logic**: Exponential backoff with jitter and smart retry conditions
+- **Error Classification**: Automatic categorization and severity assessment
+- **Fallback Support**: Graceful degradation with alternative responses
+
+#### **Monitoring System** (`shared/enhanced-monitoring-system.js`)
+```javascript
+// Comprehensive metrics and alerting
+globalMonitoring.metrics.recordMetric('api.response_time', duration);
+globalMonitoring.metrics.setThreshold('cpu_usage', { warning: 70, critical: 90 });
+```
+- **Metrics Collection**: System, agent, API, and Redis metrics
+- **Real-time Alerts**: Threshold-based alerting with multiple channels
+- **Performance Analysis**: Trend analysis and predictive insights
+- **Health Scoring**: Composite health metrics with recommendations
+
+#### **Load Balancer** (`shared/load-balancer.js`)
+```javascript
+// Intelligent agent selection and auto-scaling
+const agentId = await loadBalancer.selectAgent({ requiredCapabilities: ['analysis'] });
+const autoScaler = new AutoScaler(loadBalancer, { maxAgents: 10 });
+```
+- **Selection Strategies**: Health-weighted, round-robin, least-connections
+- **Auto-scaling**: Dynamic capacity management based on load metrics
+- **Health Checks**: Continuous agent monitoring and failure detection
+- **Load Distribution**: Intelligent request routing with capacity awareness
+
+#### **Analytics Engine** (`shared/enhanced-analytics.js`)
+```javascript
+// Comprehensive analytics and insights
+globalAnalytics.trackEvent('agent:activity', { agentId, success: true });
+const report = globalAnalytics.generatePerformanceReport('24h');
+```
+- **Event Tracking**: Comprehensive activity logging and session management
+- **Performance Analytics**: Response time, success rates, and error analysis
+- **Insights Generation**: Automated recommendations and trend detection
+- **Data Export**: CSV and JSON reporting with customizable time ranges
+
+### **Enhanced API Endpoints**
+
+#### **Enhanced Monitoring API** (`dashboard/pages/api/enhanced-monitoring.js`)
+- **GET /api/enhanced-monitoring?endpoint=metrics** - System metrics
+- **GET /api/enhanced-monitoring?endpoint=alerts** - Active alerts
+- **GET /api/enhanced-monitoring?endpoint=performance** - Performance analysis
+- **GET /api/enhanced-monitoring?endpoint=health** - System health overview
+- **POST /api/enhanced-monitoring** - Record custom metrics and manage alerts
+
 ## Enhanced Agent Capabilities
 
-### **Claude Agent** (`agents/claude/enhanced-coordinated-index.js`)
+### **Core AI Agents**
+
+#### **Claude Agent** (`agents/claude/enhanced-coordinated-index.js`)
 - **Specialization**: Architecture, refactoring, large context analysis
-- **Capabilities**: `architecture`, `refactoring`, `code_analysis`, `large_context`
+- **Capabilities**: `architecture`, `refactoring`, `code_analysis`, `large_context`, `complex_reasoning`
 - **Coordination**: Collaborates with GPT for implementation, DeepSeek for testing
 - **Queue**: `queue:claude-3-opus`
 
-### **WebScraper Agent** (`agents/webscraper/enhanced-coordinated-index.js`)
+#### **GPT Agent** (`agents/gpt/enhanced-coordinated-index.js`)
+- **Specialization**: Backend development, API integration, general programming
+- **Capabilities**: `api_development`, `backend_logic`, `general_programming`, `text_generation`
+- **Coordination**: Works with Claude on architecture, DeepSeek on testing
+- **Queue**: `queue:gpt-4o`
+
+#### **DeepSeek Agent** (`agents/deepseek/enhanced-coordinated-index.js`)
+- **Specialization**: Testing, validation, debugging, optimization
+- **Capabilities**: `testing`, `validation`, `code_generation`, `debugging`, `optimization`
+- **Coordination**: Provides testing for Claude and GPT implementations
+- **Queue**: `queue:deepseek-coder`
+
+#### **Mistral Agent** (`agents/mistral/enhanced-coordinated-index.js`)
+- **Specialization**: Documentation, technical writing, translation
+- **Capabilities**: `documentation`, `summarization`, `technical_writing`, `translation`
+- **Coordination**: Documents work from other agents
+- **Queue**: `queue:mistral-large`
+
+#### **Gemini Agent** (`agents/gemini/enhanced-coordinated-index.js`)
+- **Specialization**: Code analysis, research, multimodal processing
+- **Capabilities**: `code_analysis`, `research`, `multimodal`, `data_analysis`
+- **Coordination**: Provides analysis and research support
+- **Queue**: `queue:gemini-pro`
+
+### **Specialized AI Agents**
+
+#### **Ollama Agent** (`agents/ollama/enhanced-coordinated-index.js`)
+- **Specialization**: Local inference, privacy-focused processing
+- **Capabilities**: `local_inference`, `privacy_focused`, `offline_processing`
+- **Coordination**: Handles sensitive tasks that require local processing
+- **Queue**: `queue:ollama`
+
+#### **Perplexity Agent** (`agents/perplexity/enhanced-coordinated-index.js`)
+- **Specialization**: Web search, real-time research, fact-checking
+- **Capabilities**: `web_search`, `fact_checking`, `real_time_data`, `research_synthesis`
+- **Coordination**: Provides research data to other agents
+- **Queue**: `queue:perplexity`
+
+#### **WebScraper Agent** (`agents/webscraper/enhanced-coordinated-index.js`)
 - **Specialization**: Authenticated web scraping, data extraction
-- **Capabilities**: `web_scraping`, `authenticated_scraping`, `research`
+- **Capabilities**: `web_scraping`, `authenticated_scraping`, `research`, `browser_automation`
 - **Coordination**: Sends data to Claude for analysis
 - **Queue**: `queue:webscraper`
+
+### **Domain-Specific Agents**
+
+#### **Database Agent** (`agents/database/enhanced-coordinated-index.js`)
+- **Specialization**: Database operations, schema design, data management
+- **Capabilities**: `sql_queries`, `data_management`, `schema_design`, `migrations`
+- **Coordination**: Provides data services to all agents
+- **Queue**: `queue:database`
+
+#### **Security Agent** (`agents/security/enhanced-coordinated-index.js`)
+- **Specialization**: Security scanning, vulnerability assessment, compliance
+- **Capabilities**: `vulnerability_scanning`, `penetration_testing`, `compliance`, `audit`
+- **Coordination**: Reviews code from other agents for security issues
+- **Queue**: `queue:security`
+
+#### **DevOps Agent** (`agents/devops/enhanced-coordinated-index.js`)
+- **Specialization**: Infrastructure automation, deployment, monitoring
+- **Capabilities**: `infrastructure_automation`, `monitoring`, `logging`, `deployment`
+- **Coordination**: Handles deployment for all agent outputs
+- **Queue**: `queue:devops`
+
+#### **Frontend Agent** (`agents/frontend/enhanced-coordinated-index.js`)
+- **Specialization**: Frontend development, UI/UX, JavaScript frameworks
+- **Capabilities**: `react`, `vue`, `angular`, `css`, `javascript`
+- **Coordination**: Works with Backend agents for full-stack development
+- **Queue**: `queue:frontend`
+
+#### **Mobile Agent** (`agents/mobile/enhanced-coordinated-index.js`)
+- **Specialization**: Mobile app development, cross-platform solutions
+- **Capabilities**: `ios_development`, `android_development`, `react_native`, `flutter`
+- **Coordination**: Integrates with Backend and Frontend agents
+- **Queue**: `queue:mobile`
+
+#### **Analytics Agent** (`agents/analytics/enhanced-coordinated-index.js`)
+- **Specialization**: Data analysis, business intelligence, reporting
+- **Capabilities**: `data_analysis`, `reporting`, `metrics`, `business_intelligence`
+- **Coordination**: Analyzes outputs and performance from other agents
+- **Queue**: `queue:analytics`
 
 ## Core Commands
 
@@ -164,6 +319,97 @@ redis-cli HGETALL agents:registry
 redis-cli HGETALL agents:heartbeats
 ```
 
+## Development Commands
+
+### **Root Package**
+```bash
+# Start the orchestrator system
+npm start
+
+# Run analytics and monitoring
+npm run analytics
+
+# Monitor system health
+npm run monitor
+
+# Stop all services
+npm run stop
+```
+
+### **Dashboard (Next.js)**
+```bash
+cd dashboard
+
+# Development server
+npm run dev
+
+# Production build and start
+npm run build
+npm run start
+
+# Linting
+npm run lint
+
+# Build optimization analysis
+npm run analyze
+```
+
+### **CLI Services**
+```bash
+cd cli
+
+# Run tests
+npm test
+npm run test:watch
+npm run test:coverage
+```
+
+### **Docker Operations**
+```bash
+# Start full system
+docker-compose up -d
+
+# Start specific profiles
+docker-compose --profile development up -d    # Core development agents
+docker-compose --profile production up -d     # Production-ready agents
+docker-compose --profile minimal up -d        # Minimal core system
+docker-compose --profile security up -d       # Security-focused agents
+docker-compose --profile mobile up -d         # Mobile development agents
+docker-compose --profile frontend up -d       # Frontend development agents
+docker-compose --profile research up -d       # Research and analysis agents
+docker-compose --profile local up -d          # Local/privacy-focused agents
+docker-compose --profile analytics up -d      # Data analysis agents
+docker-compose --profile devops up -d         # Infrastructure automation
+
+# View service logs
+docker-compose logs -f [service-name]
+
+# Scale agents
+docker-compose up -d --scale claude-agent=3
+docker-compose up -d --scale gpt-agent=5
+```
+
+### **Agent Creation and Management**
+```bash
+# Create new agents interactively
+node scripts/create-agent.js
+
+# Create agent from command line
+node scripts/create-agent.js create myagent ai-agent
+
+# List available templates
+node scripts/create-agent.js list
+
+# View template details
+node scripts/create-agent.js templates
+
+# Quick setup popular agents
+./scripts/setup-agents.sh
+
+# Start a specific new agent
+docker-compose up -d myagent-agent
+```
+
 ## WebScraper Integration
 
 ### **Dashboard Access**
@@ -184,7 +430,7 @@ redis-cli HGETALL agents:heartbeats
 
 // Research scraping with multi-agent collaboration
 {
-  "type": "research_scraping",
+  "type": "research_scraping", 
   "researchTopics": ["AI trends", "SaaS development"],
   "requiresAnalysis": true,
   "generateSummary": true
@@ -198,12 +444,40 @@ REDIS_URL=redis://localhost:6379
 AGENT_ID=agent-001
 AGENT_TYPE=claude
 
-# API Keys (for agents)
+# Core AI API Keys
 CLAUDE_API_KEY=sk-or-cl-xxxxx
 OPENAI_API_KEY=sk-xxxxx
 DEEPSEEK_API_KEYS=key1,key2,key3
 MISTRAL_API_KEY=sk-mistralxxxxx
 GEMINI_API_KEY=sk-geminixxx
+
+# Additional AI Services
+OLLAMA_HOST=http://localhost:11434
+PERPLEXITY_API_KEY=pplx-xxxxx
+COHERE_API_KEY=co-xxxxx
+ANTHROPIC_HAIKU_API_KEY=sk-ant-xxxxx
+
+# Database Configuration
+DATABASE_URL=postgresql://user:pass@localhost:5432/ezaigent
+POSTGRES_URL=postgresql://user:pass@localhost:5432/postgres
+MONGO_URL=mongodb://localhost:27017/ezaigent
+ANALYTICS_DB_URL=postgresql://user:pass@localhost:5432/analytics
+
+# Security and DevOps
+SECURITY_API_KEY=sec-xxxxx
+DOCKER_HOST=/var/run/docker.sock
+KUBECTL_CONFIG=/path/to/kubeconfig
+
+# Mobile Development
+MOBILE_SDK_PATH=/opt/android-sdk
+
+# Integration Services
+SLACK_BOT_TOKEN=xoxb-xxxxx
+GITHUB_TOKEN=ghp_xxxxx
+AWS_ACCESS_KEY_ID=AKIA-xxxxx
+AWS_SECRET_ACCESS_KEY=xxxxx
+AZURE_CLIENT_ID=xxxxx
+GCP_SERVICE_ACCOUNT_KEY=xxxxx
 
 # Health monitoring
 AGENT_HEALTH_CHECK_INTERVAL=30
@@ -212,6 +486,12 @@ AGENT_AUTO_RESTART=true
 
 # WebScraper
 SCRAPER_HEADLESS=true
+
+# Performance and Scaling
+MIN_AGENTS=1
+MAX_AGENTS=10
+SCALE_UP_THRESHOLD=20
+SCALE_DOWN_THRESHOLD=5
 ```
 
 ## Agent Communication Patterns
@@ -379,5 +659,100 @@ All agents use enhanced memory with cross-agent access:
 - `WEBSCRAPER_USAGE_GUIDE.md` - WebScraper usage and examples
 - `shared/agent-coordinator.js` - Core coordination implementation
 - `shared/enhanced-base-agent.js` - Enhanced base agent class
+
+## Agent Template System
+
+### **Available Agent Templates**
+- `ai-agent` - General AI agent with API integration
+- `tool-agent` - Tool execution and automation agent  
+- `service-agent` - Service management and coordination
+- `integration-agent` - External service integration
+- `database-agent` - Database operations specialist
+- `frontend-agent` - Frontend development specialist
+- `mobile-agent` - Mobile development specialist
+- `security-agent` - Security and compliance specialist
+- `devops-agent` - Infrastructure automation specialist
+- `analytics-agent` - Data analysis and BI specialist
+
+### **Creating Custom Agents**
+```bash
+# Interactive agent creation
+node scripts/create-agent.js
+
+# Quick agent creation
+node scripts/create-agent.js create myapi ai-agent
+
+# Batch setup popular agents
+./scripts/setup-agents.sh
+
+# View all available templates
+node scripts/create-agent.js templates
+```
+
+### **Agent Development Workflow**
+1. **Generate Agent**: Use template factory to create base structure
+2. **Configure**: Set API keys and environment variables
+3. **Customize**: Modify capabilities and specialization logic
+4. **Test**: Run locally with `npm run dev`
+5. **Deploy**: Add to docker-compose and start with coordination
+6. **Monitor**: Use health monitoring and agent registry
+
+### **Agent Coordination Patterns**
+```javascript
+// Find agent by capability
+const dbAgent = await this.coordinator.findAgentForTask('sql_queries');
+
+// Multi-agent workflow
+async processComplexTask(task) {
+  // Step 1: Analysis (Claude)
+  const analysis = await this.delegateToAgent('claude', task);
+  
+  // Step 2: Implementation (GPT)  
+  const code = await this.delegateToAgent('gpt', { ...task, analysis });
+  
+  // Step 3: Security Review (Security Agent)
+  const security = await this.delegateToAgent('security', { code });
+  
+  // Step 4: Testing (DeepSeek)
+  const tests = await this.delegateToAgent('deepseek', { code, security });
+  
+  return { analysis, code, security, tests };
+}
+```
+
+### **Scaling Agent Deployments**
+```bash
+# Scale by agent type
+docker-compose up -d --scale gpt-agent=5
+docker-compose up -d --scale claude-agent=3
+
+# Profile-based scaling
+docker-compose --profile production up -d
+docker-compose --profile development up -d
+
+# Monitor scaling
+./scripts/agent-health-monitor.sh status
+docker-compose ps
+```
+
+## Success Indicators
+
+✅ **System Working Correctly:**
+- All agents show "healthy" status in health monitor
+- Port conflicts automatically resolved during startup
+- Agents communicate successfully (visible in Redis monitoring)
+- File operations complete without lock conflicts
+- WebScraper extracts data and integrates with Claude analysis
+- Dashboard accessible with real-time agent status
+- Custom agents can be created and deployed seamlessly
+- Multi-agent workflows complete successfully
+
+## Documentation Files
+- `AGENT_COORDINATION_SYSTEM.md` - Complete coordination system guide
+- `WEBSCRAPER_USAGE_GUIDE.md` - WebScraper usage and examples
+- `shared/agent-coordinator.js` - Core coordination implementation
+- `shared/enhanced-base-agent.js` - Enhanced base agent class
+- `shared/agent-templates.js` - Agent template factory system
+- `scripts/create-agent.js` - Agent creation CLI tool
 
 Remember: The Universal Coordination System ensures all agents work together seamlessly while maintaining isolation, security, and performance. All new agents should use the enhanced base class and coordination features.

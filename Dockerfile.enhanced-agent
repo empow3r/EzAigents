@@ -33,12 +33,10 @@ RUN npm ci --only=production --no-audit
 COPY shared ./shared
 
 # Copy specific agent code
-COPY agents/${AGENT_TYPE} ./agent
+COPY agents/${AGENT_TYPE}/ ./agent/
 
-# Install agent-specific dependencies if they exist
-RUN if [ -f ./agent/package.json ]; then \
-    cd ./agent && npm ci --only=production --no-audit; \
-    fi
+# Skip agent-specific dependencies to avoid conflicts
+# Agent will use shared dependencies from main package.json
 
 # Copy scripts for container operations
 COPY scripts ./scripts

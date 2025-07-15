@@ -6,6 +6,8 @@ const path = require('path');
 
 const redis = new Redis(process.env.REDIS_URL);
 const MODEL = process.env.MODEL || 'deepseek-coder';
+const config = require('./config.js');
+const SmartLLMSelector = require('../../shared/smart-llm-selector');
 const API_KEY_POOL = process.env.API_KEY_POOL ? process.env.API_KEY_POOL.split(',') : [];
 const ROLE = process.env.ROLE || 'test-utils';
 
@@ -52,17 +54,43 @@ const getNextApiKey = () => {
         fs.mkdirSync(outputDir, { recursive: true });
       }
       
-      const response = await axios.post('https://api.openrouter.ai/v1/chat/completions', {
-        model: MODEL,
-        messages: [{ role: 'user', content: `${prompt}\n\nCode:\n${code}` }],
-        max_tokens: 600,
-        temperature: 0.1
+      // Determine the best model for this specific task
+      const selector = new SmartLLMSelector();
+      const selection = selector.selectBestLLM(prompt, code.length);
+      
+      let modelToUse = MODEL;
+      let endpoint = 'https://api.openrouter.ai/v1/chat/completions';
+      let maxTokens = 600;
+      
+      // Use DeepSeek R1 for complex reasoning tasks
+      if (selection.recommended.model === 'deepseek-r1') {
+        modelToUse = 'deepseek/deepseek-r1';
+        maxTokens = 1000; // R1 can handle more complex outputs
+        console.log(`🧠 Using DeepSeek R1 for complex reasoning task`);
+      } else if (selection.recommended.model === 'deepseek-coder') {
+        modelToUse = 'deepseek/deepseek-coder';
+        console.log(`💻 Using DeepSeek Coder for coding task`);
+      }
+
+      // If R1 is selected, use direct DeepSeek API if available
+      if (modelToUse.includes('deepseek-r1') && process.env.DEEPSEEK_API_KEY) {
+        endpoint = 'https://api.deepseek.com/v1/chat/completions';
+      }
+
+      const response = await axios.post(endpoint, {
+        model: modelToUse,
+        messages: [{ 
+          role: 'user', 
+          content: `${prompt}\n\nCode:\n${code}` 
+        }],
+        max_tokens: maxTokens,
+        temperature: modelToUse.includes('r1') ? 0.0 : 0.1 // R1 works better with 0 temperature
       }, {
         headers: {
           'Authorization': `Bearer ${getNextApiKey()}`,
           'Content-Type': 'application/json'
         },
-        timeout: 30000,
+        timeout: modelToUse.includes('r1') ? 60000 : 30000, // R1 might take longer
         validateStatus: (status) => status < 500
       });
       
