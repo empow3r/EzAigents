@@ -1,28 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Zap, 
-  Target, 
-  TrendingUp, 
-  Users, 
-  DollarSign, 
-  Activity, 
-  Cpu, 
-  Gauge,
-  Command,
-  Crown,
-  Brain,
-  Rocket,
-  Shield,
-  Settings,
-  ChevronRight,
-  Play,
-  Pause,
-  RotateCcw,
-  Volume2,
-  VolumeX
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 export default function ExecutiveCommandCenter({ darkMode = true }) {
   const [godMode, setGodMode] = useState(false);
@@ -154,7 +133,7 @@ export default function ExecutiveCommandCenter({ darkMode = true }) {
     >
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-          <Brain className="w-5 h-5 text-white" />
+          <Icons.Brain className="w-5 h-5 text-white" />
         </div>
         <div>
           <h3 className="text-sm font-semibold text-purple-300">Strategic AI Advisor</h3>
@@ -164,7 +143,7 @@ export default function ExecutiveCommandCenter({ darkMode = true }) {
           onClick={() => setAiAdvisorActive(!aiAdvisorActive)}
           className="ml-auto text-purple-400 hover:text-purple-300"
         >
-          {aiAdvisorActive ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+          {aiAdvisorActive ? <Icons.Volume2 className="w-4 h-4" /> : <Icons.VolumeX className="w-4 h-4" />}
         </button>
       </div>
       
@@ -221,7 +200,7 @@ export default function ExecutiveCommandCenter({ darkMode = true }) {
           boxShadow: godMode ? '0 0 30px rgba(251, 191, 36, 0.5)' : 'none'
         }}
       >
-        <Crown className={`w-5 h-5 inline mr-2 ${godMode ? 'text-black' : 'text-gray-400'}`} />
+        <Icons.Crown className={`w-5 h-5 inline mr-2 ${godMode ? 'text-black' : 'text-gray-400'}`} />
         GOD MODE
       </motion.button>
 
@@ -253,7 +232,7 @@ export default function ExecutiveCommandCenter({ darkMode = true }) {
           >
             <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 border border-gray-700/50">
               <h3 className="text-lg font-semibold text-cyan-400 mb-4 flex items-center">
-                <Target className="w-5 h-5 mr-2" />
+                <Icons.Target className="w-5 h-5 mr-2" />
                 ROI Performance
               </h3>
               <div className="flex justify-center mb-4">
@@ -274,7 +253,7 @@ export default function ExecutiveCommandCenter({ darkMode = true }) {
 
             <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 border border-gray-700/50">
               <h3 className="text-lg font-semibold text-blue-400 mb-4 flex items-center">
-                <Users className="w-5 h-5 mr-2" />
+                <Icons.Users className="w-5 h-5 mr-2" />
                 Agent Fleet
               </h3>
               <div className="grid grid-cols-2 gap-4">
@@ -311,16 +290,16 @@ export default function ExecutiveCommandCenter({ darkMode = true }) {
                 <div className="w-48 h-48 border-4 border-cyan-500/30 rounded-full relative flex items-center justify-center">
                   <div className="w-32 h-32 border-2 border-blue-500/50 rounded-full flex items-center justify-center">
                     <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center">
-                      <Command className="w-8 h-8 text-white" />
+                      <Icons.Command className="w-8 h-8 text-white" />
                     </div>
                   </div>
                   
                   {/* Floating metrics around the circle */}
                   {[
-                    { icon: DollarSign, value: '$2.4M', position: 'top-0 left-1/2 transform -translate-x-1/2 -translate-y-4' },
-                    { icon: Activity, value: '97.8%', position: 'right-0 top-1/2 transform translate-x-4 -translate-y-1/2' },
-                    { icon: Cpu, value: '47 Active', position: 'bottom-0 left-1/2 transform -translate-x-1/2 translate-y-4' },
-                    { icon: Shield, value: 'Secure', position: 'left-0 top-1/2 transform -translate-x-4 -translate-y-1/2' }
+                    { icon:Icons.DollarSign, value: '$2.4M', position: 'top-0 left-1/2 transform -translate-x-1/2 -translate-y-4' },
+                    { icon:Icons.Activity, value: '97.8%', position: 'right-0 top-1/2 transform translate-x-4 -translate-y-1/2' },
+                    { icon:Icons.Cpu, value: '47 Active', position: 'bottom-0 left-1/2 transform -translate-x-1/2 translate-y-4' },
+                    { icon:Icons.Shield, value: 'Secure', position: 'left-0 top-1/2 transform -translate-x-4 -translate-y-1/2' }
                   ].map((item, idx) => (
                     <motion.div
                       key={idx}
@@ -360,15 +339,15 @@ export default function ExecutiveCommandCenter({ darkMode = true }) {
           >
             <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 border border-gray-700/50">
               <h3 className="text-lg font-semibold text-orange-400 mb-4 flex items-center">
-                <Rocket className="w-5 h-5 mr-2" />
+                <Icons.Rocket className="w-5 h-5 mr-2" />
                 Quick Actions
               </h3>
               <div className="space-y-3">
                 {[
-                  { label: 'Deploy New Agents', color: 'from-green-500 to-emerald-500', icon: Play },
-                  { label: 'Emergency Stop', color: 'from-red-500 to-orange-500', icon: Pause },
-                  { label: 'System Reset', color: 'from-blue-500 to-cyan-500', icon: RotateCcw },
-                  { label: 'Scale Operations', color: 'from-purple-500 to-pink-500', icon: TrendingUp }
+                  { label: 'Deploy New Agents', color: 'from-green-500 to-emerald-500', icon:Icons.Play },
+                  { label: 'Emergency Stop', color: 'from-red-500 to-orange-500', icon:Icons.Pause },
+                  { label: 'System Reset', color: 'from-blue-500 to-cyan-500', icon:Icons.RotateCcw },
+                  { label: 'Scale Operations', color: 'from-purple-500 to-pink-500', icon:Icons.TrendingUp }
                 ].map((action, idx) => (
                   <motion.button
                     key={idx}
@@ -380,7 +359,7 @@ export default function ExecutiveCommandCenter({ darkMode = true }) {
                       <action.icon className="w-4 h-4 mr-3" />
                       {action.label}
                     </div>
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <Icons.ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </motion.button>
                 ))}
               </div>
@@ -388,7 +367,7 @@ export default function ExecutiveCommandCenter({ darkMode = true }) {
 
             <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 border border-gray-700/50">
               <h3 className="text-lg font-semibold text-yellow-400 mb-4 flex items-center">
-                <Gauge className="w-5 h-5 mr-2" />
+                <Icons.Gauge className="w-5 h-5 mr-2" />
                 Performance
               </h3>
               <div className="space-y-4">

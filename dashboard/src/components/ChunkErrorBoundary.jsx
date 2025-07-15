@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
-import { AlertCircle, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import * as Icons from 'lucide-react';
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
 
 class ChunkErrorBoundary extends React.Component {
   constructor(props) {
@@ -49,7 +49,7 @@ class ChunkErrorBoundary extends React.Component {
           }`}>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <AlertCircle className="w-5 h-5 text-red-500" />
+                <Icons.AlertCircle className="w-5 h-5 text-red-500" />
                 <span>{isChunkError ? 'Loading Error' : 'Component Error'}</span>
               </CardTitle>
               <CardDescription>
@@ -83,7 +83,7 @@ class ChunkErrorBoundary extends React.Component {
                 className="w-full"
                 variant="default"
               >
-                <RefreshCw className="w-4 h-4 mr-2" />
+                <Icons.RefreshCw className="w-4 h-4 mr-2" />
                 Refresh Page
               </Button>
             </CardContent>

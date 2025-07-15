@@ -2,22 +2,7 @@
 import React, { useState, lazy, Suspense, useCallback, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence, ReducedMotion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
-import { 
-  BarChart3, 
-  Zap, 
-  Box, 
-  GitCompare, 
-  Trophy, 
-  Settings,
-  Moon,
-  Sun,
-  Sparkles,
-  GitBranch,
-  MessageCircle,
-  Loader2,
-  Menu,
-  X
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 // Lazy load components with optimized loading
 const AgentDashboard = lazy(() => import('./AgentDashboard'));
@@ -163,70 +148,70 @@ export default function PerformanceDashboard() {
     { 
       id: 'command', 
       name: 'Command Center', 
-      icon: Zap, 
+      icon:Icons.Zap, 
       component: EnhancementCommandCenter,
       priority: 'high'
     },
     { 
       id: 'project', 
       name: 'Project Status', 
-      icon: GitBranch, 
+      icon:Icons.GitBranch, 
       component: ProjectDashboard,
       priority: 'high'
     },
     { 
       id: 'enhanced', 
       name: 'Enhanced Dashboard', 
-      icon: Sparkles, 
+      icon:Icons.Sparkles, 
       component: EnhancedAgentDashboard,
       priority: 'medium'
     },
     { 
       id: 'chat', 
       name: 'Agent Chat', 
-      icon: MessageCircle, 
+      icon:Icons.MessageCircle, 
       component: ChatDashboard,
       priority: 'high'
     },
     { 
       id: 'dashboard', 
       name: 'Classic Dashboard', 
-      icon: BarChart3, 
+      icon:Icons.BarChart3, 
       component: AgentDashboard,
       priority: 'high'
     },
     { 
       id: 'workspace', 
       name: '3D Workspace', 
-      icon: Box, 
+      icon:Icons.Box, 
       component: Agent3DWorkspace,
       priority: 'low' // Heavy component - load last
     },
     { 
       id: 'diffs', 
       name: 'Code Diffs', 
-      icon: GitCompare, 
+      icon:Icons.GitCompare, 
       component: CodeDiffViewer,
       priority: 'medium'
     },
     { 
       id: 'gamification', 
       name: 'Achievements', 
-      icon: Trophy, 
+      icon:Icons.Trophy, 
       component: GameficationDashboard,
       priority: 'low'
     },
     { 
       id: 'prompts', 
       name: 'Prompt Manager', 
-      icon: Settings, 
+      icon:Icons.Settings, 
       component: PromptManager,
       priority: 'medium'
     },
     { 
       id: 'enhancements', 
       name: 'Enhancements', 
-      icon: Settings, 
+      icon:Icons.Settings, 
       component: EnhancementDashboard,
       priority: 'medium'
     }
@@ -292,7 +277,7 @@ export default function PerformanceDashboard() {
               <div className="flex items-center space-x-4">
                 <div className="relative">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                    <Zap className="text-white" size={20} />
+                    <Icons.Zap className="text-white" size={20} />
                   </div>
                 </div>
                 <div>
@@ -320,7 +305,7 @@ export default function PerformanceDashboard() {
                   }`}
                   aria-label="Toggle theme"
                 >
-                  {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                  {darkMode ? <Icons.Sun size={20} /> : <Icons.Moon size={20} />}
                 </button>
 
                 {/* Mobile Menu Toggle */}
@@ -334,7 +319,7 @@ export default function PerformanceDashboard() {
                     }`}
                     aria-label="Toggle menu"
                   >
-                    {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                    {isMobileMenuOpen ? <Icons.X size={20} /> : <Icons.Menu size={20} />}
                   </button>
                 )}
 

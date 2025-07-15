@@ -2,22 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import soundService from '../services/soundService';
-import {
-  Brain,
-  Sparkles,
-  Target,
-  TrendingUp,
-  Users,
-  Star,
-  Eye,
-  Zap,
-  Heart,
-  Award,
-  Gauge,
-  Settings,
-  RefreshCw,
-  ChevronRight
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 /**
  * ADAPTIVE AI-DRIVEN PERSONALIZATION ENGINE
@@ -388,10 +373,10 @@ const PersonalizationDashboard = ({ profile, learningHistory, theme, darkMode })
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: Eye },
-    { id: 'preferences', label: 'Preferences', icon: Settings },
-    { id: 'learning', label: 'Learning', icon: Brain },
-    { id: 'performance', label: 'Performance', icon: TrendingUp }
+    { id: 'overview', label: 'Overview', icon:Icons.Eye },
+    { id: 'preferences', label: 'Preferences', icon:Icons.Settings },
+    { id: 'learning', label: 'Learning', icon:Icons.Brain },
+    { id: 'performance', label: 'Performance', icon:Icons.TrendingUp }
   ];
 
   const PreferenceSlider = ({ label, value, onChange, min = 0, max = 1, step = 0.1 }) => (
@@ -431,7 +416,7 @@ const PersonalizationDashboard = ({ profile, learningHistory, theme, darkMode })
             : 'bg-white/80 text-gray-900 border border-gray-200'
         }`}
       >
-        <Sparkles size={20} />
+        <Icons.Sparkles size={20} />
       </motion.button>
 
       {/* Dashboard Panel */}
@@ -493,7 +478,7 @@ const PersonalizationDashboard = ({ profile, learningHistory, theme, darkMode })
                 <div className="space-y-3">
                   <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
                     <div className="flex items-center space-x-2 mb-2">
-                      <Target size={16} className="text-blue-500" />
+                      <Icons.Target size={16} className="text-blue-500" />
                       <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         Personalization Score
                       </span>
@@ -640,7 +625,7 @@ export default function AdaptivePersonalizationEngine({ darkMode, children }) {
             }`}
           >
             <div className="flex items-center space-x-2 mb-2">
-              <Sparkles size={16} />
+              <Icons.Sparkles size={16} />
               <span className="text-sm font-medium">Personalized Suggestion</span>
             </div>
             {personalizedContent.suggestedActions.slice(0, 1).map((action, index) => (
@@ -662,7 +647,7 @@ export default function AdaptivePersonalizationEngine({ darkMode, children }) {
                       : 'bg-purple-600 text-white hover:bg-purple-700'
                   }`}
                 >
-                  Try it <ChevronRight size={12} className="inline ml-1" />
+                  Try it <Icons.ChevronRight size={12} className="inline ml-1" />
                 </button>
               </div>
             ))}

@@ -1,25 +1,14 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Slider } from '@/components/ui/slider';
-import { 
-  Volume2, 
-  VolumeX, 
-  Play, 
-  Pause, 
-  Settings, 
-  Mic, 
-  Speaker,
-  Activity,
-  CheckCircle,
-  XCircle
-} from 'lucide-react';
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Input } from '@/src/components/ui/input';
+import { Label } from '@/src/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
+import { Switch } from '@/src/components/ui/switch';
+import { Slider } from '@/src/components/ui/slider';
+import * as Icons from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function TTSManager({ darkMode = true }) {
@@ -130,11 +119,11 @@ export default function TTSManager({ darkMode = true }) {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'healthy': return <CheckCircle className="w-5 h-5" />;
-      case 'disabled': return <VolumeX className="w-5 h-5" />;
+      case 'healthy': return <Icons.CheckCircle className="w-5 h-5" />;
+      case 'disabled': return <Icons.VolumeX className="w-5 h-5" />;
       case 'unhealthy':
-      case 'error': return <XCircle className="w-5 h-5" />;
-      default: return <Activity className="w-5 h-5" />;
+      case 'error': return <Icons.XCircle className="w-5 h-5" />;
+      default: return <Icons.Activity className="w-5 h-5" />;
     }
   };
 
@@ -168,7 +157,7 @@ export default function TTSManager({ darkMode = true }) {
           <Card className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
             <CardHeader>
               <CardTitle className={`flex items-center space-x-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                <Settings className="w-5 h-5" />
+                <Icons.Settings className="w-5 h-5" />
                 <span>Configuration</span>
               </CardTitle>
               <CardDescription className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
@@ -277,7 +266,7 @@ export default function TTSManager({ darkMode = true }) {
           <Card className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
             <CardHeader>
               <CardTitle className={`flex items-center space-x-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                <Speaker className="w-5 h-5" />
+                <Icons.Speaker className="w-5 h-5" />
                 <span>Test TTS</span>
               </CardTitle>
               <CardDescription className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
@@ -328,11 +317,11 @@ export default function TTSManager({ darkMode = true }) {
                   className="flex-1 text-sm sm:text-base"
                 >
                   {isLoading ? (
-                    <Activity className="w-4 h-4 mr-2 animate-spin" />
+                    <Icons.Activity className="w-4 h-4 mr-2 animate-spin" />
                   ) : isPlaying ? (
-                    <Pause className="w-4 h-4 mr-2" />
+                    <Icons.Pause className="w-4 h-4 mr-2" />
                   ) : (
-                    <Play className="w-4 h-4 mr-2" />
+                    <Icons.Play className="w-4 h-4 mr-2" />
                   )}
                   {isLoading ? 'Synthesizing...' : isPlaying ? 'Playing...' : 'Test TTS'}
                 </Button>
@@ -342,7 +331,7 @@ export default function TTSManager({ darkMode = true }) {
                   onClick={checkTTSHealth}
                   className="flex-1 text-sm sm:text-base"
                 >
-                  <Activity className="w-4 h-4 mr-2" />
+                  <Icons.Activity className="w-4 h-4 mr-2" />
                   Check Health
                 </Button>
               </div>
@@ -360,7 +349,7 @@ export default function TTSManager({ darkMode = true }) {
         <Card className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
           <CardHeader>
             <CardTitle className={`flex items-center space-x-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              <Mic className="w-5 h-5" />
+              <Icons.Mic className="w-5 h-5" />
               <span>Voice Commands</span>
             </CardTitle>
             <CardDescription className={darkMode ? 'text-gray-300' : 'text-gray-600'}>

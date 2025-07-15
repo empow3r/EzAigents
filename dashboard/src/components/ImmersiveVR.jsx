@@ -1,16 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion, useTransform, useMotionValue } from 'framer-motion';
-import { 
-  Headphones as VrHeadset,
-  Maximize,
-  Minimize,
-  RotateCw,
-  Eye,
-  Layers,
-  Settings,
-  Zap
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 export const VRReadyMetricCard = ({ 
   title, 
@@ -162,7 +153,7 @@ export const DepthLayeredDashboard = ({ children, layers = 3 }) => {
           className="p-2 bg-gray-800/80 backdrop-blur-lg border border-gray-600/50 rounded-lg text-gray-300 hover:text-white transition-all"
           disabled={currentLayer === 0}
         >
-          <Minimize className="w-4 h-4" />
+          <Icons.Minimize className="w-4 h-4" />
         </button>
         <span className="px-3 py-2 bg-gray-800/80 backdrop-blur-lg border border-gray-600/50 rounded-lg text-sm text-gray-300">
           Layer {currentLayer + 1}/{layers}
@@ -172,7 +163,7 @@ export const DepthLayeredDashboard = ({ children, layers = 3 }) => {
           className="p-2 bg-gray-800/80 backdrop-blur-lg border border-gray-600/50 rounded-lg text-gray-300 hover:text-white transition-all"
           disabled={currentLayer === layers - 1}
         >
-          <Maximize className="w-4 h-4" />
+          <Icons.Maximize className="w-4 h-4" />
         </button>
       </div>
 
@@ -226,7 +217,7 @@ export const DepthLayeredDashboard = ({ children, layers = 3 }) => {
           {layerIndex === 2 && (
             <div className="p-8 flex items-center justify-center">
               <div className="text-center text-gray-400">
-                <Layers className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                <Icons.Layers className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 <p>Deep Analytics Layer</p>
               </div>
             </div>
@@ -302,7 +293,7 @@ export const AR_OverlayInterface = ({ isVisible, onToggle }) => {
               onClick={() => setTrackingActive(!trackingActive)}
               className="ml-auto p-1 text-cyan-400 hover:text-cyan-300 transition-colors"
             >
-              <Eye className="w-4 h-4" />
+              <Icons.Eye className="w-4 h-4" />
             </button>
           </div>
           
@@ -339,7 +330,7 @@ export const AR_OverlayInterface = ({ isVisible, onToggle }) => {
                 : 'bg-gray-900/90 border-gray-600/50 text-gray-300 hover:text-white'
             }`}
           >
-            <Zap className="w-5 h-5" />
+            <Icons.Zap className="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -396,8 +387,8 @@ export const ImmersiveControlPanel = ({ isActive, onToggle }) => {
           {/* Mode Selector */}
           <div className="flex bg-gray-800 rounded-lg p-1">
             {[
-              { id: 'standard', label: '2D', icon: Settings },
-              { id: 'immersive', label: '3D', icon: Layers },
+              { id: 'standard', label: '2D', icon:Icons.Settings },
+              { id: 'immersive', label: '3D', icon:Icons.Layers },
               { id: 'vr', label: 'VR', icon: VrHeadset }
             ].map((modeOption) => (
               <button
@@ -432,7 +423,7 @@ export const ImmersiveControlPanel = ({ isActive, onToggle }) => {
             onClick={onToggle}
             className="p-2 text-gray-400 hover:text-white transition-colors"
           >
-            <Minimize className="w-4 h-4" />
+            <Icons.Minimize className="w-4 h-4" />
           </button>
         </div>
       </div>

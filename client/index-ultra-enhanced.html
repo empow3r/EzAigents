@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Observability Pro Ultra</title>
+    <link rel="stylesheet" href="style-ultra-enhanced.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vis-network@latest/dist/vis-network.min.js"></script>
+</head>
+<body>
+    <!-- Keyboard Shortcuts Help Modal -->
+    <div id="shortcuts-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⌨️ Keyboard Shortcuts</h3>
+                <button class="modal-close" onclick="closeModal('shortcuts-modal')">&times;</button>
+            </div>
+            <div class="shortcuts-grid">
+                <div class="shortcut-group">
+                    <h4>Navigation</h4>
+                    <div class="shortcut"><kbd>?</kbd> Show this help</div>
+                    <div class="shortcut"><kbd>/</kbd> Focus search</div>
+                    <div class="shortcut"><kbd>Esc</kbd> Clear search/Close modals</div>
+                    <div class="shortcut"><kbd>Space</kbd> Pause/Resume stream</div>
+                </div>
+                <div class="shortcut-group">
+                    <h4>Views</h4>
+                    <div class="shortcut"><kbd>1</kbd> Events view</div>
+                    <div class="shortcut"><kbd>2</kbd> Timeline view</div>
+                    <div class="shortcut"><kbd>3</kbd> Network view</div>
+                    <div class="shortcut"><kbd>4</kbd> Analytics view</div>
+                </div>
+                <div class="shortcut-group">
+                    <h4>Actions</h4>
+                    <div class="shortcut"><kbd>R</kbd> Refresh data</div>
+                    <div class="shortcut"><kbd>C</kbd> Clear events</div>
+                    <div class="shortcut"><kbd>E</kbd> Export data</div>
+                    <div class="shortcut"><kbd>F</kbd> Toggle filters</div>
+                </div>
+                <div class="shortcut-group">
+                    <h4>Settings</h4>
+                    <div class="shortcut"><kbd>T</kbd> Toggle theme</div>
+                    <div class="shortcut"><kbd>S</kbd> Open settings</div>
+                    <div class="shortcut"><kbd>A</kbd> Toggle auto-scroll</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Details Modal -->
+    <div id="event-details-modal" class="modal hidden">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>📄 Event Details</h3>
+                <div class="modal-actions">
+                    <button class="btn-icon" onclick="bookmarkEvent()" title="Bookmark Event">⭐</button>
+                    <button class="btn-icon" onclick="copyEventDetails()" title="Copy Event">📋</button>
+                    <button class="btn-icon" onclick="exportEvent()" title="Export Event">💾</button>
+                    <button class="modal-close" onclick="closeModal('event-details-modal')">&times;</button>
+                </div>
+            </div>
+            <div id="event-details-content" class="event-details-content">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚙️ Dashboard Settings</h3>
+                <button class="modal-close" onclick="closeModal('settings-modal')">&times;</button>
+            </div>
+            <div class="settings-content">
+                <div class="setting-group">
+                    <h4>Appearance</h4>
+                    <label class="setting-item">
+                        <span>Theme</span>
+                        <select id="theme-selector">
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                            <option value="auto">Auto</option>
+                        </select>
+                    </label>
+                    <label class="setting-item">
+                        <span>Animation Speed</span>
+                        <select id="animation-speed">
+                            <option value="fast">Fast</option>
+                            <option value="normal">Normal</option>
+                            <option value="slow">Slow</option>
+                            <option value="none">None</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <h4>Behavior</h4>
+                    <label class="setting-item">
+                        <span>Auto-refresh interval</span>
+                        <select id="refresh-interval">
+                            <option value="1000">1 second</option>
+                            <option value="5000">5 seconds</option>
+                            <option value="10000">10 seconds</option>
+                            <option value="30000">30 seconds</option>
+                        </select>
+                    </label>
+                    <label class="setting-item checkbox">
+                        <input type="checkbox" id="sound-notifications" checked>
+                        <span>Sound notifications</span>
+                    </label>
+                    <label class="setting-item checkbox">
+                        <input type="checkbox" id="browser-notifications" checked>
+                        <span>Browser notifications</span>
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <h4>Data</h4>
+                    <label class="setting-item">
+                        <span>Max events in memory</span>
+                        <select id="max-events">
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                            <option value="2000">2000</option>
+                            <option value="5000">5000</option>
+                        </select>
+                    </label>
+                    <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h3>🔍 Filters</h3>
+                <button id="sidebar-toggle" class="btn-icon">⬅</button>
+            </div>
+            
+            <div class="filter-section">
+                <h4>Quick Filters</h4>
+                <div class="filter-chips">
+                    <button class="filter-chip active" data-filter="all">All Events</button>
+                    <button class="filter-chip" data-filter="errors">Errors Only</button>
+                    <button class="filter-chip" data-filter="warnings">Warnings</button>
+                    <button class="filter-chip" data-filter="recent">Last 5 min</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h4>Time Range</h4>
+                <div class="time-range-picker">
+                    <button class="time-btn active" data-range="live">Live</button>
+                    <button class="time-btn" data-range="1h">1H</button>
+                    <button class="time-btn" data-range="24h">24H</button>
+                    <button class="time-btn" data-range="7d">7D</button>
+                </div>
+                <div class="custom-time-range">
+                    <input type="datetime-local" id="start-time" placeholder="Start time">
+                    <input type="datetime-local" id="end-time" placeholder="End time">
+                    <button class="btn btn-small" onclick="applyCustomTimeRange()">Apply</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h4>Advanced Filters</h4>
+                <label>
+                    Apps
+                    <select id="advanced-app-filter" multiple>
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </label>
+                <label>
+                    Event Types
+                    <select id="advanced-type-filter" multiple>
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </label>
+                <label>
+                    Severity
+                    <select id="severity-filter">
+                        <option value="">All Levels</option>
+                        <option value="1">Info & Above</option>
+                        <option value="2">Warning & Above</option>
+                        <option value="3">Error Only</option>
+                    </select>
+                </label>
+                <label>
+                    Trace ID
+                    <input type="text" id="trace-filter" placeholder="Enter trace ID">
+                </label>
+            </div>
+
+            <div class="filter-section">
+                <h4>Saved Searches</h4>
+                <div id="saved-searches">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <button class="btn btn-small" onclick="saveCurrentSearch()">💾 Save Current</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button id="menu-toggle" class="btn-icon">☰</button>
+                    <h1>🚀 Claude Code Observability Pro Ultra</h1>
+                </div>
+                <div class="header-center">
+                    <div class="search-container">
+                        <input type="text" id="global-search" placeholder="Search events... (Press / to focus)" autocomplete="off">
+                        <div class="search-suggestions" id="search-suggestions"></div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="status-indicators">
+                        <div id="connection-status" class="status-indicator status-disconnected">
+                            <span class="status-dot"></span>
+                            <span class="status-text">Disconnected</span>
+                        </div>
+                        <div id="event-rate" class="status-indicator">
+                            <span class="status-icon">📊</span>
+                            <span class="status-text">0/min</span>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-icon" onclick="showShortcuts()" title="Keyboard Shortcuts (?)">⌨️</button>
+                        <button class="btn-icon" onclick="toggleTheme()" title="Toggle Theme (T)">🌓</button>
+                        <button class="btn-icon" onclick="openSettings()" title="Settings (S)">⚙️</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- View Selector -->
+            <div class="view-selector">
+                <button class="view-btn active" data-view="events">📋 Events</button>
+                <button class="view-btn" data-view="timeline">📈 Timeline</button>
+                <button class="view-btn" data-view="network">🕸️ Network</button>
+                <button class="view-btn" data-view="analytics">📊 Analytics</button>
+            </div>
+
+            <!-- Live Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-label">Total Events</span>
+                    <span class="stat-value" id="stat-total">0</span>
+                    <span class="stat-trend" id="trend-total">--</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Active Agents</span>
+                    <span class="stat-value" id="stat-agents">0</span>
+                    <span class="stat-trend" id="trend-agents">--</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Error Rate</span>
+                    <span class="stat-value" id="stat-errors">0%</span>
+                    <span class="stat-trend" id="trend-errors">--</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Avg Response</span>
+                    <span class="stat-value" id="stat-response">0ms</span>
+                    <span class="stat-trend" id="trend-response">--</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Active Sessions</span>
+                    <span class="stat-value" id="stat-sessions">0</span>
+                    <span class="stat-trend" id="trend-sessions">--</span>
+                </div>
+            </div>
+
+            <!-- View Containers -->
+            
+            <!-- Events View -->
+            <div id="events-view" class="view-container active">
+                <div class="view-controls">
+                    <div class="controls-left">
+                        <button class="btn" id="pause-btn">⏸ Pause</button>
+                        <button class="btn" onclick="clearEvents()">🗑️ Clear</button>
+                        <button class="btn" onclick="exportEvents()">💾 Export</button>
+                    </div>
+                    <div class="controls-right">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="auto-scroll" checked>
+                            Auto-scroll
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="show-details" checked>
+                            Show details
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="group-by-session">
+                            Group by session
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="events-container-wrapper">
+                    <div id="events-flow-visualization" class="flow-visualization">
+                        <!-- Real-time event flow visualization -->
+                    </div>
+                    <div id="events-container" class="events-container">
+                        <div class="loading">Connecting to Enhanced WebSocket...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline View -->
+            <div id="timeline-view" class="view-container">
+                <div class="timeline-controls">
+                    <button class="btn" onclick="zoomTimelineIn()">🔍+ Zoom In</button>
+                    <button class="btn" onclick="zoomTimelineOut()">🔍- Zoom Out</button>
+                    <button class="btn" onclick="resetTimelineZoom()">🔄 Reset</button>
+                    <div class="timeline-info">
+                        <span id="timeline-range">Loading...</span>
+                    </div>
+                </div>
+                <div id="timeline-container" class="timeline-container">
+                    <svg id="timeline-svg"></svg>
+                </div>
+            </div>
+
+            <!-- Network View -->
+            <div id="network-view" class="view-container">
+                <div class="network-controls">
+                    <button class="btn" onclick="centerNetwork()">🎯 Center</button>
+                    <button class="btn" onclick="fitNetwork()">📐 Fit All</button>
+                    <label>
+                        Layout:
+                        <select id="network-layout">
+                            <option value="hierarchical">Hierarchical</option>
+                            <option value="physics">Physics</option>
+                            <option value="circular">Circular</option>
+                        </select>
+                    </label>
+                </div>
+                <div id="network-container" class="network-container"></div>
+                <div class="network-legend">
+                    <h4>Legend</h4>
+                    <div class="legend-item">
+                        <div class="legend-color agent-color"></div>
+                        <span>Agents</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color session-color"></div>
+                        <span>Sessions</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color event-color"></div>
+                        <span>Events</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="analytics-view" class="view-container">
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>📈 Event Volume</h3>
+                        <canvas id="volume-analytics-chart"></canvas>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>🎯 Event Types</h3>
+                        <canvas id="types-analytics-chart"></canvas>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>⚡ Performance</h3>
+                        <canvas id="performance-analytics-chart"></canvas>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>🔗 Sessions</h3>
+                        <canvas id="sessions-analytics-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fab-container">
+        <button class="fab" id="main-fab">⚡</button>
+        <div class="fab-menu hidden" id="fab-menu">
+            <button class="fab-item" onclick="refreshAllData()" title="Refresh All">🔄</button>
+            <button class="fab-item" onclick="exportAllData()" title="Export All">💾</button>
+            <button class="fab-item" onclick="toggleFullscreen()" title="Fullscreen">⛶</button>
+            <button class="fab-item" onclick="shareCurrentView()" title="Share View">📤</button>
+        </div>
+    </div>
+
+    <!-- Notifications Container -->
+    <div id="notifications-container" class="notifications-container"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <script src="ws-ultra-enhanced.js"></script>
+</body>
+</html>

@@ -2,9 +2,21 @@
 const Redis = require('ioredis');
 const path = require('path');
 const { primeAgentContext } = require('./context-orchestrator');
+const QueueEnhancer = require('./queue-enhancer');
 
 const redis = new Redis(process.env.REDIS_URL);
-const filemap = require(path.resolve(process.env.FILEMAP_PATH || './shared/filemap.json'));
+const filemap = require(path.resolve(process.env.FILEMAP_PATH || '../shared/filemap.json'));
+
+// Initialize queue enhancer with feature flags
+const queueEnhancer = new QueueEnhancer(redis, {
+  enableFeatures: {
+    priorities: process.env.ENABLE_PRIORITIES !== 'false',
+    deduplication: process.env.ENABLE_DEDUPLICATION !== 'false',
+    analytics: process.env.ENABLE_ANALYTICS !== 'false',
+    alerts: process.env.ENABLE_ALERTS !== 'false'
+  },
+  fallbackToLegacy: true
+});
 
 (async () => {
   console.log('🚀 Enqueuing jobs...');
@@ -26,31 +38,44 @@ const filemap = require(path.resolve(process.env.FILEMAP_PATH || './shared/filem
                       'refactor-core';
 
     await primeAgentContext(agentType, file, prompt);
-    const payload = JSON.stringify({ 
+    const task = { 
       file, 
       prompt, 
       model,
+      type: agentType,
       timestamp: new Date().toISOString(),
       agentType 
-    });
+    };
 
     try {
-      await redis.lpush(`queue:${model}`, payload);
-      console.log(`📩 Enqueued ${file} to ${model}`);
+      // Use enhanced enqueue with priority detection
+      const result = await queueEnhancer.enqueue(`queue:${model}`, task, {
+        source: 'enqueue.js'
+      });
+      
+      if (result.success) {
+        console.log(`📩 Enqueued ${file} to ${model} (Priority: ${result.priority}, ID: ${result.taskId})`);
+        if (result.fallback) {
+          console.log(`   ⚠️ Used legacy fallback`);
+        }
+      } else if (result.reason === 'duplicate') {
+        console.log(`🔄 Skipped duplicate ${file} (Original: ${result.originalTaskId})`);
+        continue;
+      }
       
       // Track enhancement queue assignments
       if (file.startsWith('cli/') && (file.includes('vault') || file.includes('auth') || file.includes('rbac') || file.includes('encryption'))) {
-        await redis.lpush('queue:enhancement:security-layer', payload);
+        await queueEnhancer.enqueue('queue:enhancement:security-layer', task, { priority: 'high' });
       } else if (file.startsWith('cli/') && (file.includes('telemetry') || file.includes('metrics') || file.includes('monitoring'))) {
-        await redis.lpush('queue:enhancement:observability-stack', payload);
+        await queueEnhancer.enqueue('queue:enhancement:observability-stack', task, { priority: 'normal' });
       } else if (file.startsWith('cli/') && (file.includes('queue') || file.includes('kafka') || file.includes('rabbitmq'))) {
-        await redis.lpush('queue:enhancement:distributed-queue-system', payload);
+        await queueEnhancer.enqueue('queue:enhancement:distributed-queue-system', task, { priority: 'high' });
       } else if (file.startsWith('cli/') && (file.includes('orchestration') || file.includes('ml-agent'))) {
-        await redis.lpush('queue:enhancement:intelligent-orchestration', payload);
+        await queueEnhancer.enqueue('queue:enhancement:intelligent-orchestration', task, { priority: 'normal' });
       } else if (file.startsWith('cli/') && (file.includes('consensus') || file.includes('knowledge') || file.includes('task-negotiation'))) {
-        await redis.lpush('queue:enhancement:collaboration-framework', payload);
+        await queueEnhancer.enqueue('queue:enhancement:collaboration-framework', task, { priority: 'normal' });
       } else if ((file.includes('k8s') || file.includes('health') || file.includes('circuit')) && file.startsWith('cli/') || file.startsWith('deployment/')) {
-        await redis.lpush('queue:enhancement:self-healing-infrastructure', payload);
+        await queueEnhancer.enqueue('queue:enhancement:self-healing-infrastructure', task, { priority: 'high' });
       }
       
     } catch (err) {

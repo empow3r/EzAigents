@@ -1,22 +1,11 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { 
-  Send, 
-  Bot, 
-  User, 
-  Zap, 
-  Brain, 
-  MessageCircle,
-  Settings,
-  Play,
-  Pause,
-  RefreshCw
-} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Button } from '@/src/components/ui/button';
+import { Input } from '@/src/components/ui/input';
+import { ScrollArea } from '@/src/components/ui/scroll-area';
+import { Avatar, AvatarFallback } from '@/src/components/ui/avatar';
+import * as Icons from 'lucide-react';
 
 export default function ChatDashboard() {
   const [messages, setMessages] = useState([]);
@@ -164,11 +153,11 @@ export default function ChatDashboard() {
   };
 
   const quickCommands = [
-    { label: 'Status Check', command: '/status', icon: RefreshCw },
-    { label: 'Queue Stats', command: '/queue', icon: MessageCircle },
-    { label: 'Start All Agents', command: '/start', icon: Play },
-    { label: 'Pause Processing', command: '/pause', icon: Pause },
-    { label: 'Clear Queues', command: '/clear', icon: Settings }
+    { label: 'Status Check', command: '/status', icon:Icons.RefreshCw },
+    { label: 'Queue Stats', command: '/queue', icon:Icons.MessageCircle },
+    { label: 'Start All Agents', command: '/start', icon:Icons.Play },
+    { label: 'Pause Processing', command: '/pause', icon:Icons.Pause },
+    { label: 'Clear Queues', command: '/clear', icon:Icons.Settings }
   ];
 
   return (
@@ -177,7 +166,7 @@ export default function ChatDashboard() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <MessageCircle className="w-8 h-8 text-blue-500" />
+            <Icons.MessageCircle className="w-8 h-8 text-blue-500" />
             Agent Chat Control
           </h1>
           <p className="text-gray-600">Real-time communication with AI agents</p>
@@ -222,7 +211,7 @@ export default function ChatDashboard() {
                 className="w-full justify-start"
                 onClick={() => setSelectedAgent('all')}
               >
-                <Bot className="w-4 h-4 mr-2" />
+                <Icons.Bot className="w-4 h-4 mr-2" />
                 All Agents
               </Button>
               
@@ -276,7 +265,7 @@ export default function ChatDashboard() {
               <div className="space-y-4">
                 {messages.length === 0 ? (
                   <div className="text-center text-gray-500 py-8">
-                    <MessageCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <Icons.MessageCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>No messages yet. Start a conversation with your agents!</p>
                   </div>
                 ) : (
@@ -288,9 +277,9 @@ export default function ChatDashboard() {
                           message.sender === 'system' ? 'bg-gray-500 text-white' :
                           'bg-green-500 text-white'
                         }>
-                          {message.sender === 'user' ? <User className="w-4 h-4" /> :
-                           message.sender === 'system' ? <Settings className="w-4 h-4" /> :
-                           <Bot className="w-4 h-4" />}
+                          {message.sender === 'user' ? <Icons.User className="w-4 h-4" /> :
+                           message.sender === 'system' ? <Icons.Settings className="w-4 h-4" /> :
+                           <Icons.Bot className="w-4 h-4" />}
                         </AvatarFallback>
                       </Avatar>
                       
@@ -345,7 +334,7 @@ export default function ChatDashboard() {
                 className="flex-1"
               />
               <Button onClick={sendMessage} disabled={!inputMessage.trim()}>
-                <Send className="w-4 h-4" />
+                <Icons.Send className="w-4 h-4" />
               </Button>
             </div>
           </CardContent>

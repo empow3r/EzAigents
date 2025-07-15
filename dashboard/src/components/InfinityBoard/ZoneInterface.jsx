@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, CheckCircle, Clock, TrendingUp, Award, Settings } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { useInfinityBoardStore } from '../../stores/infinityBoardStore';
 
 // Zone-specific content components
@@ -330,7 +330,7 @@ const ZoneInterface = ({ zone, onClose }) => {
             onClick={onClose}
             className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
           >
-            <X className="w-6 h-6 text-white" />
+            <Icons.X className="w-6 h-6 text-white" />
           </button>
         </div>
 

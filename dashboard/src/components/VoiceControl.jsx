@@ -1,22 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Mic, 
-  MicOff, 
-  Volume2, 
-  VolumeX, 
-  Settings, 
-  MessageSquare,
-  Headphones,
-  Waves as Waveform,
-  Play,
-  Pause,
-  RotateCcw,
-  Check,
-  X,
-  Speaker,
-  Command
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { useVoiceCommands } from '../hooks/useVoiceCommands';
 import { useTextToSpeech } from '../hooks/useTextToSpeech';
 import { useAudioFeedback } from '../hooks/useAudioFeedback';
@@ -188,7 +172,7 @@ export default function VoiceControl({ screenSize, isMobile, isTablet }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold flex items-center gap-2">
-          <Mic className="w-5 h-5" />
+          <Icons.Mic className="w-5 h-5" />
           Voice Commands
         </h3>
         <div className="flex items-center gap-2">
@@ -201,13 +185,13 @@ export default function VoiceControl({ screenSize, isMobile, isTablet }) {
                 : 'bg-blue-500 text-white hover:bg-blue-600'
             } ${!voiceSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            {isListening ? <Icons.MicOff className="w-4 h-4" /> : <Icons.Mic className="w-4 h-4" />}
           </button>
           <button
             onClick={() => setShowCommands(!showCommands)}
             className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
           >
-            <Command className="w-4 h-4" />
+            <Icons.Command className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -330,9 +314,9 @@ export default function VoiceControl({ screenSize, isMobile, isTablet }) {
                 </span>
                 <div className="flex items-center gap-1">
                   {cmd.executed ? (
-                    <Check className="w-3 h-3 text-green-600" />
+                    <Icons.Check className="w-3 h-3 text-green-600" />
                   ) : (
-                    <X className="w-3 h-3 text-red-600" />
+                    <Icons.X className="w-3 h-3 text-red-600" />
                   )}
                   <span className="text-gray-500">
                     {cmd.timestamp.toLocaleTimeString()}
@@ -433,7 +417,7 @@ export default function VoiceControl({ screenSize, isMobile, isTablet }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold flex items-center gap-2">
-          <Speaker className="w-5 h-5" />
+          <Icons.Speaker className="w-5 h-5" />
           Text to Speech
         </h3>
         <div className="flex items-center gap-2">
@@ -448,14 +432,14 @@ export default function VoiceControl({ screenSize, isMobile, isTablet }) {
                 : 'bg-gray-300 text-gray-600 cursor-not-allowed'
             }`}
           >
-            {isSpeaking ? (isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />) : <Volume2 className="w-4 h-4" />}
+            {isSpeaking ? (isPaused ? <Icons.Play className="w-4 h-4" /> : <Icons.Pause className="w-4 h-4" />) : <Icons.Volume2 className="w-4 h-4" />}
           </button>
           <button
             onClick={() => stop()}
             disabled={!isSpeaking}
             className="p-2 rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:bg-gray-300 disabled:text-gray-600"
           >
-            <X className="w-4 h-4" />
+            <Icons.X className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -562,7 +546,7 @@ export default function VoiceControl({ screenSize, isMobile, isTablet }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold flex items-center gap-2">
-          <Headphones className="w-5 h-5" />
+          <Icons.Headphones className="w-5 h-5" />
           Audio Feedback
         </h3>
         <button
@@ -573,7 +557,7 @@ export default function VoiceControl({ screenSize, isMobile, isTablet }) {
               : 'bg-gray-300 text-gray-600 hover:bg-gray-400'
           }`}
         >
-          {audioEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+          {audioEnabled ? <Icons.Volume2 className="w-4 h-4" /> : <Icons.VolumeX className="w-4 h-4" />}
         </button>
       </div>
 
@@ -670,7 +654,7 @@ export default function VoiceControl({ screenSize, isMobile, isTablet }) {
           onClick={() => setShowSettings(!showSettings)}
           className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
         >
-          <Settings className="w-5 h-5" />
+          <Icons.Settings className="w-5 h-5" />
         </button>
       </div>
 
@@ -678,7 +662,7 @@ export default function VoiceControl({ screenSize, isMobile, isTablet }) {
       <div className="grid grid-cols-3 gap-4">
         <div className={`p-4 rounded-lg border ${voiceSupported ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
           <div className="flex items-center gap-2">
-            <Mic className={`w-5 h-5 ${voiceSupported ? 'text-green-600' : 'text-red-600'}`} />
+            <Icons.Mic className={`w-5 h-5 ${voiceSupported ? 'text-green-600' : 'text-red-600'}`} />
             <span className="text-sm font-medium">Voice Commands</span>
           </div>
           <p className="text-xs text-gray-600 mt-1">
@@ -688,7 +672,7 @@ export default function VoiceControl({ screenSize, isMobile, isTablet }) {
         
         <div className={`p-4 rounded-lg border ${ttsSupported ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
           <div className="flex items-center gap-2">
-            <Speaker className={`w-5 h-5 ${ttsSupported ? 'text-green-600' : 'text-red-600'}`} />
+            <Icons.Speaker className={`w-5 h-5 ${ttsSupported ? 'text-green-600' : 'text-red-600'}`} />
             <span className="text-sm font-medium">Text to Speech</span>
           </div>
           <p className="text-xs text-gray-600 mt-1">
@@ -698,7 +682,7 @@ export default function VoiceControl({ screenSize, isMobile, isTablet }) {
         
         <div className={`p-4 rounded-lg border ${audioSupported ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
           <div className="flex items-center gap-2">
-            <Headphones className={`w-5 h-5 ${audioSupported ? 'text-green-600' : 'text-red-600'}`} />
+            <Icons.Headphones className={`w-5 h-5 ${audioSupported ? 'text-green-600' : 'text-red-600'}`} />
             <span className="text-sm font-medium">Audio Feedback</span>
           </div>
           <p className="text-xs text-gray-600 mt-1">

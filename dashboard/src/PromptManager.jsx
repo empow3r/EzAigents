@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
-import { Trash2, Plus, Save, Send } from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 const AGENT_SPECIALISTS = {
   'claude-3-opus': {
@@ -301,7 +301,7 @@ export default function PromptManager({ darkMode = false }) {
               onClick={() => onSave(task)} 
               disabled={!task.file || !task.model || !task.prompt || loading}
             >
-              <Save className="w-4 h-4 mr-2" />
+              <Icons.Save className="w-4 h-4 mr-2" />
               {isEditing ? 'Update' : 'Save'}
             </Button>
             {isEditing && (
@@ -410,7 +410,7 @@ export default function PromptManager({ darkMode = false }) {
                         onClick={() => enqueueTask(file, task.model, task.prompt)}
                         className="whitespace-nowrap"
                       >
-                        <Send className="w-4 h-4 mr-1" />
+                        <Icons.Send className="w-4 h-4 mr-1" />
                         Enqueue
                       </Button>
                       <Button 
@@ -425,7 +425,7 @@ export default function PromptManager({ darkMode = false }) {
                         variant="outline"
                         onClick={() => deleteTask(file)}
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Icons.Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
                   </div>

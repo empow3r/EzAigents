@@ -5,27 +5,7 @@ import { usePerformanceOptimization } from '../hooks/usePerformanceOptimization'
 import soundService from '../services/optimizedSoundService';
 import NeuralFeedbackSystem from './NeuralFeedbackSystem';
 import AdaptivePersonalizationEngine from './AdaptivePersonalizationEngine';
-import { 
-  Brain, 
-  Zap, 
-  Target, 
-  Award, 
-  Sparkles, 
-  Eye, 
-  Heart,
-  TrendingUp,
-  Clock,
-  Users,
-  Star,
-  Flame,
-  Diamond,
-  Crown,
-  Rocket,
-  Hexagon,
-  CircleDot,
-  Waves,
-  Activity
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 /**
  * BLEEDING EDGE UX SYSTEM
@@ -205,11 +185,11 @@ const CommandPalette = ({ isOpen, onClose, darkMode }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   
   const commands = [
-    { id: 'deploy-agent', label: 'Deploy New Agent', icon: Rocket, category: 'Actions', shortcut: 'Cmd+D' },
-    { id: 'monitor-queue', label: 'Monitor Queue Status', icon: Activity, category: 'View', shortcut: 'Cmd+Q' },
-    { id: 'focus-mode', label: 'Enter Focus Mode', icon: Target, category: 'Mode', shortcut: 'Cmd+F' },
-    { id: 'neural-boost', label: 'Activate Neural Boost', icon: Brain, category: 'Enhancement', shortcut: 'Cmd+N' },
-    { id: 'collaboration', label: 'Start Collaboration', icon: Users, category: 'Social', shortcut: 'Cmd+C' }
+    { id: 'deploy-agent', label: 'Deploy New Agent', icon:Icons.Rocket, category: 'Actions', shortcut: 'Cmd+D' },
+    { id: 'monitor-queue', label: 'Monitor Queue Status', icon:Icons.Activity, category: 'View', shortcut: 'Cmd+Q' },
+    { id: 'focus-mode', label: 'Enter Focus Mode', icon:Icons.Target, category: 'Mode', shortcut: 'Cmd+F' },
+    { id: 'neural-boost', label: 'Activate Neural Boost', icon:Icons.Brain, category: 'Enhancement', shortcut: 'Cmd+N' },
+    { id: 'collaboration', label: 'Start Collaboration', icon:Icons.Users, category: 'Social', shortcut: 'Cmd+C' }
   ];
 
   const filteredCommands = commands.filter(cmd => 
@@ -413,13 +393,13 @@ const ProgressiveLoader = ({ stages, currentStage, darkMode }) => {
                   : darkMode ? 'bg-gray-600' : 'bg-gray-300'
             }`}>
               {index < currentStage ? (
-                <Sparkles size={16} className="text-white" />
+                <Icons.Sparkles size={16} className="text-white" />
               ) : index === currentStage ? (
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                 >
-                  <CircleDot size={16} className="text-white" />
+                  <Icons.CircleDot size={16} className="text-white" />
                 </motion.div>
               ) : (
                 <div className="w-2 h-2 bg-current rounded-full opacity-50" />
@@ -442,7 +422,7 @@ const ProgressiveLoader = ({ stages, currentStage, darkMode }) => {
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
               >
-                <Waves className="text-blue-500" size={16} />
+                <Icons.Waves className="text-blue-500" size={16} />
               </motion.div>
             )}
           </motion.div>
@@ -571,7 +551,7 @@ const BleedingEdgeUX = memo(function BleedingEdgeUX({ darkMode, children }) {
               } max-w-sm z-30`}
             >
               <div className="flex items-center space-x-2 mb-2">
-                <Brain size={16} />
+                <Icons.Brain size={16} />
                 <span className="text-sm font-medium">AI Suggestion</span>
               </div>
               <div className="text-sm mb-3">
@@ -630,7 +610,7 @@ const BleedingEdgeUX = memo(function BleedingEdgeUX({ darkMode, children }) {
             }}
             className="fixed bottom-6 left-6 w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-xl flex items-center justify-center text-white z-30"
           >
-            <Brain size={24} />
+            <Icons.Brain size={24} />
           </motion.button>
         </SmartTooltip>
         </div>

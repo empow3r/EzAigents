@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUp } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { useScrollEffects } from '../hooks/useScrollEffects';
 
 const ScrollToTop = ({ 
@@ -29,7 +29,7 @@ const ScrollToTop = ({
           style={position}
           aria-label="Scroll to top"
         >
-          <ArrowUp size={20} />
+          <Icons.ArrowUp size={20} />
         </motion.button>
       )}
     </AnimatePresence>

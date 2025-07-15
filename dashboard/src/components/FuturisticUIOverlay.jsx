@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Cpu, HardDrive, Network, Activity, Zap, Shield,
-  ChevronRight, AlertCircle, CheckCircle, Info
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 import soundService from '../services/safeSoundService';
 
 // Holographic Button Component
@@ -92,10 +89,10 @@ const SystemMetric = ({ icon: Icon, label, value, maxValue = 100, color = 'cyan'
 // Alert Notification
 const AlertNotification = ({ type = 'info', message, onDismiss }) => {
   const typeConfig = {
-    info: { icon: Info, color: 'blue', sound: 'notification' },
-    success: { icon: CheckCircle, color: 'green', sound: 'success' },
-    warning: { icon: AlertCircle, color: 'yellow', sound: 'warning' },
-    error: { icon: AlertCircle, color: 'red', sound: 'error' }
+    info: { icon:Icons.Info, color: 'blue', sound: 'notification' },
+    success: { icon:Icons.CheckCircle, color: 'green', sound: 'success' },
+    warning: { icon:Icons.AlertCircle, color: 'yellow', sound: 'warning' },
+    error: { icon:Icons.AlertCircle, color: 'red', sound: 'error' }
   };
 
   const config = typeConfig[type];
@@ -142,10 +139,10 @@ const CommandPalette = ({ isOpen, onClose, onAction }) => {
   const [search, setSearch] = useState('');
   
   const commands = [
-    { id: 'deploy', label: 'Deploy Agents', icon: Zap, shortcut: '⌘D' },
-    { id: 'analyze', label: 'Run Analysis', icon: Activity, shortcut: '⌘A' },
-    { id: 'security', label: 'Security Scan', icon: Shield, shortcut: '⌘S' },
-    { id: 'optimize', label: 'Optimize System', icon: Cpu, shortcut: '⌘O' },
+    { id: 'deploy', label: 'Deploy Agents', icon:Icons.Zap, shortcut: '⌘D' },
+    { id: 'analyze', label: 'Run Analysis', icon:Icons.Activity, shortcut: '⌘A' },
+    { id: 'security', label: 'Security Scan', icon:Icons.Shield, shortcut: '⌘S' },
+    { id: 'optimize', label: 'Optimize System', icon:Icons.Cpu, shortcut: '⌘O' },
   ];
 
   const filteredCommands = commands.filter(cmd => 
@@ -295,7 +292,7 @@ const FuturisticUIOverlay = ({ darkMode, systemStats, onAction }) => {
                   size="sm"
                 >
                   <span className="flex items-center gap-2">
-                    ⌘K <ChevronRight className="w-3 h-3" />
+                    ⌘K <Icons.ChevronRight className="w-3 h-3" />
                   </span>
                 </HolographicButton>
               </div>

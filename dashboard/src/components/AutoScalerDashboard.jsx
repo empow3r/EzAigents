@@ -1,25 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Activity, 
-  Settings, 
-  Play,
-  Pause,
-  RotateCcw,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Zap,
-  Users,
-  BarChart3
-} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Button } from '@/src/components/ui/button';
+import { Input } from '@/src/components/ui/input';
+import { Progress } from '@/src/components/ui/progress';
+import { ScrollArea } from '@/src/components/ui/scroll-area';
+import * as Icons from 'lucide-react';
 
 export default function AutoScalerDashboard() {
   const [scalerStatus, setScalerStatus] = useState(null);
@@ -123,7 +109,7 @@ export default function AutoScalerDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Activity className="w-8 h-8 text-blue-500" />
+            <Icons.Activity className="w-8 h-8 text-blue-500" />
             Auto-Scaler Control
           </h1>
           <p className="text-gray-600">Dynamic agent scaling based on queue depth and performance</p>
@@ -145,12 +131,12 @@ export default function AutoScalerDashboard() {
           >
             {isRunning ? (
               <>
-                <Pause className="w-4 h-4 mr-2" />
+                <Icons.Pause className="w-4 h-4 mr-2" />
                 Stop Scaler
               </>
             ) : (
               <>
-                <Play className="w-4 h-4 mr-2" />
+                <Icons.Play className="w-4 h-4 mr-2" />
                 Start Scaler
               </>
             )}
@@ -210,7 +196,7 @@ export default function AutoScalerDashboard() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Settings className="w-5 h-5" />
+            <Icons.Settings className="w-5 h-5" />
             Scaling Configuration
           </CardTitle>
         </CardHeader>
@@ -260,7 +246,7 @@ export default function AutoScalerDashboard() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5" />
+            <Icons.Users className="w-5 h-5" />
             Model Status
           </CardTitle>
         </CardHeader>
@@ -271,7 +257,7 @@ export default function AutoScalerDashboard() {
                 <div className="flex items-center gap-4">
                   <div className="text-lg font-semibold">{model}</div>
                   <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-gray-600" />
+                    <Icons.Users className="w-4 h-4 text-gray-600" />
                     <span className="text-sm text-gray-600">{data.agents} agents</span>
                   </div>
                 </div>
@@ -308,7 +294,7 @@ export default function AutoScalerDashboard() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="w-5 h-5" />
+            <Icons.BarChart3 className="w-5 h-5" />
             Recent Scaling Actions
           </CardTitle>
         </CardHeader>
@@ -324,9 +310,9 @@ export default function AutoScalerDashboard() {
                   <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center gap-3">
                       {action.action === 'scale_up' ? (
-                        <TrendingUp className="w-5 h-5 text-green-600" />
+                        <Icons.TrendingUp className="w-5 h-5 text-green-600" />
                       ) : (
-                        <TrendingDown className="w-5 h-5 text-red-600" />
+                        <Icons.TrendingDown className="w-5 h-5 text-red-600" />
                       )}
                       
                       <div>

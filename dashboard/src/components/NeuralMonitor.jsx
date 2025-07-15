@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Zap, Heart, Target, TrendingUp } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import soundService from '../services/soundService';
 
 export default function NeuralMonitor({ darkMode = true }) {
@@ -89,7 +89,7 @@ export default function NeuralMonitor({ darkMode = true }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
-          <Brain className={`w-5 h-5 ${getStateColor(neuralState.engagement)}`} />
+          <Icons.Brain className={`w-5 h-5 ${getStateColor(neuralState.engagement)}`} />
           <h3 className="text-sm font-semibold">Neural State</h3>
         </div>
         {neuralState.flowState && (
@@ -163,19 +163,19 @@ export default function NeuralMonitor({ darkMode = true }) {
       <div className="flex flex-wrap gap-1 mb-3">
         {neuralState.focusEnhancement && (
           <span className="text-xs px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full border border-blue-500/30">
-            <Target className="w-3 h-3 inline mr-1" />
+            <Icons.Target className="w-3 h-3 inline mr-1" />
             Focus
           </span>
         )}
         {neuralState.creativityMode && (
           <span className="text-xs px-2 py-1 bg-purple-500/20 text-purple-400 rounded-full border border-purple-500/30">
-            <Zap className="w-3 h-3 inline mr-1" />
+            <Icons.Zap className="w-3 h-3 inline mr-1" />
             Creative
           </span>
         )}
         {neuralState.serotoninBoost && (
           <span className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded-full border border-green-500/30">
-            <Heart className="w-3 h-3 inline mr-1" />
+            <Icons.Heart className="w-3 h-3 inline mr-1" />
             Social
           </span>
         )}
@@ -213,7 +213,7 @@ export default function NeuralMonitor({ darkMode = true }) {
           onClick={() => triggerManualBoost('focus')}
           className="text-xs px-2 py-1 bg-blue-500/20 text-blue-400 rounded border border-blue-500/30 hover:bg-blue-500/30 transition-all"
         >
-          <Target className="w-3 h-3 inline mr-1" />
+          <Icons.Target className="w-3 h-3 inline mr-1" />
           Focus
         </motion.button>
         <motion.button
@@ -222,7 +222,7 @@ export default function NeuralMonitor({ darkMode = true }) {
           onClick={() => triggerManualBoost('creativity')}
           className="text-xs px-2 py-1 bg-purple-500/20 text-purple-400 rounded border border-purple-500/30 hover:bg-purple-500/30 transition-all"
         >
-          <Zap className="w-3 h-3 inline mr-1" />
+          <Icons.Zap className="w-3 h-3 inline mr-1" />
           Create
         </motion.button>
         <motion.button
@@ -231,7 +231,7 @@ export default function NeuralMonitor({ darkMode = true }) {
           onClick={() => triggerManualBoost('energy')}
           className="text-xs px-2 py-1 bg-orange-500/20 text-orange-400 rounded border border-orange-500/30 hover:bg-orange-500/30 transition-all"
         >
-          <TrendingUp className="w-3 h-3 inline mr-1" />
+          <Icons.TrendingUp className="w-3 h-3 inline mr-1" />
           Energy
         </motion.button>
         <motion.button
@@ -240,7 +240,7 @@ export default function NeuralMonitor({ darkMode = true }) {
           onClick={() => triggerManualBoost('social')}
           className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded border border-green-500/30 hover:bg-green-500/30 transition-all"
         >
-          <Heart className="w-3 h-3 inline mr-1" />
+          <Icons.Heart className="w-3 h-3 inline mr-1" />
           Social
         </motion.button>
       </div>

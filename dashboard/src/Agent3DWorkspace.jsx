@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, Suspense, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Activity } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import Agent3DFallback from './components/Agent3DFallback';
 import soundService from './services/optimizedSoundService';
 
@@ -209,7 +209,7 @@ export default function Agent3DWorkspace({ darkMode = true, onBackTo2D = null })
                     onMouseEnter={() => soundService.play('buttonHover')}
                     className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all flex items-center space-x-2"
                   >
-                    <Activity size={16} />
+                    <Icons.Activity size={16} />
                     <span>Back to 2D</span>
                   </button>
                 )}

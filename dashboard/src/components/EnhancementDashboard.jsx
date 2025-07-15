@@ -1,27 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  Activity, 
-  AlertCircle, 
-  CheckCircle2, 
-  Clock, 
-  Terminal, 
-  Zap,
-  RefreshCw,
-  Shield,
-  Eye,
-  MessageSquare,
-  Brain,
-  Wrench,
-  GitBranch,
-  Smartphone,
-  Volume2,
-  GamepadIcon
-} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Button } from '@/src/components/ui/button';
+import { Progress } from '@/src/components/ui/progress';
+import { ScrollArea } from '@/src/components/ui/scroll-area';
+import * as Icons from 'lucide-react';
 import MobilePWA from './MobilePWA';
 import VoiceControl from './VoiceControl';
 import GamificationPanel from './GamificationPanel';
@@ -44,7 +27,7 @@ export default function EnhancementDashboard({
   const enhancementDetails = {
     'security-layer': {
       name: 'Enterprise Security Layer',
-      icon: Shield,
+      icon:Icons.Shield,
       color: 'text-red-600',
       bgColor: 'bg-red-100',
       description: 'HashiCorp Vault, OAuth2/OIDC, RBAC, E2E Encryption',
@@ -57,7 +40,7 @@ export default function EnhancementDashboard({
     },
     'observability-stack': {
       name: 'Observability Stack',
-      icon: Eye,
+      icon:Icons.Eye,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
       description: 'OpenTelemetry, Prometheus, Grafana, Distributed Tracing',
@@ -69,7 +52,7 @@ export default function EnhancementDashboard({
     },
     'distributed-queue-system': {
       name: 'Distributed Queue System',
-      icon: MessageSquare,
+      icon:Icons.MessageSquare,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
       description: 'Kafka, RabbitMQ, Queue Abstraction Layer',
@@ -81,7 +64,7 @@ export default function EnhancementDashboard({
     },
     'intelligent-orchestration': {
       name: 'Intelligent Orchestration',
-      icon: Brain,
+      icon:Icons.Brain,
       color: 'text-green-600',
       bgColor: 'bg-green-100',
       description: 'ML Agent Selection, DAG Execution, Cost Optimization',
@@ -92,7 +75,7 @@ export default function EnhancementDashboard({
     },
     'collaboration-framework': {
       name: 'Collaboration Framework',
-      icon: GitBranch,
+      icon:Icons.GitBranch,
       color: 'text-yellow-600',
       bgColor: 'bg-yellow-100',
       description: 'Consensus Protocol, Knowledge Graph, Task Negotiation',
@@ -104,7 +87,7 @@ export default function EnhancementDashboard({
     },
     'self-healing-infrastructure': {
       name: 'Self-Healing Infrastructure',
-      icon: Wrench,
+      icon:Icons.Wrench,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
       description: 'K8s Operator, Health Checks, Auto-scaling, Circuit Breakers',
@@ -116,7 +99,7 @@ export default function EnhancementDashboard({
     },
     'mobile-pwa': {
       name: 'Mobile PWA Features',
-      icon: Smartphone,
+      icon:Icons.Smartphone,
       color: 'text-indigo-600',
       bgColor: 'bg-indigo-100',
       description: 'Progressive Web App with offline support and mobile controls',
@@ -130,7 +113,7 @@ export default function EnhancementDashboard({
     },
     'voice-sound-system': {
       name: 'Voice & Sound System',
-      icon: Volume2,
+      icon:Icons.Volume2,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
       description: 'Voice commands, text-to-speech, and audio feedback system',
@@ -143,7 +126,7 @@ export default function EnhancementDashboard({
     },
     'enhanced-gamification': {
       name: 'Enhanced Gamification',
-      icon: GamepadIcon,
+      icon:Icons.GamepadIcon,
       color: 'text-green-600',
       bgColor: 'bg-green-100',
       description: 'Achievements, badges, quests, and leaderboards system',
@@ -221,15 +204,15 @@ export default function EnhancementDashboard({
   const getStatusIcon = (status) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle2 className="w-4 h-4 text-green-600" />;
+        return <Icons.CheckCircle2 className="w-4 h-4 text-green-600" />;
       case 'processing':
-        return <Clock className="w-4 h-4 text-blue-600 animate-pulse" />;
+        return <Icons.Clock className="w-4 h-4 text-blue-600 animate-pulse" />;
       case 'queued':
-        return <Activity className="w-4 h-4 text-yellow-600" />;
+        return <Icons.Activity className="w-4 h-4 text-yellow-600" />;
       case 'failed':
-        return <AlertCircle className="w-4 h-4 text-red-600" />;
+        return <Icons.AlertCircle className="w-4 h-4 text-red-600" />;
       default:
-        return <Clock className="w-4 h-4 text-gray-400" />;
+        return <Icons.Clock className="w-4 h-4 text-gray-400" />;
     }
   };
 
@@ -247,7 +230,7 @@ export default function EnhancementDashboard({
       <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'items-center justify-between'}`}>
         <div>
           <h1 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold flex items-center gap-2`}>
-            <Zap className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} text-yellow-500`} />
+            <Icons.Zap className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} text-yellow-500`} />
             {isMobile ? 'Enhancements' : 'System Enhancements'}
           </h1>
           <p className={`text-gray-600 ${isMobile ? 'text-sm' : ''}`}>
@@ -260,7 +243,7 @@ export default function EnhancementDashboard({
             size={isMobile ? "sm" : "sm"}
             onClick={() => setAutoRefresh(!autoRefresh)}
           >
-            <RefreshCw className={`w-4 h-4 ${isMobile ? '' : 'mr-2'} ${autoRefresh ? 'animate-spin' : ''}`} />
+            <Icons.RefreshCw className={`w-4 h-4 ${isMobile ? '' : 'mr-2'} ${autoRefresh ? 'animate-spin' : ''}`} />
             {!isMobile && 'Auto Refresh'}
           </Button>
           <Button
@@ -277,7 +260,7 @@ export default function EnhancementDashboard({
       <div className={`bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg ${isMobile ? 'p-4' : 'p-6'} mb-6`}>
         <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'items-center'} gap-3 mb-4`}>
           <div className={`${isMobile ? 'self-center' : ''} p-3 bg-indigo-100 rounded-lg`}>
-            <Smartphone className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} text-indigo-600`} />
+            <Icons.Smartphone className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} text-indigo-600`} />
           </div>
           <div className={isMobile ? 'text-center' : ''}>
             <h2 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold text-indigo-900`}>
@@ -295,7 +278,7 @@ export default function EnhancementDashboard({
       <div className={`bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg ${isMobile ? 'p-4' : 'p-6'} mb-6`}>
         <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'items-center'} gap-3 mb-4`}>
           <div className={`${isMobile ? 'self-center' : ''} p-3 bg-purple-100 rounded-lg`}>
-            <Volume2 className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} text-purple-600`} />
+            <Icons.Volume2 className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} text-purple-600`} />
           </div>
           <div className={isMobile ? 'text-center' : ''}>
             <h2 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold text-purple-900`}>
@@ -313,7 +296,7 @@ export default function EnhancementDashboard({
       <div className={`bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg ${isMobile ? 'p-4' : 'p-6'} mb-6`}>
         <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'items-center'} gap-3 mb-4`}>
           <div className={`${isMobile ? 'self-center' : ''} p-3 bg-green-100 rounded-lg`}>
-            <GamepadIcon className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} text-green-600`} />
+            <Icons.GamepadIcon className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} text-green-600`} />
           </div>
           <div className={isMobile ? 'text-center' : ''}>
             <h2 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold text-green-900`}>
@@ -352,7 +335,7 @@ export default function EnhancementDashboard({
                   </div>
                   {enhancement.processingCount > 0 && (
                     <div className="flex items-center gap-1 text-blue-600">
-                      <Clock className="w-4 h-4 animate-pulse" />
+                      <Icons.Clock className="w-4 h-4 animate-pulse" />
                       <span className="text-xs">{enhancement.processingCount}</span>
                     </div>
                   )}
@@ -420,7 +403,7 @@ export default function EnhancementDashboard({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Terminal className="w-5 h-5" />
+            <Icons.Terminal className="w-5 h-5" />
             Recent Activity
           </CardTitle>
         </CardHeader>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Observability Pro</title>
+    <link rel="stylesheet" href="style-enhanced.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-main">
+                <h1>🔍 Claude Code Observability Pro</h1>
+                <div class="status-bar">
+                    <span id="connection-status" class="status-disconnected">⚫ Disconnected</span>
+                    <span id="event-count">0 events</span>
+                    <span id="event-rate">0/min</span>
+                    <span id="uptime">Uptime: 0s</span>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Metrics Dashboard -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3>Total Events</h3>
+                <div class="metric-value" id="metric-total">0</div>
+                <div class="metric-trend" id="trend-total">↑ 0%</div>
+            </div>
+            <div class="metric-card">
+                <h3>Active Apps</h3>
+                <div class="metric-value" id="metric-apps">0</div>
+                <div class="metric-trend" id="trend-apps">→ 0</div>
+            </div>
+            <div class="metric-card">
+                <h3>Active Sessions</h3>
+                <div class="metric-value" id="metric-sessions">0</div>
+                <div class="metric-trend" id="trend-sessions">→ 0</div>
+            </div>
+            <div class="metric-card">
+                <h3>Error Rate</h3>
+                <div class="metric-value" id="metric-errors">0%</div>
+                <div class="metric-trend trend-good" id="trend-errors">↓ 0%</div>
+            </div>
+        </div>
+        
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3>Event Timeline</h3>
+                <canvas id="timeline-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Events by Type</h3>
+                <canvas id="type-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Top Apps</h3>
+                <canvas id="apps-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Session Activity</h3>
+                <canvas id="session-chart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Controls -->
+        <div class="controls-advanced">
+            <div class="control-group">
+                <button id="clear-btn" class="btn">Clear View</button>
+                <button id="export-btn" class="btn">Export JSON</button>
+                <button id="export-csv-btn" class="btn">Export CSV</button>
+                <button id="refresh-btn" class="btn btn-primary">Refresh Stats</button>
+            </div>
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="auto-scroll" checked>
+                    Auto-scroll
+                </label>
+                <label>
+                    <input type="checkbox" id="show-summaries" checked>
+                    Show summaries
+                </label>
+                <label>
+                    <input type="checkbox" id="group-sessions">
+                    Group by session
+                </label>
+            </div>
+        </div>
+        
+        <!-- Advanced Filters -->
+        <div class="filters-advanced">
+            <input type="text" id="search" placeholder="Search events..." class="search-input">
+            <select id="app-filter">
+                <option value="">All Apps</option>
+            </select>
+            <select id="type-filter">
+                <option value="">All Event Types</option>
+            </select>
+            <select id="session-filter">
+                <option value="">All Sessions</option>
+            </select>
+            <div class="time-filter">
+                <select id="time-range">
+                    <option value="live">Live</option>
+                    <option value="1h">Last Hour</option>
+                    <option value="24h">Last 24 Hours</option>
+                    <option value="7d">Last 7 Days</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Event Stream -->
+        <div class="event-stream-header">
+            <h2>Event Stream</h2>
+            <div class="stream-controls">
+                <button id="pause-stream" class="btn-small">⏸ Pause</button>
+                <span class="event-counter">Showing <span id="visible-count">0</span> of <span id="total-count">0</span></span>
+            </div>
+        </div>
+        
+        <div id="events-container" class="events-container">
+            <div class="loading">Connecting to Enhanced WebSocket...</div>
+        </div>
+        
+        <!-- Alert Modal -->
+        <div id="alert-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>🚨 Alert Configuration</h3>
+                <div class="alert-form">
+                    <label>
+                        Alert when event type equals:
+                        <input type="text" id="alert-event-type" placeholder="e.g., error">
+                    </label>
+                    <label>
+                        Alert when rate exceeds:
+                        <input type="number" id="alert-rate" placeholder="Events per minute">
+                    </label>
+                    <button id="save-alerts" class="btn btn-primary">Save Alerts</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="ws-enhanced-dynamic.js"></script>
+</body>
+</html>

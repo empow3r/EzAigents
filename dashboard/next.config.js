@@ -20,6 +20,12 @@ const nextConfig = {
     'lucide-react': {
       transform: 'lucide-react/dist/esm/icons/{{member}}',
     },
+    '@radix-ui/react-icons': {
+      transform: '@radix-ui/react-icons/dist/{{member}}',
+    },
+    'react-icons': {
+      transform: 'react-icons/{{member}}',
+    },
   },
   
   // Minimal bundle analysis
@@ -35,15 +41,21 @@ const nextConfig = {
     domains: ['localhost'],
   },
   
-  // Ultra-fast webpack config - minimal processing
+  // Performance-optimized webpack config
   webpack: (config, { dev }) => {
     if (!dev) {
-      // Disable optimization for speed
-      config.optimization.minimize = false;
-      config.optimization.splitChunks = false;
-      config.optimization.removeAvailableModules = false;
-      config.optimization.removeEmptyChunks = false;
-      config.optimization.mergeDuplicateChunks = false;
+      // Enable optimizations for performance
+      config.optimization.minimize = true;
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+        },
+      };
     }
     return config;
   },

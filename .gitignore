@@ -2,11 +2,16 @@
 .DS_Store
 Thumbs.db
 
-# Environment files
+# Environment files - NEVER commit these
 .env
 .env.local
 .env.*.local
+.env.production
+.env.staging
+.env.development
 .env.tokenpool
+.env.backup
+.env.template
 !.env.example
 
 # Dependencies
@@ -48,11 +53,21 @@ coverage/
 *.swo
 *~
 
-# Security
+# Security - Critical files
 *.pem
 *.key
 *.cert
+*.p12
+*.pfx
 .secrets.baseline
+*secret*
+*private*
+*credential*
+*api-key*
+ssh_host_*
+known_hosts
+authorized_keys
+security-backup-*/
 
 # Temporary files
 tmp/

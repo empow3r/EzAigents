@@ -316,7 +316,9 @@ class AuthenticationService {
       const response = await axios.post(tokenEndpoint, params, {
         headers: {
           'Content-Type': provider === 'okta' ? 'application/x-www-form-urlencoded' : 'application/json'
-        }
+        },
+        timeout: 10000,
+        validateStatus: (status) => status < 500
       });
       
       return response.data;
@@ -356,7 +358,9 @@ class AuthenticationService {
       const response = await axios.get(userInfoEndpoint, {
         headers: {
           Authorization: `Bearer ${accessToken}`
-        }
+        },
+        timeout: 10000,
+        validateStatus: (status) => status < 500
       });
       
       // Normalize user info across providers

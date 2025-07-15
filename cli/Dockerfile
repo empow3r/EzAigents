@@ -1,10 +1,21 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
+# Install dependencies
 COPY package*.json ./
-RUN npm install
+COPY cli/package*.json ./cli/
+RUN npm ci --legacy-peer-deps
 
-COPY . .
+# Copy necessary files
+COPY shared ./shared
+COPY cli ./cli
 
-CMD ["node", "runner.js"]
+# Create logs directory
+RUN mkdir -p cli/logs
+
+# Set environment variables
+ENV NODE_ENV=production
+
+# Default command (can be overridden)
+CMD ["node", "cli/api-key-manager.js", "start"]

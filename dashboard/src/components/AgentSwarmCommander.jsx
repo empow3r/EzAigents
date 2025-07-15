@@ -1,25 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Users, 
-  Zap, 
-  Target, 
-  Brain, 
-  Cpu, 
-  Activity,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  ArrowUp,
-  ArrowDown,
-  Play,
-  Pause,
-  RotateCcw,
-  Settings,
-  Eye,
-  Command
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 export default function AgentSwarmCommander({ 
   onAgentCommand,
@@ -233,23 +215,23 @@ export default function AgentSwarmCommander({
       {/* Command buttons */}
       <div className="space-y-3">
         <button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-2 px-4 rounded-lg hover:from-green-500 hover:to-emerald-500 transition-all flex items-center justify-center gap-2">
-          <Play className="w-4 h-4" />
+          <Icons.Play className="w-4 h-4" />
           Optimize Performance
         </button>
         <button className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-2 px-4 rounded-lg hover:from-blue-500 hover:to-cyan-500 transition-all flex items-center justify-center gap-2">
-          <ArrowUp className="w-4 h-4" />
+          <Icons.ArrowUp className="w-4 h-4" />
           Scale Up
         </button>
         <button className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 text-white py-2 px-4 rounded-lg hover:from-yellow-500 hover:to-orange-500 transition-all flex items-center justify-center gap-2">
-          <Pause className="w-4 h-4" />
+          <Icons.Pause className="w-4 h-4" />
           Pause Agent
         </button>
         <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 px-4 rounded-lg hover:from-purple-500 hover:to-pink-500 transition-all flex items-center justify-center gap-2">
-          <RotateCcw className="w-4 h-4" />
+          <Icons.RotateCcw className="w-4 h-4" />
           Reset & Restart
         </button>
         <button className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-2 px-4 rounded-lg hover:from-red-500 hover:to-red-600 transition-all flex items-center justify-center gap-2">
-          <AlertTriangle className="w-4 h-4" />
+          <Icons.AlertTriangle className="w-4 h-4" />
           Emergency Stop
         </button>
       </div>
@@ -275,10 +257,10 @@ export default function AgentSwarmCommander({
   const SwarmOverview = () => (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       {[
-        { label: 'Total Agents', value: agents.length, color: 'text-blue-400', icon: Users },
-        { label: 'Active', value: agents.filter(a => a.status === 'active').length, color: 'text-green-400', icon: CheckCircle },
-        { label: 'Avg Performance', value: `${Math.round(agents.reduce((sum, a) => sum + a.performance, 0) / agents.length)}%`, color: 'text-cyan-400', icon: Activity },
-        { label: 'Total ROI', value: `$${Math.round(agents.reduce((sum, a) => sum + a.roi, 0) / 1000)}K`, color: 'text-green-400', icon: Target }
+        { label: 'Total Agents', value: agents.length, color: 'text-blue-400', icon:Icons.Users },
+        { label: 'Active', value: agents.filter(a => a.status === 'active').length, color: 'text-green-400', icon:Icons.CheckCircle },
+        { label: 'Avg Performance', value: `${Math.round(agents.reduce((sum, a) => sum + a.performance, 0) / agents.length)}%`, color: 'text-cyan-400', icon:Icons.Activity },
+        { label: 'Total ROI', value: `$${Math.round(agents.reduce((sum, a) => sum + a.roi, 0) / 1000)}K`, color: 'text-green-400', icon:Icons.Target }
       ].map((metric, idx) => (
         <motion.div
           key={idx}
@@ -306,7 +288,7 @@ export default function AgentSwarmCommander({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Command className="w-6 h-6 text-cyan-400" />
+            <Icons.Command className="w-6 h-6 text-cyan-400" />
             Agent Swarm Commander
           </h2>
           <div className="flex bg-gray-800 rounded-lg p-1">
@@ -363,19 +345,19 @@ export default function AgentSwarmCommander({
       {/* Global Actions */}
       <div className="flex flex-wrap gap-3">
         <button className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg hover:from-green-500 hover:to-emerald-500 transition-all flex items-center gap-2">
-          <Play className="w-4 h-4" />
+          <Icons.Play className="w-4 h-4" />
           Deploy All Idle Agents
         </button>
         <button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-3 rounded-lg hover:from-blue-500 hover:to-cyan-500 transition-all flex items-center gap-2">
-          <ArrowUp className="w-4 h-4" />
+          <Icons.ArrowUp className="w-4 h-4" />
           Auto-Scale Swarm
         </button>
         <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg hover:from-purple-500 hover:to-pink-500 transition-all flex items-center gap-2">
-          <Brain className="w-4 h-4" />
+          <Icons.Brain className="w-4 h-4" />
           AI Optimize All
         </button>
         <button className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-lg hover:from-orange-500 hover:to-red-500 transition-all flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4" />
+          <Icons.AlertTriangle className="w-4 h-4" />
           Emergency Protocol
         </button>
       </div>

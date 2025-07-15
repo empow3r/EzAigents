@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, Star, Award } from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 export default function GameficationFallback({ darkMode = true }) {
   return (
@@ -10,7 +10,7 @@ export default function GameficationFallback({ darkMode = true }) {
     }`}>
       {/* Header */}
       <div className="flex items-center space-x-3">
-        <Trophy className={`w-8 h-8 ${darkMode ? 'text-yellow-400' : 'text-yellow-600'}`} />
+        <Icons.Trophy className={`w-8 h-8 ${darkMode ? 'text-yellow-400' : 'text-yellow-600'}`} />
         <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
           Achievements
         </h1>
@@ -32,7 +32,7 @@ export default function GameficationFallback({ darkMode = true }) {
                 Level 7
               </p>
             </div>
-            <Star className={`w-8 h-8 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+            <Icons.Star className={`w-8 h-8 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
           </div>
         </div>
 
@@ -50,7 +50,7 @@ export default function GameficationFallback({ darkMode = true }) {
                 2,450
               </p>
             </div>
-            <Award className={`w-8 h-8 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+            <Icons.Award className={`w-8 h-8 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
           </div>
         </div>
 
@@ -68,7 +68,7 @@ export default function GameficationFallback({ darkMode = true }) {
                 143/156
               </p>
             </div>
-            <Trophy className={`w-8 h-8 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+            <Icons.Trophy className={`w-8 h-8 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
           </div>
         </div>
       </div>

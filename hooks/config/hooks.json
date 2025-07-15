@@ -1,0 +1,123 @@
+{
+  "global": {
+    "enabled": true,
+    "logLevel": "info",
+    "defaultTimeout": 30000
+  },
+  "hooks": {
+    "security:pre-execution-safety": {
+      "enabled": true,
+      "metadata": {
+        "priority": 100,
+        "timeout": 5000
+      },
+      "config": {
+        "maxFileSize": 10485760,
+        "maxFilesPerTask": 50,
+        "maxApiCallsPerMinute": 100,
+        "whitelistPatterns": [
+          "^src/",
+          "^tests?/",
+          "^docs?/"
+        ]
+      }
+    },
+    "performance:post-execution-logging": {
+      "enabled": true,
+      "metadata": {
+        "priority": 90,
+        "timeout": 3000
+      },
+      "config": {
+        "logPath": "./hooks/logs",
+        "retentionDays": 7
+      }
+    },
+    "intelligence:predictive-task-router": {
+      "enabled": true,
+      "metadata": {
+        "priority": 95,
+        "timeout": 5000
+      },
+      "config": {
+        "cacheExpiry": 300000,
+        "confidenceThreshold": 0.7
+      }
+    }
+  },
+  "agents": {
+    "claude": {
+      "hooksEnabled": true,
+      "customHooks": []
+    },
+    "gpt": {
+      "hooksEnabled": true,
+      "customHooks": []
+    },
+    "deepseek": {
+      "hooksEnabled": true,
+      "customHooks": []
+    },
+    "mistral": {
+      "hooksEnabled": true,
+      "customHooks": []
+    },
+    "gemini": {
+      "hooksEnabled": true,
+      "customHooks": []
+    }
+  },
+  "chains": {
+    "task-processing": {
+      "description": "Standard task processing chain",
+      "enabled": true,
+      "steps": [
+        {
+          "type": "hook",
+          "hookType": "pre-task-assignment",
+          "name": "Route task to optimal agent"
+        },
+        {
+          "type": "hook",
+          "hookType": "pre-task",
+          "name": "Security and safety checks"
+        },
+        {
+          "type": "hook",
+          "hookType": "post-task",
+          "name": "Log execution and collect metrics"
+        }
+      ]
+    },
+    "complex-task-handling": {
+      "description": "Chain for handling complex tasks with swarm intelligence",
+      "enabled": false,
+      "conditions": {
+        "complexity": "> 8"
+      },
+      "steps": [
+        {
+          "type": "hook",
+          "hookType": "swarm-formation",
+          "name": "Form agent swarm for complex task"
+        },
+        {
+          "type": "hook",
+          "hookType": "task-decomposition",
+          "name": "Decompose into subtasks"
+        },
+        {
+          "type": "hook",
+          "hookType": "swarm-coordination",
+          "name": "Coordinate swarm execution"
+        }
+      ]
+    }
+  },
+  "monitoring": {
+    "metricsEnabled": true,
+    "alertingEnabled": true,
+    "dashboardEnabled": true,
+    "webhooks": []
+  }
+}

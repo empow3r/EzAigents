@@ -1,10 +1,10 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
-import { Badge } from '@/components/ui/badge';
-import { Play, Pause, SkipBack, SkipForward, RotateCcw } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Button } from '@/src/components/ui/button';
+import { Slider } from '@/src/components/ui/slider';
+import { Badge } from '@/src/components/ui/badge';
+import * as Icons from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 const EVENT_TYPES = {
@@ -302,28 +302,28 @@ export default function TimeTravelDebugger() {
                 onClick={() => setCurrentTime(Math.max(0, currentTime - 10))}
                 disabled={currentTime <= 0}
               >
-                <SkipBack className="h-4 w-4" />
+                <Icons.SkipBack className="h-4 w-4" />
               </Button>
               <Button
                 size="sm"
                 onClick={() => setIsPlaying(!isPlaying)}
                 variant={isPlaying ? "destructive" : "default"}
               >
-                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                {isPlaying ? <Icons.Pause className="h-4 w-4" /> : <Icons.Play className="h-4 w-4" />}
               </Button>
               <Button
                 size="sm"
                 onClick={() => setCurrentTime(Math.min(timeline.length - 1, currentTime + 10))}
                 disabled={currentTime >= timeline.length - 1}
               >
-                <SkipForward className="h-4 w-4" />
+                <Icons.SkipForward className="h-4 w-4" />
               </Button>
               <Button
                 size="sm"
                 onClick={() => setCurrentTime(0)}
                 variant="outline"
               >
-                <RotateCcw className="h-4 w-4" />
+                <Icons.RotateCcw className="h-4 w-4" />
               </Button>
             </div>
           </CardTitle>

@@ -1,0 +1,14 @@
+{
+  "name": "claude-observability-server",
+  "version": "1.0.0",
+  "description": "Enhanced observability server for Claude Code",
+  "main": "app-enhanced.ts",
+  "scripts": {
+    "start": "bun run app-enhanced.ts",
+    "dev": "bun --watch app-enhanced.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

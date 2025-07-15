@@ -1,6 +1,6 @@
 import React, { useState, useRef, memo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Maximize2, Minimize2 } from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 const ExpandableTile = memo(({
   children,
@@ -136,7 +136,7 @@ const ExpandableTile = memo(({
             } opacity-0 transition-opacity duration-200`}
             whileHover={{ opacity: 1 }}
           >
-            <Maximize2 size={14} />
+            <Icons.Maximize2 size={14} />
           </motion.div>
         )}
       </motion.div>
@@ -185,7 +185,7 @@ const ExpandableTile = memo(({
                       : 'hover:bg-gray-100 text-gray-500 hover:text-gray-900'
                   }`}
                 >
-                  <X size={20} />
+                  <Icons.X size={20} />
                 </button>
               </div>
 

@@ -1,20 +1,10 @@
 'use client';
 import React, { useState, useRef, memo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
-import { AnimatedTile } from '@/components/ui/AnimatedTile';
-import { cascadeCards, elasticScale, smoothCounter, tileFloat } from '@/components/ui/animations';
-import { 
-  Zap, 
-  Clock, 
-  Activity, 
-  TrendingDown, 
-  TrendingUp,
-  Users,
-  AlertTriangle,
-  CheckCircle,
-  DollarSign
-} from 'lucide-react';
+import { Card, CardContent } from '@/src/components/ui/card';
+import { AnimatedTile } from '@/src/components/ui/AnimatedTile';
+import { cascadeCards, elasticScale, smoothCounter, tileFloat } from '@/src/components/ui/animations';
+import * as Icons from 'lucide-react';
 
 // Icon mapping for better readability
 const icons = {
@@ -152,7 +142,7 @@ export default memo(function EnhancementCommandCenter({ darkMode = true }) {
         className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0"
       >
         <div className="flex items-center space-x-2">
-          <Zap className={`w-6 h-6 ${styles.text.accent}`} />
+          <Icons.Zap className={`w-6 h-6 ${styles.text.accent}`} />
           <h1 className={`text-xl sm:text-2xl font-bold ${styles.text.primary}`}>
             Command Center
           </h1>
@@ -180,7 +170,7 @@ export default memo(function EnhancementCommandCenter({ darkMode = true }) {
           <Card className={styles.card}>
             <CardContent className="p-3 sm:p-4">
               <div className="flex justify-between items-center mb-2">
-                <Clock className={`w-5 h-5 ${styles.text.accent}`} />
+                <Icons.Clock className={`w-5 h-5 ${styles.text.accent}`} />
                 <motion.span 
                   className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}
                   {...smoothCounter}
@@ -198,7 +188,7 @@ export default memo(function EnhancementCommandCenter({ darkMode = true }) {
           <Card className={styles.card}>
             <CardContent className="p-3 sm:p-4">
               <div className="flex justify-between items-center mb-2">
-                <Activity className={`w-5 h-5 ${styles.text.accent}`} />
+                <Icons.Activity className={`w-5 h-5 ${styles.text.accent}`} />
                 <motion.span 
                   className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}
                   {...smoothCounter}
@@ -219,7 +209,7 @@ export default memo(function EnhancementCommandCenter({ darkMode = true }) {
           <Card className={styles.card}>
             <CardContent className="p-3 sm:p-4">
               <div className="flex justify-between items-center mb-2">
-                <DollarSign className={`w-5 h-5 ${styles.text.accent}`} />
+                <Icons.DollarSign className={`w-5 h-5 ${styles.text.accent}`} />
                 <motion.span 
                   className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}
                   {...smoothCounter}
@@ -237,7 +227,7 @@ export default memo(function EnhancementCommandCenter({ darkMode = true }) {
           <Card className={styles.card}>
             <CardContent className="p-3 sm:p-4">
               <div className="flex justify-between items-center mb-2">
-                <TrendingUp className={`w-5 h-5 ${styles.text.accent}`} />
+                <Icons.TrendingUp className={`w-5 h-5 ${styles.text.accent}`} />
                 <motion.span 
                   className={`text-lg sm:text-xl font-bold ${styles.text.primary}`}
                   {...smoothCounter}

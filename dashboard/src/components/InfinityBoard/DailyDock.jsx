@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInfinityBoardStore } from '../../stores/infinityBoardStore';
-import { Sparkles, Target, TrendingUp, Brain, Zap } from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 const DailyDock = () => {
   const { user, dailyGoals, aiInsights, theme } = useInfinityBoardStore();
@@ -74,11 +74,11 @@ const DailyDock = () => {
             className="flex items-center space-x-6"
           >
             <div className="flex items-center space-x-2">
-              <Zap className={`w-5 h-5 ${colors.text}`} />
+              <Icons.Zap className={`w-5 h-5 ${colors.text}`} />
               <span className="text-white/80 text-sm">Level {user.level}</span>
             </div>
             <div className="flex items-center space-x-2">
-              <Sparkles className={`w-5 h-5 ${colors.text}`} />
+              <Icons.Sparkles className={`w-5 h-5 ${colors.text}`} />
               <span className="text-white/80 text-sm">{user.tokens} tokens</span>
             </div>
           </motion.div>
@@ -94,7 +94,7 @@ const DailyDock = () => {
             className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10"
           >
             <div className="flex items-center space-x-2 mb-2">
-              <Target className={`w-4 h-4 ${colors.text}`} />
+              <Icons.Target className={`w-4 h-4 ${colors.text}`} />
               <h3 className="text-white/80 text-sm font-medium">Your North Star</h3>
             </div>
             <p className="text-white text-lg font-semibold">
@@ -110,7 +110,7 @@ const DailyDock = () => {
             className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10"
           >
             <div className="flex items-center space-x-2 mb-2">
-              <Brain className={`w-4 h-4 ${colors.text}`} />
+              <Icons.Brain className={`w-4 h-4 ${colors.text}`} />
               <h3 className="text-white/80 text-sm font-medium">AI Insight</h3>
             </div>
             <p className="text-white text-sm">
@@ -126,7 +126,7 @@ const DailyDock = () => {
             className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10"
           >
             <div className="flex items-center space-x-2 mb-2">
-              <TrendingUp className={`w-4 h-4 ${colors.text}`} />
+              <Icons.TrendingUp className={`w-4 h-4 ${colors.text}`} />
               <h3 className="text-white/80 text-sm font-medium">Today's Progress</h3>
             </div>
             <div className="flex items-center justify-between">

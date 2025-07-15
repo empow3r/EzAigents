@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Sparkles, Target, Brain, Rocket } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { useInfinityBoardStore } from '../../stores/infinityBoardStore';
 
 const OnboardingFlow = ({ onComplete }) => {
@@ -20,35 +20,35 @@ const OnboardingFlow = ({ onComplete }) => {
       id: 'welcome',
       title: 'Welcome to InfinityBoard',
       subtitle: 'Your legendary life starts here',
-      icon: Sparkles,
+      icon:Icons.Sparkles,
       component: WelcomeStep
     },
     {
       id: 'identity',
       title: "What's your name?",
       subtitle: 'Let us personalize your experience',
-      icon: Target,
+      icon:Icons.Target,
       component: IdentityStep
     },
     {
       id: 'northstar',
       title: "What's your North Star?",
       subtitle: 'Your ultimate vision and purpose',
-      icon: Brain,
+      icon:Icons.Brain,
       component: NorthStarStep
     },
     {
       id: 'goals',
       title: 'Set your initial goals',
       subtitle: 'What do you want to accomplish?',
-      icon: Target,
+      icon:Icons.Target,
       component: GoalsStep
     },
     {
       id: 'theme',
       title: 'Choose your universe',
       subtitle: 'Select your visual experience',
-      icon: Rocket,
+      icon:Icons.Rocket,
       component: ThemeStep
     }
   ];
@@ -159,7 +159,7 @@ const OnboardingFlow = ({ onComplete }) => {
                     : 'bg-white/10 hover:bg-white/20 text-white'
                 }`}
               >
-                <ChevronLeft className="w-4 h-4" />
+                <Icons.ChevronLeft className="w-4 h-4" />
                 <span>Previous</span>
               </button>
 
@@ -168,7 +168,7 @@ const OnboardingFlow = ({ onComplete }) => {
                 className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:scale-105 transition-transform font-semibold"
               >
                 <span>{isLastStep ? 'Complete Setup' : 'Continue'}</span>
-                <ChevronRight className="w-4 h-4" />
+                <Icons.ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </motion.div>

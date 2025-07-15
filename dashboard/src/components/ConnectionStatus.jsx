@@ -1,22 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Wifi, 
-  WifiOff, 
-  Server, 
-  Database, 
-  Volume2, 
-  MessageSquare,
-  Activity,
-  AlertCircle,
-  CheckCircle,
-  RefreshCw,
-  Globe,
-  Bot
-} from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import * as Icons from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Button } from '@/src/components/ui/button';
 
 const ConnectionStatus = ({ darkMode }) => {
   const [connections, setConnections] = useState({
@@ -161,13 +148,13 @@ const ConnectionStatus = ({ darkMode }) => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'connected':
-        return <CheckCircle className="w-4 h-4 text-green-500" />;
+        return <Icons.CheckCircle className="w-4 h-4 text-green-500" />;
       case 'disconnected':
-        return <WifiOff className="w-4 h-4 text-yellow-500" />;
+        return <Icons.WifiOff className="w-4 h-4 text-yellow-500" />;
       case 'error':
-        return <AlertCircle className="w-4 h-4 text-red-500" />;
+        return <Icons.AlertCircle className="w-4 h-4 text-red-500" />;
       default:
-        return <Activity className="w-4 h-4 text-gray-500 animate-pulse" />;
+        return <Icons.Activity className="w-4 h-4 text-gray-500 animate-pulse" />;
     }
   };
 
@@ -187,28 +174,28 @@ const ConnectionStatus = ({ darkMode }) => {
   const services = [
     {
       name: 'Redis Queue',
-      icon: Database,
+      icon:Icons.Database,
       key: 'redis',
       description: 'Central message broker',
       details: connections.redis.info?.used_memory_human || 'N/A'
     },
     {
       name: 'TTS Server',
-      icon: Volume2,
+      icon:Icons.Volume2,
       key: 'tts',
       description: 'Text-to-speech service',
       details: connections.tts.server || 'http://ai_llm:11435'
     },
     {
       name: 'OpenRouter API',
-      icon: Globe,
+      icon:Icons.Globe,
       key: 'openrouter',
       description: 'LLM gateway service',
       details: connections.openrouter.models?.length ? `${connections.openrouter.models.length} models` : 'N/A'
     },
     {
       name: 'WebSocket',
-      icon: MessageSquare,
+      icon:Icons.MessageSquare,
       key: 'websocket',
       description: 'Real-time updates',
       details: 'Socket.IO'
@@ -220,7 +207,7 @@ const ConnectionStatus = ({ darkMode }) => {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <Wifi className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-gray-900'}`} />
+            <Icons.Wifi className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-gray-900'}`} />
             Connection Status
           </CardTitle>
           <div className="flex items-center gap-2">
@@ -237,7 +224,7 @@ const ConnectionStatus = ({ darkMode }) => {
               onClick={checkConnections}
               disabled={isRefreshing}
             >
-              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <Icons.RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
             </Button>
           </div>
         </div>
@@ -301,7 +288,7 @@ const ConnectionStatus = ({ darkMode }) => {
           <h3 className={`font-medium mb-3 flex items-center gap-2 ${
             darkMode ? 'text-white' : 'text-gray-900'
           }`}>
-            <Bot className="w-4 h-4" />
+            <Icons.Bot className="w-4 h-4" />
             Active Agents
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">

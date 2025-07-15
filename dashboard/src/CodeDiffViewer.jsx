@@ -23,19 +23,8 @@ const defaultStyle = {
     borderRadius: '0.3em',
   },
 };
-import { 
-  FileText, 
-  GitBranch, 
-  Plus, 
-  Minus, 
-  Eye, 
-  Download,
-  RefreshCw,
-  Clock,
-  User,
-  Zap
-} from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import * as Icons from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 
 export default function CodeDiffViewer({ darkMode = true }) {
   const [diffs, setDiffs] = useState([]);
@@ -256,7 +245,7 @@ export default function CodeDiffViewer({ darkMode = true }) {
               }`}
               title={autoRefresh ? 'Auto-refresh enabled' : 'Auto-refresh disabled'}
             >
-              <RefreshCw size={18} className={`sm:w-5 sm:h-5 ${autoRefresh ? 'animate-spin' : ''}`} />
+              <Icons.RefreshCw size={18} className={`sm:w-5 sm:h-5 ${autoRefresh ? 'animate-spin' : ''}`} />
             </motion.button>
           </div>
         </div>
@@ -322,11 +311,11 @@ export default function CodeDiffViewer({ darkMode = true }) {
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center space-x-4 text-xs">
                           <span className="flex items-center text-green-500">
-                            <Plus size={12} className="mr-1" />
+                            <Icons.Plus size={12} className="mr-1" />
                             {diff.additions}
                           </span>
                           <span className="flex items-center text-red-500">
-                            <Minus size={12} className="mr-1" />
+                            <Icons.Minus size={12} className="mr-1" />
                             {diff.deletions}
                           </span>
                         </div>
@@ -350,7 +339,7 @@ export default function CodeDiffViewer({ darkMode = true }) {
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-t-lg p-3 sm:p-4`}>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
                   <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
-                    <FileText className={`${getAgentColor(selectedDiff.agent)} flex-shrink-0`} size={18} />
+                    <Icons.FileText className={`${getAgentColor(selectedDiff.agent)} flex-shrink-0`} size={18} />
                     <div className="min-w-0">
                       <h3 className={`font-semibold text-sm sm:text-base break-words ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         {selectedDiff.filename}
@@ -364,13 +353,13 @@ export default function CodeDiffViewer({ darkMode = true }) {
                   <div className="flex items-center space-x-2">
                     <div className="flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm">
                       <span className="flex items-center text-green-500">
-                        <Plus size={14} className="mr-1" />
+                        <Icons.Plus size={14} className="mr-1" />
                         <span className="hidden sm:inline">additions</span>
                         <span className="sm:hidden">+</span>
                         {selectedDiff.additions}
                       </span>
                       <span className="flex items-center text-red-500">
-                        <Minus size={14} className="mr-1" />
+                        <Icons.Minus size={14} className="mr-1" />
                         <span className="hidden sm:inline">deletions</span>
                         <span className="sm:hidden">-</span>
                         {selectedDiff.deletions}
@@ -430,7 +419,7 @@ export default function CodeDiffViewer({ darkMode = true }) {
           ) : (
             <div className={`h-full flex items-center justify-center ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               <div className="text-center">
-                <FileText size={64} className="mx-auto mb-4 opacity-50" />
+                <Icons.FileText size={64} className="mx-auto mb-4 opacity-50" />
                 <p className="text-lg">Select a diff to view changes</p>
               </div>
             </div>

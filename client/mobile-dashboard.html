@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Agent Observability Mobile</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #141414;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-blue: #2196f3;
+            --accent-green: #4caf50;
+            --accent-orange: #ff9800;
+            --accent-red: #f44336;
+            --border-color: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 10px;
+            overflow-x: hidden;
+        }
+        
+        .mobile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        .mobile-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .connection-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            animation: pulse 2s infinite;
+        }
+        
+        .connection-dot.connected {
+            background: var(--accent-green);
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-blue);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .event-list {
+            max-height: 400px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .event-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .event-type {
+            background: var(--accent-blue);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+        
+        .event-time {
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        
+        .event-app {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .event-summary {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+        
+        .agent-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .agent-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .agent-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        
+        .agent-status {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+        
+        .status-healthy {
+            background: var(--accent-green);
+            color: white;
+        }
+        
+        .status-warning {
+            background: var(--accent-orange);
+            color: white;
+        }
+        
+        .status-error {
+            background: var(--accent-red);
+            color: white;
+        }
+        
+        .chart-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .chart-title {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        
+        .mini-chart {
+            height: 120px;
+            width: 100%;
+        }
+        
+        .refresh-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+            z-index: 1000;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+        
+        .error-banner {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid var(--accent-red);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            display: none;
+        }
+        
+        .error-banner.show {
+            display: block;
+        }
+        
+        /* Touch-friendly scrollbars */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+        
+        /* Pull to refresh hint */
+        .pull-hint {
+            text-align: center;
+            padding: 10px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            display: none;
+        }
+        
+        .pull-hint.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-header">
+        <h1>🔍 Agent Monitor</h1>
+        <div id="connection-dot" class="connection-dot"></div>
+    </div>
+    
+    <div id="error-banner" class="error-banner">
+        Connection lost. Trying to reconnect...
+    </div>
+    
+    <div class="pull-hint" id="pull-hint">Pull down to refresh</div>
+    
+    <!-- Stats Overview -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="stat-events">0</div>
+            <div class="stat-label">Events</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-agents">0</div>
+            <div class="stat-label">Active Agents</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-errors">0</div>
+            <div class="stat-label">Errors</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-rate">0/min</div>
+            <div class="stat-label">Event Rate</div>
+        </div>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" data-tab="events">Events</button>
+        <button class="tab" data-tab="agents">Agents</button>
+        <button class="tab" data-tab="charts">Charts</button>
+    </div>
+    
+    <!-- Events Tab -->
+    <div id="events-tab" class="tab-content active">
+        <div id="events-list" class="event-list">
+            <div class="loading">Loading events...</div>
+        </div>
+    </div>
+    
+    <!-- Agents Tab -->
+    <div id="agents-tab" class="tab-content">
+        <div id="agents-list">
+            <div class="loading">Loading agents...</div>
+        </div>
+    </div>
+    
+    <!-- Charts Tab -->
+    <div id="charts-tab" class="tab-content">
+        <div class="chart-container">
+            <div class="chart-title">Event Volume (Last Hour)</div>
+            <canvas id="volume-chart" class="mini-chart"></canvas>
+        </div>
+        <div class="chart-container">
+            <div class="chart-title">Error Rate Trend</div>
+            <canvas id="error-chart" class="mini-chart"></canvas>
+        </div>
+    </div>
+    
+    <button id="refresh-btn" class="refresh-btn">🔄</button>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        class MobileDashboard {
+            constructor() {
+                this.baseUrl = window.location.protocol === 'file:' 
+                    ? 'http://localhost:3001' 
+                    : window.location.origin;
+                
+                this.wsUrl = window.location.protocol === 'file:'
+                    ? 'ws://localhost:3001/ws'
+                    : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
+                
+                this.ws = null;
+                this.events = [];
+                this.agents = new Map();
+                this.stats = { events: 0, agents: 0, errors: 0, rate: 0 };
+                this.isVisible = true;
+                
+                this.initElements();
+                this.initCharts();
+                this.setupEventListeners();
+                this.connectWebSocket();
+                this.loadInitialData();
+                
+                // Handle page visibility
+                document.addEventListener('visibilitychange', () => {
+                    this.isVisible = !document.hidden;
+                    if (this.isVisible) {
+                        this.loadInitialData();
+                    }
+                });
+            }
+            
+            initElements() {
+                this.connectionDot = document.getElementById('connection-dot');
+                this.errorBanner = document.getElementById('error-banner');
+                this.pullHint = document.getElementById('pull-hint');
+                
+                this.statElements = {
+                    events: document.getElementById('stat-events'),
+                    agents: document.getElementById('stat-agents'),
+                    errors: document.getElementById('stat-errors'),
+                    rate: document.getElementById('stat-rate')
+                };
+                
+                this.tabButtons = document.querySelectorAll('.tab');
+                this.tabContents = document.querySelectorAll('.tab-content');
+                this.eventsList = document.getElementById('events-list');
+                this.agentsList = document.getElementById('agents-list');
+                this.refreshBtn = document.getElementById('refresh-btn');
+            }
+            
+            initCharts() {
+                // Volume chart
+                this.volumeChart = new Chart(document.getElementById('volume-chart'), {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            borderColor: '#2196f3',
+                            backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 2,
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        },
+                        elements: { point: { radius: 0 } }
+                    }
+                });
+                
+                // Error chart
+                this.errorChart = new Chart(document.getElementById('error-chart'), {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            borderColor: '#f44336',
+                            backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 2,
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        },
+                        elements: { point: { radius: 0 } }
+                    }
+                });
+            }
+            
+            setupEventListeners() {
+                // Tab switching
+                this.tabButtons.forEach(tab => {
+                    tab.addEventListener('click', () => this.switchTab(tab.dataset.tab));
+                });
+                
+                // Refresh button
+                this.refreshBtn.addEventListener('click', () => this.refresh());
+                
+                // Pull to refresh
+                let startY = 0;
+                let currentY = 0;
+                let isPulling = false;
+                
+                document.addEventListener('touchstart', (e) => {
+                    if (window.scrollY === 0) {
+                        startY = e.touches[0].clientY;
+                        isPulling = true;
+                    }
+                });
+                
+                document.addEventListener('touchmove', (e) => {
+                    if (!isPulling) return;
+                    
+                    currentY = e.touches[0].clientY;
+                    const pullDistance = currentY - startY;
+                    
+                    if (pullDistance > 50) {
+                        this.pullHint.classList.add('show');
+                    } else {
+                        this.pullHint.classList.remove('show');
+                    }
+                });
+                
+                document.addEventListener('touchend', () => {
+                    if (isPulling && currentY - startY > 100) {
+                        this.refresh();
+                    }
+                    isPulling = false;
+                    this.pullHint.classList.remove('show');
+                });
+            }
+            
+            connectWebSocket() {
+                console.log('Connecting to:', this.wsUrl);
+                this.ws = new WebSocket(this.wsUrl);
+                
+                this.ws.onopen = () => {
+                    console.log('WebSocket connected');
+                    this.connectionDot.classList.add('connected');
+                    this.errorBanner.classList.remove('show');
+                };
+                
+                this.ws.onclose = () => {
+                    console.log('WebSocket disconnected');
+                    this.connectionDot.classList.remove('connected');
+                    this.errorBanner.classList.add('show');
+                    
+                    // Reconnect after delay
+                    setTimeout(() => this.connectWebSocket(), 5000);
+                };
+                
+                this.ws.onmessage = (event) => {
+                    if (!this.isVisible) return;
+                    
+                    try {
+                        const data = JSON.parse(event.data);
+                        this.handleWebSocketMessage(data);
+                    } catch (error) {
+                        console.error('WebSocket message error:', error);
+                    }
+                };
+            }
+            
+            handleWebSocketMessage(data) {
+                switch (data.type) {
+                    case 'init':
+                        this.events = data.events || [];
+                        this.updateDisplay();
+                        break;
+                    case 'event':
+                        this.events.unshift(data.data);
+                        if (this.events.length > 100) this.events.pop();
+                        this.updateStats();
+                        this.updateEventsDisplay();
+                        break;
+                }
+            }
+            
+            async loadInitialData() {
+                try {
+                    const response = await fetch(`${this.baseUrl}/events?limit=50`);
+                    this.events = await response.json();
+                    this.updateDisplay();
+                } catch (error) {
+                    console.error('Failed to load data:', error);
+                }
+            }
+            
+            updateDisplay() {
+                this.updateStats();
+                this.updateEventsDisplay();
+                this.updateAgentsDisplay();
+                this.updateCharts();
+            }
+            
+            updateStats() {
+                // Calculate stats from events
+                const last5min = this.events.filter(e => 
+                    Date.now() - new Date(e.timestamp).getTime() < 5 * 60 * 1000
+                );
+                
+                this.stats.events = this.events.length;
+                this.stats.agents = new Set(this.events.map(e => e.app)).size;
+                this.stats.errors = this.events.filter(e => e.event_type === 'error').length;
+                this.stats.rate = Math.round(last5min.length / 5 * 60); // per minute
+                
+                // Update UI
+                this.statElements.events.textContent = this.stats.events;
+                this.statElements.agents.textContent = this.stats.agents;
+                this.statElements.errors.textContent = this.stats.errors;
+                this.statElements.rate.textContent = this.stats.rate + '/min';
+            }
+            
+            updateEventsDisplay() {
+                const recentEvents = this.events.slice(0, 20);
+                
+                this.eventsList.innerHTML = recentEvents.map(event => {
+                    const time = new Date(event.timestamp).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    return `
+                        <div class="event-item">
+                            <div class="event-header">
+                                <span class="event-type">${event.event_type}</span>
+                                <span class="event-time">${time}</span>
+                            </div>
+                            <div class="event-app">${event.app}</div>
+                            <div class="event-summary">${event.summary || 'No summary'}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            updateAgentsDisplay() {
+                // Group events by agent
+                const agentStats = new Map();
+                
+                this.events.forEach(event => {
+                    if (!agentStats.has(event.app)) {
+                        agentStats.set(event.app, {
+                            name: event.app,
+                            events: 0,
+                            errors: 0,
+                            lastSeen: event.timestamp
+                        });
+                    }
+                    
+                    const stats = agentStats.get(event.app);
+                    stats.events++;
+                    if (event.event_type === 'error') stats.errors++;
+                    if (new Date(event.timestamp) > new Date(stats.lastSeen)) {
+                        stats.lastSeen = event.timestamp;
+                    }
+                });
+                
+                this.agentsList.innerHTML = Array.from(agentStats.values()).map(agent => {
+                    const errorRate = agent.events > 0 ? (agent.errors / agent.events * 100).toFixed(1) : 0;
+                    const status = agent.errors === 0 ? 'healthy' :
+                                  errorRate > 10 ? 'error' : 'warning';
+                    
+                    const lastSeen = new Date(agent.lastSeen).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    return `
+                        <div class="agent-item">
+                            <div class="agent-name">
+                                ${agent.name}
+                                <span class="agent-status status-${status}">
+                                    ${status.toUpperCase()}
+                                </span>
+                            </div>
+                            <div class="agent-stats">
+                                <span>Events: ${agent.events}</span>
+                                <span>Errors: ${agent.errors}</span>
+                                <span>Last: ${lastSeen}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            updateCharts() {
+                // Generate time series data
+                const now = Date.now();
+                const labels = [];
+                const volumeData = [];
+                const errorData = [];
+                
+                for (let i = 11; i >= 0; i--) {
+                    const hourStart = now - i * 5 * 60 * 1000; // 5-minute intervals
+                    const hourEnd = hourStart + 5 * 60 * 1000;
+                    
+                    const eventsInPeriod = this.events.filter(e => {
+                        const eventTime = new Date(e.timestamp).getTime();
+                        return eventTime >= hourStart && eventTime < hourEnd;
+                    });
+                    
+                    const errors = eventsInPeriod.filter(e => e.event_type === 'error').length;
+                    
+                    labels.push('');
+                    volumeData.push(eventsInPeriod.length);
+                    errorData.push(errors);
+                }
+                
+                this.volumeChart.data.labels = labels;
+                this.volumeChart.data.datasets[0].data = volumeData;
+                this.volumeChart.update('none');
+                
+                this.errorChart.data.labels = labels;
+                this.errorChart.data.datasets[0].data = errorData;
+                this.errorChart.update('none');
+            }
+            
+            switchTab(tabName) {
+                // Update tab buttons
+                this.tabButtons.forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.tab === tabName);
+                });
+                
+                // Update tab contents
+                this.tabContents.forEach(content => {
+                    content.classList.toggle('active', content.id === tabName + '-tab');
+                });
+            }
+            
+            refresh() {
+                this.refreshBtn.style.transform = 'rotate(360deg)';
+                this.refreshBtn.style.transition = 'transform 0.5s';
+                
+                this.loadInitialData();
+                
+                setTimeout(() => {
+                    this.refreshBtn.style.transform = '';
+                    this.refreshBtn.style.transition = '';
+                }, 500);
+            }
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.mobileDashboard = new MobileDashboard();
+        });
+    </script>
+</body>
+</html>

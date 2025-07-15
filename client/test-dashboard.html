@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Test</title>
+</head>
+<body>
+    <h1>Quick Dashboard Test</h1>
+    <p><a href="http://localhost:3001/connection-test.html">🔧 Connection Test</a></p>
+    <p><a href="http://localhost:3001/index-ultra-enhanced.html">🚀 Ultra-Enhanced Dashboard</a></p>
+    <p><a href="http://localhost:3001/index-enhanced.html">📊 Enhanced Dashboard</a></p>
+    <p><a href="http://localhost:3001/mobile-dashboard.html">📱 Mobile Dashboard</a></p>
+    
+    <hr>
+    <h2>Test Event Injection</h2>
+    <button onclick="sendTestEvent()">Send Test Event</button>
+    <div id="result"></div>
+    
+    <script>
+        async function sendTestEvent() {
+            try {
+                const response = await fetch('/events', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        app: 'Test-Dashboard',
+                        session_id: 'test-' + Date.now(),
+                        event_type: 'user_action',
+                        summary: 'User clicked test button',
+                        payload: {
+                            action: 'test_button_click',
+                            timestamp: new Date().toISOString(),
+                            user_agent: navigator.userAgent
+                        }
+                    })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('result').innerHTML = 
+                        '<p style="color: green;">✅ Test event sent successfully!</p>';
+                } else {
+                    document.getElementById('result').innerHTML = 
+                        '<p style="color: red;">❌ Failed to send test event</p>';
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: red;">❌ Error: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>

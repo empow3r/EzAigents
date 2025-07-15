@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class ErrorBoundary extends React.Component {
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/20 max-w-md w-full">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
-                <AlertTriangle className="text-red-400" size={32} />
+                <Icons.AlertTriangle className="text-red-400" size={32} />
               </div>
             </div>
             
@@ -55,7 +55,7 @@ class ErrorBoundary extends React.Component {
               onClick={this.handleReset}
               className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-medium hover:from-blue-600 hover:to-purple-600 transition-all flex items-center justify-center gap-2"
             >
-              <RefreshCw size={16} />
+              <Icons.RefreshCw size={16} />
               Try Again
             </button>
           </div>

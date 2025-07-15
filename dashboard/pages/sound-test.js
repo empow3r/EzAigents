@@ -1,8 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../src/components/ui/card';
+import { Button } from '../src/components/ui/button';
+import { Slider } from '../src/components/ui/slider';
 import soundService from '../src/services/optimizedSoundService';
 
 export default function SoundTest() {

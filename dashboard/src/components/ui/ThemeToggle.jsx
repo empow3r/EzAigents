@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Moon, Sun } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
 
 const ThemeToggle = ({ size = 20, className = '' }) => {
@@ -27,7 +27,7 @@ const ThemeToggle = ({ size = 20, className = '' }) => {
         animate={{ rotate: darkMode ? 0 : 180 }}
         transition={{ duration: 0.3 }}
       >
-        {darkMode ? <Sun size={size} /> : <Moon size={size} />}
+        {darkMode ? <Icons.Sun size={size} /> : <Icons.Moon size={size} />}
       </motion.div>
     </motion.button>
   );

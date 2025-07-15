@@ -1,0 +1,261 @@
+const EnhancedRatingSystem = require('../../shared/enhanced-rating-system');
+
+let ratingSystem = null;
+
+async function initializeRatingSystem() {
+  if (!ratingSystem) {
+    ratingSystem = new EnhancedRatingSystem({
+      redisUrl: process.env.REDIS_URL || 'redis://localhost:6379'
+    });
+    await ratingSystem.initialize();
+  }
+  return ratingSystem;
+}
+
+export default async function handler(req, res) {
+  try {
+    const ratings = await initializeRatingSystem();
+    const { method } = req;
+
+    switch (method) {
+      case 'GET':
+        await handleGetRatings(req, res, ratings);
+        break;
+      case 'POST':
+        await handlePostRating(req, res, ratings);
+        break;
+      case 'PUT':
+        await handleUpdateRating(req, res, ratings);
+        break;
+      default:
+        res.setHeader('Allow', ['GET', 'POST', 'PUT']);
+        res.status(405).end(`Method ${method} Not Allowed`);
+    }
+  } catch (error) {
+    console.error('Enhanced Ratings API Error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message 
+    });
+  }
+}
+
+async function handleGetRatings(req, res, ratings) {
+  const { 
+    type, 
+    id, 
+    timeframe = '7d', 
+    limit = 10,
+    analytics = false 
+  } = req.query;
+
+  try {
+    switch (type) {
+      case 'agent-rankings':
+        const rankings = await ratings.getAgentRankings(timeframe, parseInt(limit));
+        res.json({
+          success: true,
+          data: rankings,
+          timeframe,
+          timestamp: Date.now()
+        });
+        break;
+
+      case 'task-insights':
+        const taskType = req.query.taskType || null;
+        const insights = await ratings.getTaskQualityInsights(taskType, timeframe);
+        res.json({
+          success: true,
+          data: insights,
+          taskType,
+          timeframe,
+          timestamp: Date.now()
+        });
+        break;
+
+      case 'agent-details':
+        if (!id) {
+          return res.status(400).json({ error: 'Agent ID required' });
+        }
+        const agentDetails = await ratings.getAgentAggregates(id, timeframe);
+        res.json({
+          success: true,
+          data: agentDetails,
+          agentId: id,
+          timeframe,
+          timestamp: Date.now()
+        });
+        break;
+
+      case 'predictive-score':
+        const { taskData, agentId } = req.query;
+        if (!taskData || !agentId) {
+          return res.status(400).json({ error: 'Task data and agent ID required' });
+        }
+        const prediction = await ratings.getPredictiveQualityScore(
+          JSON.parse(taskData), 
+          agentId
+        );
+        res.json({
+          success: true,
+          data: prediction,
+          timestamp: Date.now()
+        });
+        break;
+
+      case 'dashboard-overview':
+        const [
+          agentRankings,
+          globalInsights,
+          recentActivity
+        ] = await Promise.all([
+          ratings.getAgentRankings('24h', 5),
+          ratings.getTaskQualityInsights(null, '7d'),
+          ratings.getRecentActivity(20)
+        ]);
+
+        res.json({
+          success: true,
+          data: {
+            agentRankings,
+            globalInsights,
+            recentActivity,
+            summary: {
+              totalAgents: agentRankings.length,
+              averageQuality: globalInsights.averageQuality,
+              topPerformer: agentRankings[0]?.agentId || null,
+              timestamp: Date.now()
+            }
+          }
+        });
+        break;
+
+      default:
+        res.status(400).json({ error: 'Invalid rating type specified' });
+    }
+  } catch (error) {
+    console.error('Get ratings error:', error);
+    res.status(500).json({ error: 'Failed to retrieve ratings' });
+  }
+}
+
+async function handlePostRating(req, res, ratings) {
+  const { type, data } = req.body;
+
+  if (!type || !data) {
+    return res.status(400).json({ error: 'Type and data are required' });
+  }
+
+  try {
+    let result;
+
+    switch (type) {
+      case 'agent':
+        const { agentId, ratings: agentRatings, metadata } = data;
+        if (!agentId || !agentRatings) {
+          return res.status(400).json({ error: 'Agent ID and ratings required' });
+        }
+        result = await ratings.rateAgent(agentId, agentRatings, metadata);
+        break;
+
+      case 'task':
+        const { taskId, agentId: taskAgentId, ratings: taskRatings, metadata: taskMetadata } = data;
+        if (!taskId || !taskAgentId || !taskRatings) {
+          return res.status(400).json({ error: 'Task ID, agent ID, and ratings required' });
+        }
+        result = await ratings.rateTask(taskId, taskAgentId, taskRatings, taskMetadata);
+        break;
+
+      case 'ux':
+        const { sessionId, userId, ratings: uxRatings, metadata: uxMetadata } = data;
+        if (!sessionId || !userId || !uxRatings) {
+          return res.status(400).json({ error: 'Session ID, user ID, and ratings required' });
+        }
+        result = await ratings.rateUserExperience(sessionId, userId, uxRatings, uxMetadata);
+        break;
+
+      case 'bulk':
+        const { ratings: bulkRatings } = data;
+        if (!Array.isArray(bulkRatings)) {
+          return res.status(400).json({ error: 'Bulk ratings must be an array' });
+        }
+        
+        const results = [];
+        for (const rating of bulkRatings) {
+          try {
+            let ratingResult;
+            switch (rating.type) {
+              case 'agent':
+                ratingResult = await ratings.rateAgent(rating.agentId, rating.ratings, rating.metadata);
+                break;
+              case 'task':
+                ratingResult = await ratings.rateTask(rating.taskId, rating.agentId, rating.ratings, rating.metadata);
+                break;
+              case 'ux':
+                ratingResult = await ratings.rateUserExperience(rating.sessionId, rating.userId, rating.ratings, rating.metadata);
+                break;
+              default:
+                throw new Error(`Invalid rating type: ${rating.type}`);
+            }
+            results.push({ success: true, data: ratingResult });
+          } catch (error) {
+            results.push({ success: false, error: error.message });
+          }
+        }
+        
+        result = {
+          total: bulkRatings.length,
+          successful: results.filter(r => r.success).length,
+          failed: results.filter(r => !r.success).length,
+          results
+        };
+        break;
+
+      default:
+        return res.status(400).json({ error: 'Invalid rating type' });
+    }
+
+    res.status(201).json({
+      success: true,
+      data: result,
+      timestamp: Date.now()
+    });
+
+  } catch (error) {
+    console.error('Post rating error:', error);
+    res.status(500).json({ error: 'Failed to submit rating' });
+  }
+}
+
+async function handleUpdateRating(req, res, ratings) {
+  const { type, id, updates } = req.body;
+
+  if (!type || !id || !updates) {
+    return res.status(400).json({ error: 'Type, ID, and updates are required' });
+  }
+
+  try {
+    // Handle real-time metric updates
+    if (type === 'realtime') {
+      await ratings.updateRealTimeMetrics(updates.entityType, id, updates.metrics);
+      res.json({
+        success: true,
+        message: 'Real-time metrics updated',
+        timestamp: Date.now()
+      });
+      return;
+    }
+
+    // Handle rating corrections/updates
+    const updatedRating = await ratings.updateRating(type, id, updates);
+    res.json({
+      success: true,
+      data: updatedRating,
+      timestamp: Date.now()
+    });
+
+  } catch (error) {
+    console.error('Update rating error:', error);
+    res.status(500).json({ error: 'Failed to update rating' });
+  }
+}

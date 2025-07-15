@@ -12,23 +12,7 @@ import Agent3DGlobe from './Agent3DGlobe';
 import EnhancedAgent3DGlobe from './EnhancedAgent3DGlobe';
 import Simple3DGlobe from './Simple3DGlobe';
 import { useScrollEffects } from '../hooks/useScrollEffects';
-import { 
-  Cpu, 
-  Globe, 
-  Layers,
-  Network,
-  Shield,
-  Zap,
-  Brain,
-  Code,
-  Database,
-  Activity,
-  Dna,
-  Terminal,
-  Mic,
-  Hand,
-  Grid3X3
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 // Holographic Menu Item
 const HolographicMenuItem = ({ icon: Icon, label, isActive, onClick, delay = 0 }) => {
@@ -139,15 +123,15 @@ const UltraFuturisticDashboard = ({ darkMode = true }) => {
   const { scrollY, scrollDirection } = useScrollEffects();
 
   const menuItems = [
-    { id: 'globe', label: '3D Globe', icon: Globe },
-    { id: 'agents', label: 'AI Agents', icon: Brain },
-    { id: 'assistant', label: 'AI Assistant', icon: Mic },
-    { id: 'dna', label: 'DNA Visual', icon: Dna },
-    { id: 'terminal', label: 'Terminal', icon: Terminal },
-    { id: 'analytics', label: 'Analytics', icon: Activity },
-    { id: 'network', label: 'Network', icon: Network },
-    { id: 'security', label: 'Security', icon: Shield },
-    { id: 'code', label: 'Code Lab', icon: Code }
+    { id: 'globe', label: '3D Globe', icon:Icons.Globe },
+    { id: 'agents', label: 'AI Agents', icon:Icons.Brain },
+    { id: 'assistant', label: 'AI Assistant', icon:Icons.Mic },
+    { id: 'dna', label: 'DNA Visual', icon:Icons.Dna },
+    { id: 'terminal', label: 'Terminal', icon:Icons.Terminal },
+    { id: 'analytics', label: 'Analytics', icon:Icons.Activity },
+    { id: 'network', label: 'Network', icon:Icons.Network },
+    { id: 'security', label: 'Security', icon:Icons.Shield },
+    { id: 'code', label: 'Code Lab', icon:Icons.Code }
   ];
 
   const systemStats = {
@@ -271,7 +255,7 @@ const UltraFuturisticDashboard = ({ darkMode = true }) => {
                 onClick={() => setMatrixMode(!matrixMode)}
                 className="px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-400/50 rounded-lg backdrop-blur-sm"
               >
-                <Grid3X3 className="w-5 h-5 inline mr-2" />
+                <Icons.Grid3X3 className="w-5 h-5 inline mr-2" />
                 Matrix Mode
               </motion.button>
               
@@ -285,7 +269,7 @@ const UltraFuturisticDashboard = ({ darkMode = true }) => {
                     : 'bg-gray-800/50 border border-gray-600/50'
                 }`}
               >
-                <Hand className="w-5 h-5 inline mr-2" />
+                <Icons.Hand className="w-5 h-5 inline mr-2" />
                 Gestures
               </motion.button>
             </div>

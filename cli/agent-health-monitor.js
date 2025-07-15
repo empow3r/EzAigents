@@ -1,16 +1,34 @@
 const Redis = require('ioredis');
 const EventEmitter = require('events');
+const os = require('os');
 
 class AgentHealthMonitor extends EventEmitter {
-  constructor() {
+  constructor(config = {}) {
     super();
-    this.redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
-    this.subscriber = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
-    this.healthCheckInterval = 30000; // 30 seconds
-    this.unresponsiveThreshold = 90000; // 90 seconds
-    this.autoRecoveryEnabled = true;
+    this.redis = new Redis(config.redisUrl || process.env.REDIS_URL || 'redis://localhost:6379');
+    this.subscriber = new Redis(config.redisUrl || process.env.REDIS_URL || 'redis://localhost:6379');
+    this.config = {
+      healthCheckInterval: config.healthCheckInterval || 30000, // 30 seconds
+      unresponsiveThreshold: config.unresponsiveThreshold || 90000, // 90 seconds
+      autoRecoveryEnabled: config.autoRecoveryEnabled !== false,
+      maxResponseTime: config.maxResponseTime || 5000,
+      criticalMemoryThreshold: config.criticalMemoryThreshold || 0.9,
+      criticalCpuThreshold: config.criticalCpuThreshold || 0.8,
+      alertThresholds: {
+        responseTime: 3000,
+        errorRate: 0.1,
+        memoryUsage: 0.8,
+        cpuUsage: 0.7,
+        taskFailureRate: 0.2,
+        ...config.alertThresholds
+      },
+      ...config
+    };
     this.agentRegistry = new Map();
     this.healthStats = new Map();
+    this.capacityMetrics = new Map();
+    this.performanceHistory = new Map();
+    this.alerts = new Map();
     
     this.init();
   }
@@ -24,8 +42,11 @@ class AgentHealthMonitor extends EventEmitter {
     // Start health checking
     this.startHealthChecking();
     
+    // Start capacity monitoring
+    this.startCapacityMonitoring();
+    
     // Start auto-recovery if enabled
-    if (this.autoRecoveryEnabled) {
+    if (this.config.autoRecoveryEnabled) {
       this.startAutoRecovery();
     }
     
@@ -237,7 +258,17 @@ class AgentHealthMonitor extends EventEmitter {
       } catch (error) {
         console.error('❌ Health check error:', error);
       }
-    }, this.healthCheckInterval);
+    }, this.config.healthCheckInterval);
+  }
+  
+  async startCapacityMonitoring() {
+    setInterval(async () => {
+      try {
+        await this.monitorAgentCapacity();
+      } catch (error) {
+        console.error('❌ Capacity monitoring error:', error);
+      }
+    }, 60000); // Every minute
   }
   
   async performHealthChecks() {
@@ -248,7 +279,11 @@ class AgentHealthMonitor extends EventEmitter {
       const lastHeartbeat = new Date(agent.last_heartbeat).getTime();
       const timeSinceHeartbeat = now - lastHeartbeat;
       
-      if (timeSinceHeartbeat > this.unresponsiveThreshold) {
+      // Perform comprehensive health check
+      const healthResult = await this.performAgentHealthCheck(agentId, agent);
+      await this.updatePerformanceHistory(agentId, healthResult);
+      
+      if (timeSinceHeartbeat > this.config.unresponsiveThreshold) {
         unresponsiveAgents.push(agentId);
         
         // Mark as unresponsive
@@ -270,7 +305,7 @@ class AgentHealthMonitor extends EventEmitter {
         });
         
         // Attempt recovery
-        if (this.autoRecoveryEnabled) {
+        if (this.config.autoRecoveryEnabled) {
           await this.attemptRecovery(agentId, 'unresponsive');
         }
       }
@@ -553,6 +588,329 @@ class AgentHealthMonitor extends EventEmitter {
     };
   }
   
+  async performAgentHealthCheck(agentId, agent) {
+    const startTime = Date.now();
+    let healthResult = {
+      agentId,
+      timestamp: startTime,
+      status: 'unknown',
+      responseTime: 0,
+      metrics: {},
+      score: 0
+    };
+
+    try {
+      // Check Redis connectivity for agent
+      const redisHealthy = await this.checkAgentRedisHealth(agentId);
+      
+      // Get system metrics
+      const systemMetrics = await this.getAgentSystemMetrics(agentId);
+      
+      // Check queue health
+      const queueHealth = await this.checkAgentQueueHealth(agentId);
+      
+      // Calculate response time
+      healthResult.responseTime = Date.now() - startTime;
+      
+      // Determine status
+      let status = 'healthy';
+      if (!redisHealthy) status = 'unhealthy';
+      if (systemMetrics.memoryUsage > this.config.criticalMemoryThreshold) status = 'critical';
+      if (systemMetrics.cpuUsage > this.config.criticalCpuThreshold) status = 'degraded';
+      if (queueHealth.backlog > 100) status = 'degraded';
+      
+      healthResult.status = status;
+      healthResult.metrics = { ...systemMetrics, ...queueHealth, redisHealthy };
+      healthResult.score = this.calculateAgentHealthScore(healthResult);
+      
+    } catch (error) {
+      healthResult.status = 'error';
+      healthResult.error = error.message;
+      healthResult.score = 0;
+    }
+
+    return healthResult;
+  }
+
+  async checkAgentRedisHealth(agentId) {
+    try {
+      const start = Date.now();
+      await this.redis.ping();
+      return (Date.now() - start) < 1000;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async getAgentSystemMetrics(agentId) {
+    try {
+      const freeMemory = os.freemem();
+      const totalMemory = os.totalmem();
+      const memoryUsage = (totalMemory - freeMemory) / totalMemory;
+      
+      // Get CPU usage (simplified)
+      const cpuUsage = await this.getCpuUsage();
+      
+      return {
+        memoryUsage,
+        cpuUsage,
+        freeMemory,
+        totalMemory,
+        loadAverage: os.loadavg()[0]
+      };
+    } catch (error) {
+      return {
+        memoryUsage: 0,
+        cpuUsage: 0,
+        freeMemory: os.freemem(),
+        totalMemory: os.totalmem(),
+        loadAverage: 0
+      };
+    }
+  }
+
+  async getCpuUsage() {
+    return new Promise((resolve) => {
+      const startUsage = process.cpuUsage();
+      setTimeout(() => {
+        const endUsage = process.cpuUsage(startUsage);
+        const totalTime = 100000; // 100ms in microseconds
+        const cpuPercent = (endUsage.user + endUsage.system) / totalTime;
+        resolve(Math.min(cpuPercent, 1));
+      }, 100);
+    });
+  }
+
+  async checkAgentQueueHealth(agentId) {
+    try {
+      const queueKeys = await this.redis.keys(`queue:${agentId}*`);
+      let totalBacklog = 0;
+      
+      for (const queueKey of queueKeys) {
+        const queueSize = await this.redis.zcard(queueKey);
+        totalBacklog += queueSize;
+      }
+      
+      return {
+        backlog: totalBacklog,
+        queueCount: queueKeys.length
+      };
+    } catch (error) {
+      return {
+        backlog: 0,
+        queueCount: 0
+      };
+    }
+  }
+
+  calculateAgentHealthScore(healthResult) {
+    let score = 1.0;
+    
+    switch (healthResult.status) {
+      case 'healthy': score *= 1.0; break;
+      case 'degraded': score *= 0.7; break;
+      case 'unhealthy': score *= 0.3; break;
+      case 'critical': score *= 0.1; break;
+      case 'error': score *= 0.0; break;
+      default: score *= 0.5;
+    }
+    
+    if (healthResult.responseTime > this.config.alertThresholds.responseTime) {
+      score *= 0.8;
+    }
+    
+    if (healthResult.metrics.memoryUsage > this.config.alertThresholds.memoryUsage) {
+      score *= 0.7;
+    }
+    
+    if (healthResult.metrics.cpuUsage > this.config.alertThresholds.cpuUsage) {
+      score *= 0.8;
+    }
+    
+    return Math.max(score, 0);
+  }
+
+  async updatePerformanceHistory(agentId, healthResult) {
+    if (!this.performanceHistory.has(agentId)) {
+      this.performanceHistory.set(agentId, []);
+    }
+    
+    const history = this.performanceHistory.get(agentId);
+    history.push(healthResult);
+    
+    // Keep only last 100 entries
+    if (history.length > 100) {
+      history.splice(0, history.length - 100);
+    }
+    
+    // Store in Redis
+    await this.redis.hset(`agent:performance:${agentId}`, 
+      'history', JSON.stringify(history.slice(-20)) // Store last 20 for persistence
+    );
+  }
+
+  async monitorAgentCapacity() {
+    for (const [agentId, agent] of this.agentRegistry) {
+      const capacity = await this.calculateAgentCapacity(agentId, agent);
+      this.capacityMetrics.set(agentId, capacity);
+      
+      // Store capacity metrics
+      await this.redis.hset(`agent:capacity:${agentId}`, {
+        currentLoad: capacity.currentLoad,
+        maxCapacity: capacity.maxCapacity,
+        utilizationPercentage: capacity.utilizationPercentage,
+        availableCapacity: capacity.availableCapacity,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Check for capacity alerts
+      if (capacity.utilizationPercentage > 90) {
+        await this.createCapacityAlert(agentId, 'high_utilization', capacity);
+      }
+    }
+  }
+
+  async calculateAgentCapacity(agentId, agent) {
+    try {
+      // Get current queue sizes
+      const queueKeys = await this.redis.keys(`queue:${agentId}*`);
+      let currentLoad = 0;
+      
+      for (const queueKey of queueKeys) {
+        currentLoad += await this.redis.zcard(queueKey);
+      }
+      
+      // Get processing tasks
+      const processingTasks = await this.redis.zcard(`processing:${agentId}`) || 0;
+      currentLoad += processingTasks;
+      
+      const maxCapacity = agent.max_capacity || 50; // Default max capacity
+      const utilizationPercentage = (currentLoad / maxCapacity) * 100;
+      const availableCapacity = Math.max(0, maxCapacity - currentLoad);
+      
+      return {
+        currentLoad,
+        maxCapacity,
+        utilizationPercentage,
+        availableCapacity,
+        healthScore: this.performanceHistory.get(agentId)?.slice(-1)[0]?.score || 0.5
+      };
+    } catch (error) {
+      return {
+        currentLoad: 0,
+        maxCapacity: 50,
+        utilizationPercentage: 0,
+        availableCapacity: 50,
+        healthScore: 0.5
+      };
+    }
+  }
+
+  async createCapacityAlert(agentId, type, capacity) {
+    const alertKey = `${agentId}:${type}`;
+    
+    if (!this.alerts.has(alertKey)) {
+      const alert = {
+        agentId,
+        type,
+        message: `Agent ${agentId} ${type}: ${capacity.utilizationPercentage.toFixed(1)}% utilized`,
+        capacity,
+        timestamp: Date.now(),
+        acknowledged: false
+      };
+      
+      this.alerts.set(alertKey, alert);
+      await this.redis.hset('capacity:alerts', alertKey, JSON.stringify(alert));
+      
+      console.warn(`⚠️ Capacity Alert: ${alert.message}`);
+      this.emit('capacityAlert', alert);
+    }
+  }
+
+  async getCapacityReport() {
+    const capacityData = Array.from(this.capacityMetrics.entries()).map(([agentId, capacity]) => ({
+      agentId,
+      ...capacity
+    }));
+    
+    const totalCapacity = capacityData.reduce((sum, c) => sum + c.maxCapacity, 0);
+    const totalLoad = capacityData.reduce((sum, c) => sum + c.currentLoad, 0);
+    const avgUtilization = capacityData.length > 0 
+      ? capacityData.reduce((sum, c) => sum + c.utilizationPercentage, 0) / capacityData.length 
+      : 0;
+    
+    return {
+      agents: capacityData,
+      summary: {
+        totalAgents: capacityData.length,
+        totalCapacity,
+        totalLoad,
+        avgUtilization,
+        systemUtilization: totalCapacity > 0 ? (totalLoad / totalCapacity) * 100 : 0
+      },
+      alerts: Array.from(this.alerts.values()).filter(a => !a.acknowledged),
+      timestamp: Date.now()
+    };
+  }
+
+  async getAdvancedHealthReport() {
+    const baseReport = await this.getHealthReport();
+    const capacityReport = await this.getCapacityReport();
+    
+    // Enhanced agent details with performance history
+    const enhancedAgents = baseReport.agents.map(agent => {
+      const performance = this.performanceHistory.get(agent.id) || [];
+      const capacity = this.capacityMetrics.get(agent.id);
+      
+      return {
+        ...agent,
+        capacity,
+        performance: {
+          avgHealthScore: performance.length > 0 
+            ? performance.reduce((sum, p) => sum + p.score, 0) / performance.length 
+            : 0,
+          avgResponseTime: performance.length > 0
+            ? performance.reduce((sum, p) => sum + p.responseTime, 0) / performance.length
+            : 0,
+          recentTrend: this.calculateHealthTrend(performance)
+        }
+      };
+    });
+    
+    return {
+      ...baseReport,
+      agents: enhancedAgents,
+      capacity: capacityReport.summary,
+      alerts: Array.from(this.alerts.values()).filter(a => !a.acknowledged),
+      systemPerformance: {
+        avgHealthScore: enhancedAgents.length > 0
+          ? enhancedAgents.reduce((sum, a) => sum + a.performance.avgHealthScore, 0) / enhancedAgents.length
+          : 0,
+        avgResponseTime: enhancedAgents.length > 0
+          ? enhancedAgents.reduce((sum, a) => sum + a.performance.avgResponseTime, 0) / enhancedAgents.length
+          : 0
+      }
+    };
+  }
+
+  calculateHealthTrend(performance) {
+    if (performance.length < 2) return 'stable';
+    
+    const recent = performance.slice(-5); // Last 5 measurements
+    const older = performance.slice(-10, -5); // Previous 5 measurements
+    
+    if (recent.length === 0 || older.length === 0) return 'stable';
+    
+    const recentAvg = recent.reduce((sum, p) => sum + p.score, 0) / recent.length;
+    const olderAvg = older.reduce((sum, p) => sum + p.score, 0) / older.length;
+    
+    const diff = recentAvg - olderAvg;
+    
+    if (diff > 0.1) return 'improving';
+    if (diff < -0.1) return 'declining';
+    return 'stable';
+  }
+
   async shutdown() {
     console.log('🛑 Health Monitor shutting down...');
     

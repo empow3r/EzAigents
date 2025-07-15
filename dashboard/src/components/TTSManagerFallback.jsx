@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { VolumeX } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
+import * as Icons from 'lucide-react';
 
 export default function TTSManagerFallback({ darkMode = true }) {
   return (
@@ -18,7 +18,7 @@ export default function TTSManagerFallback({ darkMode = true }) {
       <Card className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <VolumeX className="w-5 h-5" />
+            <Icons.VolumeX className="w-5 h-5" />
             <span>TTS Unavailable</span>
           </CardTitle>
           <CardDescription>

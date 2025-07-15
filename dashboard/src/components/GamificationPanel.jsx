@@ -1,25 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Trophy, 
-  Star, 
-  Target, 
-  Award, 
-  Crown, 
-  Zap,
-  Calendar,
-  Users,
-  TrendingUp,
-  Gift,
-  Medal,
-  Flame,
-  Clock,
-  CheckCircle,
-  XCircle,
-  BarChart3,
-  Sparkles,
-  GamepadIcon
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { useGamification } from '../hooks/useGamification';
 
 export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
@@ -145,7 +126,7 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
               <h2 className="text-2xl font-bold text-gray-900">{user.name}</h2>
               <p className="text-lg text-blue-600 font-medium">{user.title}</p>
               <div className="flex items-center space-x-2 mt-1">
-                <Crown className="w-4 h-4 text-yellow-500" />
+                <Icons.Crown className="w-4 h-4 text-yellow-500" />
                 <span className="text-sm text-gray-600">Level {user.level}</span>
               </div>
             </div>
@@ -185,7 +166,7 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
               <div className="text-2xl font-bold text-gray-900">{achievements.length}</div>
               <div className="text-sm text-gray-600">Achievements</div>
             </div>
-            <Trophy className="w-8 h-8 text-yellow-500" />
+            <Icons.Trophy className="w-8 h-8 text-yellow-500" />
           </div>
         </div>
         <div className="bg-white rounded-lg p-4 border shadow-sm">
@@ -194,7 +175,7 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
               <div className="text-2xl font-bold text-gray-900">{badges.length}</div>
               <div className="text-sm text-gray-600">Badges</div>
             </div>
-            <Award className="w-8 h-8 text-blue-500" />
+            <Icons.Award className="w-8 h-8 text-blue-500" />
           </div>
         </div>
         <div className="bg-white rounded-lg p-4 border shadow-sm">
@@ -203,7 +184,7 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
               <div className="text-2xl font-bold text-gray-900">{streaks.daily}</div>
               <div className="text-sm text-gray-600">Daily Streak</div>
             </div>
-            <Flame className="w-8 h-8 text-orange-500" />
+            <Icons.Flame className="w-8 h-8 text-orange-500" />
           </div>
         </div>
       </div>
@@ -212,7 +193,7 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
       {seasonalEvents.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-purple-500" />
+            <Icons.Sparkles className="w-5 h-5 text-purple-500" />
             Seasonal Events
           </h3>
           {seasonalEvents.map(event => (
@@ -243,7 +224,7 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
       {/* Daily Quests */}
       <div>
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-blue-500" />
+          <Icons.Calendar className="w-5 h-5 text-blue-500" />
           Daily Quests
         </h3>
         <div className="space-y-3">
@@ -253,7 +234,7 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
                     <h4 className="font-medium">{quest.name}</h4>
-                    {quest.completed && <CheckCircle className="w-4 h-4 text-green-500" />}
+                    {quest.completed && <Icons.CheckCircle className="w-4 h-4 text-green-500" />}
                   </div>
                   <div className="mt-2">
                     <div className="flex justify-between text-sm text-gray-600 mb-1">
@@ -283,7 +264,7 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
       {/* Weekly Quests */}
       <div>
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <Target className="w-5 h-5 text-purple-500" />
+          <Icons.Target className="w-5 h-5 text-purple-500" />
           Weekly Quests
         </h3>
         <div className="space-y-3">
@@ -293,7 +274,7 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
                     <h4 className="font-medium">{quest.name}</h4>
-                    {quest.completed && <CheckCircle className="w-4 h-4 text-green-500" />}
+                    {quest.completed && <Icons.CheckCircle className="w-4 h-4 text-green-500" />}
                   </div>
                   <div className="mt-2">
                     <div className="flex justify-between text-sm text-gray-600 mb-1">
@@ -396,7 +377,7 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
       <div className="bg-white rounded-lg shadow-sm border">
         <div className="p-4 border-b">
           <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Users className="w-5 h-5 text-yellow-500" />
+            <Icons.Users className="w-5 h-5 text-yellow-500" />
             Global Leaderboard
           </h3>
         </div>
@@ -497,7 +478,7 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
-            <GamepadIcon className="w-8 h-8 text-green-500" />
+            <Icons.GamepadIcon className="w-8 h-8 text-green-500" />
             Gamification System
           </h2>
           <p className="text-gray-600">Track your progress and earn rewards</p>
@@ -508,11 +489,11 @@ export default function GamificationPanel({ screenSize, isMobile, isTablet }) {
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
           {[
-            { id: 'overview', label: 'Overview', icon: BarChart3 },
-            { id: 'quests', label: 'Quests', icon: Target },
-            { id: 'achievements', label: 'Achievements', icon: Trophy },
-            { id: 'badges', label: 'Badges', icon: Award },
-            { id: 'leaderboard', label: 'Leaderboard', icon: Users }
+            { id: 'overview', label: 'Overview', icon:Icons.BarChart3 },
+            { id: 'quests', label: 'Quests', icon:Icons.Target },
+            { id: 'achievements', label: 'Achievements', icon:Icons.Trophy },
+            { id: 'badges', label: 'Badges', icon:Icons.Award },
+            { id: 'leaderboard', label: 'Leaderboard', icon:Icons.Users }
           ].map(tab => (
             <button
               key={tab.id}

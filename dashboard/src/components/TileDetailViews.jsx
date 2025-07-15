@@ -1,22 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import {
-  Activity,
-  Users,
-  Cpu,
-  Database,
-  Clock,
-  TrendingUp,
-  TrendingDown,
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Zap,
-  Server,
-  BarChart3,
-  PieChart,
-  LineChart
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 // Agent Statistics Detail View
 export const AgentStatsDetailView = ({ data, darkMode }) => {
@@ -38,7 +22,7 @@ export const AgentStatsDetailView = ({ data, darkMode }) => {
           }`}
         >
           <div className="flex items-center space-x-3">
-            <CheckCircle className="text-green-500" size={24} />
+            <Icons.CheckCircle className="text-green-500" size={24} />
             <div>
               <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Completed Tasks
@@ -59,7 +43,7 @@ export const AgentStatsDetailView = ({ data, darkMode }) => {
           }`}
         >
           <div className="flex items-center space-x-3">
-            <XCircle className="text-red-500" size={24} />
+            <Icons.XCircle className="text-red-500" size={24} />
             <div>
               <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Failed Tasks
@@ -80,7 +64,7 @@ export const AgentStatsDetailView = ({ data, darkMode }) => {
           }`}
         >
           <div className="flex items-center space-x-3">
-            <TrendingUp className="text-blue-500" size={24} />
+            <Icons.TrendingUp className="text-blue-500" size={24} />
             <div>
               <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Success Rate
@@ -180,7 +164,7 @@ export const SystemPerformanceDetailView = ({ data, darkMode }) => {
           }`}
         >
           <div className="flex items-center space-x-3">
-            <Cpu className="text-blue-500" size={24} />
+            <Icons.Cpu className="text-blue-500" size={24} />
             <div>
               <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 CPU Usage
@@ -201,7 +185,7 @@ export const SystemPerformanceDetailView = ({ data, darkMode }) => {
           }`}
         >
           <div className="flex items-center space-x-3">
-            <Database className="text-green-500" size={24} />
+            <Icons.Database className="text-green-500" size={24} />
             <div>
               <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Memory
@@ -222,7 +206,7 @@ export const SystemPerformanceDetailView = ({ data, darkMode }) => {
           }`}
         >
           <div className="flex items-center space-x-3">
-            <Zap className="text-yellow-500" size={24} />
+            <Icons.Zap className="text-yellow-500" size={24} />
             <div>
               <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Response Time
@@ -243,7 +227,7 @@ export const SystemPerformanceDetailView = ({ data, darkMode }) => {
           }`}
         >
           <div className="flex items-center space-x-3">
-            <Server className="text-purple-500" size={24} />
+            <Icons.Server className="text-purple-500" size={24} />
             <div>
               <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Uptime
@@ -268,7 +252,7 @@ export const SystemPerformanceDetailView = ({ data, darkMode }) => {
         <h3 className={`text-lg font-semibold mb-4 flex items-center ${
           darkMode ? 'text-white' : 'text-gray-900'
         }`}>
-          <BarChart3 className="mr-2" size={20} />
+          <Icons.BarChart3 className="mr-2" size={20} />
           Performance Trends
         </h3>
         
@@ -276,7 +260,7 @@ export const SystemPerformanceDetailView = ({ data, darkMode }) => {
           darkMode ? 'border-gray-600 text-gray-400' : 'border-gray-300 text-gray-500'
         }`}>
           <div className="text-center">
-            <LineChart size={48} className="mx-auto mb-2 opacity-50" />
+            <Icons.LineChart size={48} className="mx-auto mb-2 opacity-50" />
             <p>Performance chart will be rendered here</p>
           </div>
         </div>
@@ -303,7 +287,7 @@ export const QueueStatsDetailView = ({ data, darkMode }) => {
           }`}
         >
           <div className="flex items-center space-x-3">
-            <Activity className="text-blue-500" size={24} />
+            <Icons.Activity className="text-blue-500" size={24} />
             <div>
               <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Total Queues
@@ -324,7 +308,7 @@ export const QueueStatsDetailView = ({ data, darkMode }) => {
           }`}
         >
           <div className="flex items-center space-x-3">
-            <Clock className="text-orange-500" size={24} />
+            <Icons.Clock className="text-orange-500" size={24} />
             <div>
               <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Pending Items
@@ -345,7 +329,7 @@ export const QueueStatsDetailView = ({ data, darkMode }) => {
           }`}
         >
           <div className="flex items-center space-x-3">
-            <TrendingUp className="text-green-500" size={24} />
+            <Icons.TrendingUp className="text-green-500" size={24} />
             <div>
               <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Processing Rate

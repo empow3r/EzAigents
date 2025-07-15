@@ -1,0 +1,301 @@
+
+services:
+  # Redis Message Queue
+  redis:
+    image: redis:7-alpine
+    container_name: ezaigents-redis
+    ports:
+      - "6379:6379"  # Standardized port
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - ezaigents-network
+    profiles:
+      - development
+      - production
+      - minimal
+
+  # Dashboard Web Server
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: ezaigents-dashboard
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - REDIS_URL=redis://redis:6379
+      - NEXT_TELEMETRY_DISABLED=1
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./dashboard:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - ezaigents-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    profiles:
+      - development
+      - production
+      - minimal
+
+  # Claude Agent
+  claude-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: claude
+    container_name: ezaigents-claude
+    command: ["node", "agents/claude/enhanced-coordinated-index.js"]
+    environment:
+      - AGENT_ID=claude-docker-001
+      - REDIS_URL=redis://redis:6379
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - MODEL=claude-3-opus
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/claude:/app/.agent-memory/claude
+      - ./agents/claude/logs:/app/agents/claude/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    profiles:
+      - development
+      - production
+
+  # GPT Agent
+  gpt-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: gpt
+    container_name: ezaigents-gpt
+    command: ["node", "agents/gpt/index.js"]
+    environment:
+      - AGENT_ID=gpt-docker-001
+      - REDIS_URL=redis://redis:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MODEL=gpt-4o
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/gpt:/app/.agent-memory/gpt
+      - ./agents/gpt/logs:/app/agents/gpt/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    profiles:
+      - development
+      - production
+
+  # DeepSeek Agent
+  deepseek-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: deepseek
+    container_name: ezaigents-deepseek
+    command: ["node", "agents/deepseek/index.js"]
+    environment:
+      - AGENT_ID=deepseek-docker-001
+      - REDIS_URL=redis://redis:6379
+      - DEEPSEEK_API_KEYS=${DEEPSEEK_API_KEYS}
+      - MODEL=deepseek-coder
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/deepseek:/app/.agent-memory/deepseek
+      - ./agents/deepseek/logs:/app/agents/deepseek/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    profiles:
+      - development
+      - production
+
+  # Mistral Agent
+  mistral-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: mistral
+    container_name: ezaigents-mistral
+    command: ["node", "agents/mistral/index.js"]
+    environment:
+      - AGENT_ID=mistral-docker-001
+      - REDIS_URL=redis://redis:6379
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+      - MODEL=mistral-large
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/mistral:/app/.agent-memory/mistral
+      - ./agents/mistral/logs:/app/agents/mistral/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    profiles:
+      - development
+      - production
+
+  # Gemini Agent  
+  gemini-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: gemini
+    container_name: ezaigents-gemini
+    command: ["node", "agents/gemini/index.js"]
+    environment:
+      - AGENT_ID=gemini-docker-001
+      - REDIS_URL=redis://redis:6379
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - MODEL=gemini-pro
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/gemini:/app/.agent-memory/gemini
+      - ./agents/gemini/logs:/app/agents/gemini/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    profiles:
+      - development
+      - production
+
+  # Kimi Agent
+  kimi-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: kimi
+    container_name: ezaigents-kimi
+    command: ["node", "agents/kimi/index.js"]
+    environment:
+      - AGENT_ID=kimi-docker-001
+      - REDIS_URL=redis://redis:6379
+      - KIMI_API_KEY=${KIMI_API_KEY}
+      - MODEL=kimi-2
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/kimi:/app/.agent-memory/kimi
+      - ./agents/kimi/logs:/app/agents/kimi/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    profiles:
+      - development
+      - production
+
+  # API Key Manager
+  api-manager:
+    build:
+      context: .
+      dockerfile: cli/Dockerfile
+    container_name: ezaigents-api-manager
+    command: ["node", "cli/api-key-manager.js", "start"]
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DEEPSEEK_API_KEYS=${DEEPSEEK_API_KEYS}
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./cli/logs:/app/cli/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    profiles:
+      - development
+      - production
+
+  # WebScraper Agent
+  webscraper-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_TYPE: webscraper
+    container_name: ezaigents-webscraper
+    command: ["node", "agents/webscraper/index.js"]
+    environment:
+      - AGENT_ID=webscraper-docker-001
+      - REDIS_URL=redis://redis:6379
+      - SCRAPER_HEADLESS=true
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.agent-memory/webscraper:/app/.agent-memory/webscraper
+      - ./agents/webscraper/logs:/app/agents/webscraper/logs
+    networks:
+      - ezaigents-network
+    restart: unless-stopped
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - no-new-privileges
+    profiles:
+      - development
+      - production
+
+  # Nginx Reverse Proxy (Optional - for production)
+  nginx:
+    image: nginx:alpine
+    container_name: ezaigents-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - dashboard
+    networks:
+      - ezaigents-network
+    profiles:
+      - production
+
+networks:
+  ezaigents-network:
+    driver: bridge
+
+volumes:
+  redis-data:

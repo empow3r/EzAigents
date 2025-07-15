@@ -2,23 +2,7 @@
 import React, { useState, lazy, Suspense, useCallback, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
-import { 
-  BarChart3, 
-  Zap, 
-  Box, 
-  GitCompare, 
-  Trophy, 
-  Settings,
-  Moon,
-  Sun,
-  Sparkles,
-  GitBranch,
-  MessageCircle,
-  Menu,
-  X,
-  ChevronLeft,
-  ChevronRight
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 import ResponsiveLayout from './components/ResponsiveLayout';
 
 // Lazy load components
@@ -94,7 +78,7 @@ const Sidebar = React.memo(({
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-              <Zap className="text-white" size={16} />
+              <Icons.Zap className="text-white" size={16} />
             </div>
             <div>
               <h2 className={`font-semibold text-sm ${
@@ -115,7 +99,7 @@ const Sidebar = React.memo(({
               darkMode ? 'text-gray-400' : 'text-gray-500'
             }`}
           >
-            <X size={16} />
+            <Icons.X size={16} />
           </button>
         </div>
 
@@ -192,16 +176,16 @@ export default function MobileFirstDashboard() {
 
   // Tabs configuration
   const tabs = useMemo(() => [
-    { id: 'command', name: 'Command Center', icon: Zap, component: EnhancementCommandCenter },
-    { id: 'project', name: 'Project Status', icon: GitBranch, component: ProjectDashboard },
-    { id: 'enhanced', name: 'Enhanced Dashboard', icon: Sparkles, component: EnhancedAgentDashboard },
-    { id: 'chat', name: 'Agent Chat', icon: MessageCircle, component: ChatDashboard },
-    { id: 'dashboard', name: 'Classic Dashboard', icon: BarChart3, component: AgentDashboard },
-    { id: 'workspace', name: '3D Workspace', icon: Box, component: Agent3DWorkspace },
-    { id: 'diffs', name: 'Code Diffs', icon: GitCompare, component: CodeDiffViewer },
-    { id: 'gamification', name: 'Achievements', icon: Trophy, component: GameficationDashboard },
-    { id: 'prompts', name: 'Prompt Manager', icon: Settings, component: PromptManager },
-    { id: 'enhancements', name: 'Enhancements', icon: Settings, component: EnhancementDashboard }
+    { id: 'command', name: 'Command Center', icon:Icons.Zap, component: EnhancementCommandCenter },
+    { id: 'project', name: 'Project Status', icon:Icons.GitBranch, component: ProjectDashboard },
+    { id: 'enhanced', name: 'Enhanced Dashboard', icon:Icons.Sparkles, component: EnhancedAgentDashboard },
+    { id: 'chat', name: 'Agent Chat', icon:Icons.MessageCircle, component: ChatDashboard },
+    { id: 'dashboard', name: 'Classic Dashboard', icon:Icons.BarChart3, component: AgentDashboard },
+    { id: 'workspace', name: '3D Workspace', icon:Icons.Box, component: Agent3DWorkspace },
+    { id: 'diffs', name: 'Code Diffs', icon:Icons.GitCompare, component: CodeDiffViewer },
+    { id: 'gamification', name: 'Achievements', icon:Icons.Trophy, component: GameficationDashboard },
+    { id: 'prompts', name: 'Prompt Manager', icon:Icons.Settings, component: PromptManager },
+    { id: 'enhancements', name: 'Enhancements', icon:Icons.Settings, component: EnhancementDashboard }
   ], []);
 
   const activeComponent = useMemo(() => 

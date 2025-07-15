@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight, MoreVertical } from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 export default function TouchOptimizedCard({ 
   children, 
@@ -92,12 +92,12 @@ export default function TouchOptimizedCard({
                 }}
                 className={`${isMobile ? 'p-2' : 'p-1'} rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
               >
-                <MoreVertical className={`${isMobile ? 'w-4 h-4' : 'w-3 h-3'} text-gray-500`} />
+                <Icons.MoreVertical className={`${isMobile ? 'w-4 h-4' : 'w-3 h-3'} text-gray-500`} />
               </button>
             )}
             
             {onTap && (
-              <ChevronRight className={`${isMobile ? 'w-4 h-4' : 'w-3 h-3'} text-gray-400`} />
+              <Icons.ChevronRight className={`${isMobile ? 'w-4 h-4' : 'w-3 h-3'} text-gray-400`} />
             )}
           </div>
         </div>

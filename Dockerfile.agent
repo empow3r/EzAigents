@@ -1,0 +1,40 @@
+# Unified Dockerfile for all agent types
+FROM node:20-alpine
+
+# Build argument for agent type (used for optimization)
+ARG AGENT_TYPE=claude
+
+WORKDIR /app
+
+# Install dependencies first for better layer caching
+COPY package*.json ./
+RUN npm install --legacy-peer-deps --omit=dev
+
+# Copy all necessary files
+COPY shared ./shared
+COPY cli ./cli
+COPY agents ./agents
+
+# Create memory directories for all agents
+RUN mkdir -p .agent-memory/claude .agent-memory/gpt .agent-memory/deepseek .agent-memory/mistral .agent-memory/gemini .agent-memory/kimi .agent-memory/webscraper
+
+# Create logs directories
+RUN mkdir -p agents/claude/logs agents/gpt/logs agents/deepseek/logs agents/mistral/logs agents/gemini/logs agents/kimi/logs agents/webscraper/logs
+
+# Create src directory for file outputs
+RUN mkdir -p src/output
+
+# Set proper permissions
+RUN chmod -R 755 .agent-memory agents/*/logs
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV AGENT_TYPE=${AGENT_TYPE}
+
+# Install additional dependencies based on agent type
+RUN if [ "$AGENT_TYPE" = "webscraper" ]; then \
+    apk add --no-cache chromium chromium-chromedriver; \
+    fi
+
+# The CMD will be overridden in docker-compose.yml for each agent
+CMD ["node", "--version"]

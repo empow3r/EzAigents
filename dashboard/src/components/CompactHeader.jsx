@@ -3,23 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EzAigentFullLogo } from './EzAigentLogo';
 import soundService from '../services/soundService';
-import { 
-  Menu, 
-  X, 
-  Sun, 
-  Moon,
-  Zap,
-  BarChart3,
-  Box,
-  GitCompare,
-  Trophy,
-  Settings,
-  Sparkles,
-  GitBranch,
-  MessageCircle,
-  Volume2,
-  Crown
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 const CompactHeader = ({ 
   activeTab, 
@@ -30,17 +14,17 @@ const CompactHeader = ({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const tabs = [
-    { id: 'command', name: 'Command', shortName: 'Command', icon: Zap },
-    { id: 'project', name: 'Status', shortName: 'Status', icon: GitBranch },
-    { id: 'enhanced', name: 'Dashboard', shortName: 'Dashboard', icon: Sparkles },
-    { id: 'chat', name: 'Chat', shortName: 'Chat', icon: MessageCircle },
-    { id: 'tts', name: 'TTS', shortName: 'TTS', icon: Volume2 },
-    { id: 'dashboard', name: 'Classic', shortName: 'Classic', icon: BarChart3 },
-    { id: 'workspace', name: '3D', shortName: '3D', icon: Box },
-    { id: 'diffs', name: 'Diffs', shortName: 'Diffs', icon: GitCompare },
-    { id: 'gamification', name: 'Wins', shortName: 'Wins', icon: Trophy },
-    { id: 'prompts', name: 'Prompts', shortName: 'Prompts', icon: Settings },
-    { id: 'enhancements', name: 'Enhance', shortName: 'Enhance', icon: Settings }
+    { id: 'command', name: 'Command', shortName: 'Command', icon:Icons.Zap },
+    { id: 'project', name: 'Status', shortName: 'Status', icon:Icons.GitBranch },
+    { id: 'enhanced', name: 'Dashboard', shortName: 'Dashboard', icon:Icons.Sparkles },
+    { id: 'chat', name: 'Chat', shortName: 'Chat', icon:Icons.MessageCircle },
+    { id: 'tts', name: 'TTS', shortName: 'TTS', icon:Icons.Volume2 },
+    { id: 'dashboard', name: 'Classic', shortName: 'Classic', icon:Icons.BarChart3 },
+    { id: 'workspace', name: '3D', shortName: '3D', icon:Icons.Box },
+    { id: 'diffs', name: 'Diffs', shortName: 'Diffs', icon:Icons.GitCompare },
+    { id: 'gamification', name: 'Wins', shortName: 'Wins', icon:Icons.Trophy },
+    { id: 'prompts', name: 'Prompts', shortName: 'Prompts', icon:Icons.Settings },
+    { id: 'enhancements', name: 'Enhance', shortName: 'Enhance', icon:Icons.Settings }
   ];
 
   const activeTabInfo = tabs.find(tab => tab.id === activeTab);
@@ -107,7 +91,7 @@ const CompactHeader = ({
                 }`}
                 aria-label="Toggle menu"
               >
-                {menuOpen ? <X size={20} /> : <Menu size={20} />}
+                {menuOpen ? <Icons.X size={20} /> : <Icons.Menu size={20} />}
               </motion.button>
 
               {/* Logo */}
@@ -132,7 +116,7 @@ const CompactHeader = ({
                 }}
                 aria-label="Switch to Executive Command Center"
               >
-                <Crown size={18} />
+                <Icons.Crown size={18} />
                 EXECUTIVE
               </motion.button>
 
@@ -149,7 +133,7 @@ const CompactHeader = ({
                 }`}
                 aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
               >
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                {darkMode ? <Icons.Sun size={20} /> : <Icons.Moon size={20} />}
               </motion.button>
             </div>
           </div>
@@ -251,7 +235,7 @@ const CompactHeader = ({
                         : 'text-gray-600 hover:text-gray-900 hover:bg-black/10'
                     }`}
                   >
-                    <X size={20} />
+                    <Icons.X size={20} />
                   </motion.button>
                 </div>
               </div>

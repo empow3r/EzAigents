@@ -1,0 +1,153 @@
+{
+  "enabled": true,
+  "defaultPriority": "normal",
+  "priorityLevels": {
+    "critical": {
+      "weight": 10,
+      "color": "#dc2626",
+      "description": "System critical tasks - security fixes, production outages",
+      "maxWaitTime": 30000,
+      "examples": ["security-patch", "production-hotfix", "system-recovery"]
+    },
+    "high": {
+      "weight": 5,
+      "color": "#ea580c", 
+      "description": "Important business tasks - new features, major bugs",
+      "maxWaitTime": 300000,
+      "examples": ["feature-implementation", "major-bug-fix", "api-enhancement"]
+    },
+    "normal": {
+      "weight": 1,
+      "color": "#059669",
+      "description": "Standard development tasks - regular features, refactoring",
+      "maxWaitTime": 1800000,
+      "examples": ["code-refactoring", "standard-feature", "documentation"]
+    },
+    "low": {
+      "weight": 0.5,
+      "color": "#0891b2",
+      "description": "Minor improvements - optimization, cleanup",
+      "maxWaitTime": 3600000,
+      "examples": ["code-cleanup", "minor-optimization", "style-improvements"]
+    },
+    "deferred": {
+      "weight": 0.1,
+      "color": "#6b7280",
+      "description": "Non-urgent tasks - experiments, research",
+      "maxWaitTime": 86400000,
+      "examples": ["research-spike", "experimental-feature", "analysis-task"]
+    }
+  },
+  "taskTypePriorities": {
+    "security": "critical",
+    "hotfix": "critical",
+    "production-issue": "critical",
+    "outage": "critical",
+    "bug-fix": "high",
+    "feature": "normal",
+    "enhancement": "normal",
+    "refactor": "normal",
+    "test": "normal",
+    "documentation": "low",
+    "cleanup": "low",
+    "optimization": "low",
+    "research": "deferred",
+    "experiment": "deferred",
+    "analysis": "deferred"
+  },
+  "agentTypePriorities": {
+    "claude": {
+      "architecture": "high",
+      "refactoring": "normal",
+      "design": "high"
+    },
+    "gpt": {
+      "backend": "normal",
+      "api": "normal",
+      "logic": "normal"
+    },
+    "deepseek": {
+      "testing": "normal",
+      "validation": "normal",
+      "debugging": "high"
+    },
+    "mistral": {
+      "documentation": "low",
+      "comments": "low",
+      "readme": "low"
+    },
+    "gemini": {
+      "analysis": "normal",
+      "review": "normal",
+      "audit": "high"
+    }
+  },
+  "filePriorities": {
+    "security/": "critical",
+    "auth/": "critical",
+    "config/": "high",
+    "api/": "high",
+    "core/": "high",
+    "src/": "normal",
+    "lib/": "normal",
+    "utils/": "normal",
+    "tests/": "normal",
+    "docs/": "low",
+    "examples/": "low",
+    "scripts/": "low",
+    "tmp/": "deferred"
+  },
+  "keywordPriorities": {
+    "security": "critical",
+    "vulnerability": "critical",
+    "exploit": "critical",
+    "breach": "critical",
+    "urgent": "critical",
+    "hotfix": "critical",
+    "critical": "critical",
+    "production": "high",
+    "important": "high",
+    "priority": "high",
+    "bug": "high",
+    "error": "high",
+    "fix": "high",
+    "feature": "normal",
+    "enhancement": "normal",
+    "improve": "normal",
+    "update": "normal",
+    "refactor": "normal",
+    "cleanup": "low",
+    "optimize": "low",
+    "minor": "low",
+    "cosmetic": "low",
+    "experiment": "deferred",
+    "research": "deferred",
+    "investigate": "deferred",
+    "explore": "deferred"
+  },
+  "fairnessSettings": {
+    "starvationThreshold": 300000,
+    "fairnessInterval": 100,
+    "lowPriorityBoostAfter": 1800000,
+    "deferredBoostAfter": 3600000
+  },
+  "queueLimits": {
+    "critical": 50,
+    "high": 200,
+    "normal": 1000,
+    "low": 500,
+    "deferred": 100
+  },
+  "priorityInheritance": {
+    "enabled": true,
+    "parentTaskBoost": 1,
+    "dependencyChainLimit": 3
+  },
+  "adaptivePriorities": {
+    "enabled": true,
+    "errorRateThreshold": 0.1,
+    "slowProcessingThreshold": 600000,
+    "boostOnErrors": true,
+    "degradeOnSlow": true
+  }
+}

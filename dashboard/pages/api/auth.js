@@ -3,14 +3,22 @@
  * Temporary auth implementation for dashboard
  */
 
-// Simple auth stub for development
+// SECURITY WARNING: This is a stub implementation for development only
+// Replace with proper OAuth implementation in production
 class AuthServiceStub {
   constructor(config) {
     this.config = config;
+    if (!config.jwtSecret || config.jwtSecret === 'development-secret') {
+      throw new Error('JWT_SECRET environment variable is required and cannot use default value');
+    }
   }
 
   async handleOAuthCallback(provider, code) {
-    // Simulate OAuth callback
+    // DEVELOPMENT ONLY - Replace with real OAuth implementation
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Mock authentication cannot be used in production');
+    }
+    
     return {
       accessToken: 'mock-access-token',
       refreshToken: 'mock-refresh-token',
@@ -23,12 +31,19 @@ class AuthServiceStub {
   }
 
   revokeSession(sessionId) {
-    // Simulate session revocation
+    // DEVELOPMENT ONLY
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Mock authentication cannot be used in production');
+    }
     console.log('Revoking session:', sessionId);
   }
 
   async refreshAccessToken(refreshToken) {
-    // Simulate token refresh
+    // DEVELOPMENT ONLY
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Mock authentication cannot be used in production');
+    }
+    
     return {
       accessToken: 'new-mock-access-token',
       refreshToken: 'new-mock-refresh-token'
@@ -36,7 +51,11 @@ class AuthServiceStub {
   }
 
   verifyToken(token) {
-    // Simulate token verification
+    // DEVELOPMENT ONLY
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Mock authentication cannot be used in production');
+    }
+    
     return {
       sub: '123',
       email: 'user@example.com',
@@ -46,14 +65,18 @@ class AuthServiceStub {
   }
 
   getAuthorizationUrl(provider) {
-    // Simulate OAuth URL generation
+    // DEVELOPMENT ONLY
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Mock authentication cannot be used in production');
+    }
+    
     return `https://accounts.google.com/o/oauth2/v2/auth?client_id=mock&redirect_uri=http://localhost:3000/auth/callback&response_type=code`;
   }
 }
 
 // Initialize auth service stub
 const authService = new AuthServiceStub({
-  jwtSecret: process.env.JWT_SECRET || 'development-secret',
+  jwtSecret: process.env.JWT_SECRET,
   providers: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID || 'mock-client-id',

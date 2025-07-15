@@ -1,26 +1,11 @@
 'use client';
 import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Play, 
-  Pause, 
-  RefreshCw, 
-  Plus,
-  Search,
-  Filter,
-  ChevronRight,
-  Clock,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  Loader2,
-  Settings,
-  Trash2
-} from 'lucide-react';
+import { Card } from '@/src/components/ui/card';
+import { Button } from '@/src/components/ui/button';
+import { Input } from '@/src/components/ui/input';
+import { Badge } from '@/src/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs';
+import * as Icons from 'lucide-react';
 
 const OperationsPage = ({ darkMode, realTimeData = {} }) => {
   const [selectedTask, setSelectedTask] = useState(null);
@@ -46,11 +31,11 @@ const OperationsPage = ({ darkMode, realTimeData = {} }) => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'completed': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'in-progress': return <Loader2 className="h-4 w-4 text-blue-500 animate-spin" />;
-      case 'failed': return <XCircle className="h-4 w-4 text-red-500" />;
-      case 'pending': return <Clock className="h-4 w-4 text-gray-500" />;
-      default: return <AlertCircle className="h-4 w-4 text-yellow-500" />;
+      case 'completed': return <Icons.CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'in-progress': return <Icons.Loader2 className="h-4 w-4 text-blue-500 animate-spin" />;
+      case 'failed': return <Icons.XCircle className="h-4 w-4 text-red-500" />;
+      case 'pending': return <Icons.Clock className="h-4 w-4 text-gray-500" />;
+      default: return <Icons.AlertCircle className="h-4 w-4 text-yellow-500" />;
     }
   };
 
@@ -82,11 +67,11 @@ const OperationsPage = ({ darkMode, realTimeData = {} }) => {
         </div>
         <div className="flex gap-3">
           <Button variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <Icons.RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
           <Button size="sm">
-            <Plus className="h-4 w-4 mr-2" />
+            <Icons.Plus className="h-4 w-4 mr-2" />
             New Task
           </Button>
         </div>
@@ -104,7 +89,7 @@ const OperationsPage = ({ darkMode, realTimeData = {} }) => {
           {/* Search and Filter */}
           <div className="flex gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Icons.Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search tasks..."
                 value={searchQuery}
@@ -152,7 +137,7 @@ const OperationsPage = ({ darkMode, realTimeData = {} }) => {
                           </Badge>
                         </div>
                       </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      <Icons.ChevronRight className="h-4 w-4 text-muted-foreground" />
                     </div>
                     {task.status === 'in-progress' && (
                       <div className="mt-2">
@@ -197,15 +182,15 @@ const OperationsPage = ({ darkMode, realTimeData = {} }) => {
                   </div>
                   <div className="flex gap-2 pt-4">
                     <Button size="sm" className="flex-1">
-                      <Play className="h-4 w-4 mr-2" />
+                      <Icons.Play className="h-4 w-4 mr-2" />
                       Resume
                     </Button>
                     <Button size="sm" variant="outline" className="flex-1">
-                      <Pause className="h-4 w-4 mr-2" />
+                      <Icons.Pause className="h-4 w-4 mr-2" />
                       Pause
                     </Button>
                     <Button size="sm" variant="destructive">
-                      <Trash2 className="h-4 w-4" />
+                      <Icons.Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
@@ -260,10 +245,10 @@ const OperationsPage = ({ darkMode, realTimeData = {} }) => {
                   </div>
                   <div className="pt-2 flex gap-2">
                     <Button size="sm" variant="outline" className="flex-1">
-                      <Settings className="h-4 w-4" />
+                      <Icons.Settings className="h-4 w-4" />
                     </Button>
                     <Button size="sm" variant="outline" className="flex-1">
-                      <RefreshCw className="h-4 w-4" />
+                      <Icons.RefreshCw className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>

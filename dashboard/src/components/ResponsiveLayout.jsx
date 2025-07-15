@@ -2,16 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef, memo, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import soundService from '../services/soundService';
-import { 
-  Menu, 
-  X, 
-  ChevronLeft, 
-  ChevronRight,
-  Sun,
-  Moon,
-  Zap,
-  Sparkles
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 const ResponsiveLayout = memo(({ 
   children, 
@@ -201,7 +192,7 @@ const ResponsiveLayout = memo(({
             } flex-shrink-0`}>
               <div className="flex items-center space-x-2 sm:space-x-3">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                  <Zap className="text-white" size={16} />
+                  <Icons.Zap className="text-white" size={16} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <h2 className={`font-semibold text-base sm:text-sm truncate ${
@@ -228,7 +219,7 @@ const ResponsiveLayout = memo(({
                   }`}
                   aria-label="Close sidebar"
                 >
-                  <X size={16} />
+                  <Icons.X size={16} />
                 </button>
               )}
             </div>
@@ -292,7 +283,7 @@ const ResponsiveLayout = memo(({
                             ease: "easeInOut"
                           }}
                         >
-                          <Sparkles size={12} className="text-yellow-400" />
+                          <Icons.Sparkles size={12} className="text-yellow-400" />
                         </motion.div>
                       </motion.div>
                     )}
@@ -342,7 +333,7 @@ const ResponsiveLayout = memo(({
                 }`}
                 aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
               >
-                {sidebarOpen && (isMobile || isTablet) ? <ChevronLeft size={20} /> : <Menu size={20} />}
+                {sidebarOpen && (isMobile || isTablet) ? <Icons.ChevronLeft size={20} /> : <Icons.Menu size={20} />}
               </button>
 
               {/* Current Page Title */}
@@ -393,7 +384,7 @@ const ResponsiveLayout = memo(({
                     ease: "easeInOut"
                   }}
                 >
-                  {darkMode ? <Sun size={18} className="sm:w-5 sm:h-5" /> : <Moon size={18} className="sm:w-5 sm:h-5" />}
+                  {darkMode ? <Icons.Sun size={18} className="sm:w-5 sm:h-5" /> : <Icons.Moon size={18} className="sm:w-5 sm:h-5" />}
                 </motion.div>
               </motion.button>
             </div>

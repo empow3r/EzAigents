@@ -25,7 +25,8 @@ class TTSService {
         pitch: options.pitch || 1.0
       }, {
         timeout: 10000,
-        responseType: 'stream'
+        responseType: 'stream',
+        validateStatus: (status) => status < 500
       });
 
       return response.data;
@@ -116,7 +117,8 @@ class TTSService {
 
     try {
       const response = await axios.get(`${this.ttsServerUrl}/api/health`, {
-        timeout: 5000
+        timeout: 5000,
+        validateStatus: (status) => status < 500
       });
       return { status: 'healthy', ...response.data };
     } catch (error) {

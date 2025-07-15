@@ -1,27 +1,12 @@
 'use client';
 import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Code, 
-  FileCode, 
-  GitBranch, 
-  Send,
-  Save,
-  Copy,
-  Download,
-  RefreshCw,
-  Sparkles,
-  Terminal,
-  FileText,
-  Settings,
-  PlayCircle,
-  Maximize2
-} from 'lucide-react';
+import { Card } from '@/src/components/ui/card';
+import { Button } from '@/src/components/ui/button';
+import { Textarea } from '@/src/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs';
+import { Badge } from '@/src/components/ui/badge';
+import * as Icons from 'lucide-react';
 
 const DevelopmentPage = ({ darkMode, realTimeData = {} }) => {
   const [selectedFile, setSelectedFile] = useState('src/api/auth.js');
@@ -92,7 +77,7 @@ export async function authenticate(email, password) {
             {/* File Explorer */}
             <Card className="p-4 lg:col-span-1">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <FileCode className="h-4 w-4" />
+                <Icons.FileCode className="h-4 w-4" />
                 Files
               </h3>
               <div className="space-y-1">
@@ -122,18 +107,18 @@ export async function authenticate(email, password) {
             <Card className="p-4 lg:col-span-3">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <Code className="h-4 w-4" />
+                  <Icons.Code className="h-4 w-4" />
                   <span className="font-mono text-sm">{selectedFile}</span>
                 </div>
                 <div className="flex gap-2">
                   <Button size="icon" variant="ghost">
-                    <Copy className="h-4 w-4" />
+                    <Icons.Copy className="h-4 w-4" />
                   </Button>
                   <Button size="icon" variant="ghost">
-                    <Download className="h-4 w-4" />
+                    <Icons.Download className="h-4 w-4" />
                   </Button>
                   <Button size="icon" variant="ghost">
-                    <Maximize2 className="h-4 w-4" />
+                    <Icons.Maximize2 className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -146,11 +131,11 @@ export async function authenticate(email, password) {
                 />
                 <div className="absolute bottom-2 right-2 flex gap-2">
                   <Button size="sm" variant="secondary">
-                    <Save className="h-4 w-4 mr-2" />
+                    <Icons.Save className="h-4 w-4 mr-2" />
                     Save
                   </Button>
                   <Button size="sm">
-                    <PlayCircle className="h-4 w-4 mr-2" />
+                    <Icons.PlayCircle className="h-4 w-4 mr-2" />
                     Run
                   </Button>
                 </div>
@@ -211,7 +196,7 @@ export async function authenticate(email, password) {
                   </Select>
                 </div>
                 <Button className="w-full">
-                  <Send className="h-4 w-4 mr-2" />
+                  <Icons.Send className="h-4 w-4 mr-2" />
                   Send to Agent
                 </Button>
               </div>
@@ -250,11 +235,11 @@ export async function authenticate(email, password) {
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold flex items-center gap-2">
-                  <Sparkles className="h-5 w-5" />
+                  <Icons.Sparkles className="h-5 w-5" />
                   Enhancement Modules
                 </h3>
                 <Button size="sm">
-                  <RefreshCw className="h-4 w-4 mr-2" />
+                  <Icons.RefreshCw className="h-4 w-4 mr-2" />
                   Scan for Updates
                 </Button>
               </div>
@@ -280,7 +265,7 @@ export async function authenticate(email, password) {
                     </div>
                     <div className="flex gap-2 mt-3">
                       <Button size="sm" variant="outline" className="flex-1">
-                        <Settings className="h-4 w-4" />
+                        <Icons.Settings className="h-4 w-4" />
                       </Button>
                       <Button size="sm" className="flex-1">
                         {enhancement.status === 'active' ? 'Disable' : 'Enable'}
@@ -293,7 +278,7 @@ export async function authenticate(email, password) {
 
             <Card className="p-6">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Terminal className="h-5 w-5" />
+                <Icons.Terminal className="h-5 w-5" />
                 Enhancement Console
               </h3>
               <div className="bg-black/90 rounded-lg p-4 font-mono text-sm text-green-400">

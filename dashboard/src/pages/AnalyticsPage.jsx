@@ -1,28 +1,12 @@
 'use client';
 import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  TrendingDown,
-  Download,
-  Filter,
-  Calendar,
-  DollarSign,
-  Clock,
-  Zap,
-  Target,
-  Award,
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  RefreshCw
-} from 'lucide-react';
+import { Card } from '@/src/components/ui/card';
+import { Button } from '@/src/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs';
+import { Badge } from '@/src/components/ui/badge';
+import { Progress } from '@/src/components/ui/progress';
+import * as Icons from 'lucide-react';
 
 const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
   const [timeRange, setTimeRange] = useState('24h');
@@ -66,8 +50,8 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
   ];
 
   const getChangeIcon = (change) => {
-    if (change > 0) return <TrendingUp className="h-4 w-4 text-green-500" />;
-    if (change < 0) return <TrendingDown className="h-4 w-4 text-red-500" />;
+    if (change > 0) return <Icons.TrendingUp className="h-4 w-4 text-green-500" />;
+    if (change < 0) return <Icons.TrendingDown className="h-4 w-4 text-red-500" />;
     return null;
   };
 
@@ -84,7 +68,7 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
         <div className="flex gap-3">
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-[180px]">
-              <Calendar className="h-4 w-4 mr-2" />
+              <Icons.Calendar className="h-4 w-4 mr-2" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -95,7 +79,7 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
             </SelectContent>
           </Select>
           <Button variant="outline">
-            <Download className="h-4 w-4 mr-2" />
+            <Icons.Download className="h-4 w-4 mr-2" />
             Export Report
           </Button>
         </div>
@@ -168,7 +152,7 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <Icons.DollarSign className="h-4 w-4 text-muted-foreground" />
                 <h4 className="text-sm font-medium">Today's Cost</h4>
               </div>
               <p className="text-2xl font-bold">${costMetrics.today.cost}</p>
@@ -179,7 +163,7 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
             
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <Icons.DollarSign className="h-4 w-4 text-muted-foreground" />
                 <h4 className="text-sm font-medium">Week to Date</h4>
               </div>
               <p className="text-2xl font-bold">${costMetrics.week.cost}</p>
@@ -190,7 +174,7 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
             
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <Icons.DollarSign className="h-4 w-4 text-muted-foreground" />
                 <h4 className="text-sm font-medium">Month to Date</h4>
               </div>
               <p className="text-2xl font-bold">${costMetrics.month.cost}</p>
@@ -201,7 +185,7 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
             
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <Icons.TrendingUp className="h-4 w-4 text-muted-foreground" />
                 <h4 className="text-sm font-medium">Projected Month</h4>
               </div>
               <p className="text-2xl font-bold">${costMetrics.projectedMonth.cost}</p>
@@ -264,7 +248,7 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
                       <td className="text-right">
                         <div className="flex items-center justify-end gap-1">
                           {[...Array(5)].map((_, i) => (
-                            <Award 
+                            <Icons.Award 
                               key={i} 
                               className={`h-4 w-4 ${
                                 i < Math.floor(agent.successRate / 20) 
@@ -289,7 +273,7 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold">Predictive Analytics</h3>
               <Badge variant="outline" className="flex items-center gap-1">
-                <Zap className="h-3 w-3" />
+                <Icons.Zap className="h-3 w-3" />
                 ML-Powered
               </Badge>
             </div>
@@ -299,7 +283,7 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-medium">{prediction.metric}</h4>
                     <Badge variant={prediction.trend === 'up' ? 'destructive' : 'default'}>
-                      {prediction.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                      {prediction.trend === 'up' ? <Icons.TrendingUp className="h-3 w-3" /> : <Icons.TrendingDown className="h-3 w-3" />}
                     </Badge>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -314,7 +298,7 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
                   </div>
                   {prediction.metric === 'Error Rate' && prediction.predicted > 1 && (
                     <div className="mt-3 p-2 rounded bg-yellow-500/10 flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                      <Icons.AlertTriangle className="h-4 w-4 text-yellow-500" />
                       <span className="text-sm">Consider scaling up agents</span>
                     </div>
                   )}
@@ -336,9 +320,9 @@ const AnalyticsPage = ({ darkMode, realTimeData = {} }) => {
                   alert.type === 'info' ? 'bg-blue-500/10' :
                   'bg-green-500/10'
                 }`}>
-                  {alert.type === 'warning' ? <AlertTriangle className="h-4 w-4 text-yellow-500 mt-0.5" /> :
+                  {alert.type === 'warning' ? <Icons.AlertTriangle className="h-4 w-4 text-yellow-500 mt-0.5" /> :
                    alert.type === 'info' ? <AlertCircle className="h-4 w-4 text-blue-500 mt-0.5" /> :
-                   <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />}
+                   <Icons.CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />}
                   <div className="flex-1">
                     <p className="text-sm font-medium">{alert.message}</p>
                     <p className="text-xs text-muted-foreground">{alert.time}</p>

@@ -6,20 +6,7 @@ import {
   SystemPerformanceDetailView, 
   QueueStatsDetailView 
 } from './TileDetailViews';
-import {
-  Users,
-  Activity,
-  Clock,
-  Cpu,
-  Database,
-  Zap,
-  TrendingUp,
-  TrendingDown,
-  AlertTriangle,
-  CheckCircle,
-  Server,
-  BarChart3
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 const ZoomableDashboard = memo(({ darkMode = false }) => {
   const [dashboardData, setDashboardData] = useState({
@@ -163,7 +150,7 @@ const ZoomableDashboard = memo(({ darkMode = false }) => {
                 }`}>
                   Agent Status
                 </h3>
-                <Users className={`${darkMode ? 'text-blue-400' : 'text-blue-600'}`} size={24} />
+                <Icons.Users className={`${darkMode ? 'text-blue-400' : 'text-blue-600'}`} size={24} />
               </div>
 
               <div className="grid grid-cols-3 gap-4">
@@ -244,13 +231,13 @@ const ZoomableDashboard = memo(({ darkMode = false }) => {
                 }`}>
                   System Health
                 </h3>
-                <Activity className={`${darkMode ? 'text-green-400' : 'text-green-600'}`} size={24} />
+                <Icons.Activity className={`${darkMode ? 'text-green-400' : 'text-green-600'}`} size={24} />
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Cpu size={16} className={darkMode ? 'text-blue-400' : 'text-blue-600'} />
+                    <Icons.Cpu size={16} className={darkMode ? 'text-blue-400' : 'text-blue-600'} />
                     <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       CPU
                     </span>
@@ -262,7 +249,7 @@ const ZoomableDashboard = memo(({ darkMode = false }) => {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Database size={16} className={darkMode ? 'text-green-400' : 'text-green-600'} />
+                    <Icons.Database size={16} className={darkMode ? 'text-green-400' : 'text-green-600'} />
                     <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       Memory
                     </span>
@@ -274,7 +261,7 @@ const ZoomableDashboard = memo(({ darkMode = false }) => {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Zap size={16} className={darkMode ? 'text-yellow-400' : 'text-yellow-600'} />
+                    <Icons.Zap size={16} className={darkMode ? 'text-yellow-400' : 'text-yellow-600'} />
                     <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       Response
                     </span>
@@ -307,7 +294,7 @@ const ZoomableDashboard = memo(({ darkMode = false }) => {
                 }`}>
                   Task Queues
                 </h3>
-                <Clock className={`${darkMode ? 'text-orange-400' : 'text-orange-600'}`} size={24} />
+                <Icons.Clock className={`${darkMode ? 'text-orange-400' : 'text-orange-600'}`} size={24} />
               </div>
 
               <div className="space-y-3">
@@ -359,7 +346,7 @@ const ZoomableDashboard = memo(({ darkMode = false }) => {
                 }`}>
                   Quick Actions
                 </h3>
-                <BarChart3 className={`${darkMode ? 'text-purple-400' : 'text-purple-600'}`} size={24} />
+                <Icons.BarChart3 className={`${darkMode ? 'text-purple-400' : 'text-purple-600'}`} size={24} />
               </div>
 
               <div className="grid grid-cols-1 gap-2">

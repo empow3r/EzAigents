@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Smartphone, 
-  Download, 
-  Wifi, 
-  WifiOff, 
-  Bell, 
-  RefreshCw as Sync, 
-  Navigation,
-  Vibrate,
-  Battery,
-  Signal
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { usePWA } from '../hooks/usePWA';
 import { useGestures } from '../hooks/useGestures';
 
@@ -106,7 +95,7 @@ export default function MobilePWA({ screenSize, isMobile, isTablet }) {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Smartphone className="w-6 h-6" />
+              <Icons.Smartphone className="w-6 h-6" />
               <div>
                 <p className="font-semibold">Install EzAugent</p>
                 <p className="text-sm opacity-90">Get the full mobile experience</p>
@@ -137,7 +126,7 @@ export default function MobilePWA({ screenSize, isMobile, isTablet }) {
   const MobileControls = () => (
     <div className={`bg-white dark:bg-gray-800 rounded-lg ${isMobile ? 'p-3' : 'p-4'} shadow-lg`}>
       <h3 className={`font-semibold mb-4 flex items-center ${isMobile ? 'text-sm' : ''}`}>
-        <Smartphone className={`${isMobile ? 'w-4 h-4 mr-1' : 'w-5 h-5 mr-2'}`} />
+        <Icons.Smartphone className={`${isMobile ? 'w-4 h-4 mr-1' : 'w-5 h-5 mr-2'}`} />
         {isMobile ? 'Controls' : 'Mobile Controls'}
       </h3>
       
@@ -148,12 +137,12 @@ export default function MobilePWA({ screenSize, isMobile, isTablet }) {
           <div className="flex items-center space-x-2 text-sm">
             {isOnline ? (
               <>
-                <Wifi className="w-4 h-4 text-green-500" />
+                <Icons.Wifi className="w-4 h-4 text-green-500" />
                 <span className="text-green-500">Online</span>
               </>
             ) : (
               <>
-                <WifiOff className="w-4 h-4 text-red-500" />
+                <Icons.WifiOff className="w-4 h-4 text-red-500" />
                 <span className="text-red-500">Offline</span>
               </>
             )}
@@ -181,7 +170,7 @@ export default function MobilePWA({ screenSize, isMobile, isTablet }) {
         <div className="flex items-center justify-between">
           <span>Battery</span>
           <div className="flex items-center space-x-2">
-            <Battery className="w-4 h-4" />
+            <Icons.Battery className="w-4 h-4" />
             <span className="text-sm">{batteryLevel}%</span>
           </div>
         </div>
@@ -190,7 +179,7 @@ export default function MobilePWA({ screenSize, isMobile, isTablet }) {
         <div className="flex items-center justify-between">
           <span>Notifications</span>
           <div className="flex items-center space-x-2">
-            <Bell className={`w-4 h-4 ${notificationPermission === 'granted' ? 'text-green-500' : 'text-gray-400'}`} />
+            <Icons.Bell className={`w-4 h-4 ${notificationPermission === 'granted' ? 'text-green-500' : 'text-gray-400'}`} />
             {notificationPermission === 'granted' ? (
               <span className="text-green-500 text-sm">Enabled</span>
             ) : (
@@ -211,7 +200,7 @@ export default function MobilePWA({ screenSize, isMobile, isTablet }) {
             onClick={() => setIsVibrationEnabled(!isVibrationEnabled)}
             className="flex items-center space-x-2"
           >
-            <Vibrate className={`w-4 h-4 ${isVibrationEnabled ? 'text-blue-500' : 'text-gray-400'}`} />
+            <Icons.Vibrate className={`w-4 h-4 ${isVibrationEnabled ? 'text-blue-500' : 'text-gray-400'}`} />
             <span className={`text-sm ${isVibrationEnabled ? 'text-blue-500' : 'text-gray-400'}`}>
               {isVibrationEnabled ? 'On' : 'Off'}
             </span>
@@ -231,7 +220,7 @@ export default function MobilePWA({ screenSize, isMobile, isTablet }) {
           className="fixed top-4 left-4 right-4 bg-black/80 text-white p-2 rounded-lg z-50"
         >
           <div className="flex items-center justify-center space-x-2">
-            <Navigation className="w-4 h-4" />
+            <Icons.Navigation className="w-4 h-4" />
             <span className="text-sm">
               {gestureState.gestureType === 'swipe' && `Swipe ${gestureState.direction}`}
               {gestureState.gestureType === 'pinch' && `Pinch ${gestureState.scale > 1 ? 'out' : 'in'}`}
@@ -261,7 +250,7 @@ export default function MobilePWA({ screenSize, isMobile, isTablet }) {
           onClick={syncPendingTasks}
           className="flex items-center justify-center space-x-2 p-3 bg-green-100 dark:bg-green-900 rounded-lg hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
         >
-          <Signal className="w-4 h-4" />
+          <Icons.Signal className="w-4 h-4" />
           <span className="text-sm">Sync</span>
         </button>
         
@@ -273,7 +262,7 @@ export default function MobilePWA({ screenSize, isMobile, isTablet }) {
           }}
           className="flex items-center justify-center space-x-2 p-3 bg-purple-100 dark:bg-purple-900 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
         >
-          <Vibrate className="w-4 h-4" />
+          <Icons.Vibrate className="w-4 h-4" />
           <span className="text-sm">Test Vibration</span>
         </button>
         
@@ -288,7 +277,7 @@ export default function MobilePWA({ screenSize, isMobile, isTablet }) {
           }}
           className="flex items-center justify-center space-x-2 p-3 bg-orange-100 dark:bg-orange-900 rounded-lg hover:bg-orange-200 dark:hover:bg-orange-800 transition-colors"
         >
-          <Bell className="w-4 h-4" />
+          <Icons.Bell className="w-4 h-4" />
           <span className="text-sm">Test Notify</span>
         </button>
       </div>
@@ -317,7 +306,7 @@ export default function MobilePWA({ screenSize, isMobile, isTablet }) {
           className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4"
         >
           <div className="flex items-center space-x-2 text-green-700 dark:text-green-300">
-            <Download className="w-5 h-5" />
+            <Icons.Download className="w-5 h-5" />
             <span className="font-medium">App Installed</span>
           </div>
           <p className="text-sm text-green-600 dark:text-green-400 mt-1">

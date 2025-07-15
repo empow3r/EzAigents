@@ -1,0 +1,188 @@
+FROM node:20-alpine
+
+ARG AGENT_TYPE=claude
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache \
+    curl \
+    jq \
+    bash \
+    git \
+    ca-certificates
+
+# Install WebScraper dependencies conditionally
+RUN if [ "$AGENT_TYPE" = "webscraper" ]; then \
+    apk add --no-cache \
+        chromium \
+        nss \
+        freetype \
+        freetype-dev \
+        harfbuzz \
+        ttf-freefont \
+        font-noto-emoji \
+        && rm -rf /var/cache/apk/*; \
+    fi
+
+# Copy package files for dependency installation
+COPY package*.json ./
+RUN npm ci --only=production --no-audit
+
+# Copy shared coordination system (required by all agents)
+COPY shared ./shared
+
+# Copy specific agent code
+COPY agents/${AGENT_TYPE} ./agent
+
+# Install agent-specific dependencies if they exist
+RUN if [ -f ./agent/package.json ]; then \
+    cd ./agent && npm ci --only=production --no-audit; \
+    fi
+
+# Copy scripts for container operations
+COPY scripts ./scripts
+RUN chmod +x scripts/*.sh
+
+# Create necessary directories with proper structure
+RUN mkdir -p \
+    .agent-memory/${AGENT_TYPE} \
+    .agent-memory/communication/messages \
+    .agent-memory/communication/broadcasts \
+    .agent-memory/locks \
+    .agent-memory/shared-state \
+    logs \
+    src/output
+
+# WebScraper specific directories
+RUN if [ "$AGENT_TYPE" = "webscraper" ]; then \
+    mkdir -p \
+        .agent-memory/webscraper/sessions \
+        .agent-memory/webscraper/screenshots \
+        .agent-memory/webscraper/extracted-data; \
+    fi
+
+# Set proper permissions
+RUN chmod -R 755 .agent-memory logs scripts src
+
+# Environment variables
+ENV NODE_ENV=production
+ENV AGENT_TYPE=${AGENT_TYPE}
+ENV DOCKER_ENV=true
+ENV COORDINATION_ENABLED=true
+
+# WebScraper specific environment
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+ENV PUPPETEER_ARGS="--no-sandbox,--disable-setuid-sandbox,--disable-dev-shm-usage"
+
+# Create health check endpoint
+COPY <<EOF /app/health-check.js
+const http = require('http');
+const Redis = require('redis');
+
+const server = http.createServer(async (req, res) => {
+  if (req.url === '/health') {
+    try {
+      // Check Redis connectivity
+      const redis = Redis.createClient({ 
+        url: process.env.REDIS_URL || 'redis://redis:6379',
+        socket: { connectTimeout: 5000 }
+      });
+      
+      await redis.connect();
+      await redis.ping();
+      await redis.disconnect();
+      
+      // Check agent process
+      const agentHealthy = process.env.AGENT_HEALTHY === 'true';
+      
+      if (agentHealthy) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          status: 'healthy',
+          agent: process.env.AGENT_TYPE,
+          uptime: process.uptime(),
+          timestamp: new Date().toISOString()
+        }));
+      } else {
+        res.writeHead(503, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          status: 'unhealthy',
+          agent: process.env.AGENT_TYPE,
+          error: 'Agent not ready'
+        }));
+      }
+    } catch (error) {
+      res.writeHead(503, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        status: 'unhealthy',
+        agent: process.env.AGENT_TYPE,
+        error: error.message
+      }));
+    }
+  } else {
+    res.writeHead(404);
+    res.end('Not Found');
+  }
+});
+
+server.listen(8080, '0.0.0.0', () => {
+  console.log('Health check server running on port 8080');
+});
+EOF
+
+# Start script that launches both health check and agent
+COPY <<EOF /app/start.sh
+#!/bin/bash
+set -e
+
+echo "🚀 Starting Ez Aigent - \${AGENT_TYPE} Agent"
+
+# Start health check server in background
+node /app/health-check.js &
+HEALTH_PID=\$!
+
+# Wait for Redis to be available
+echo "⏳ Waiting for Redis..."
+until redis-cli -u "\${REDIS_URL:-redis://redis:6379}" ping > /dev/null 2>&1; do
+  echo "Waiting for Redis to be ready..."
+  sleep 2
+done
+echo "✅ Redis is ready"
+
+# Set agent as healthy for health checks
+export AGENT_HEALTHY=true
+
+# Start the agent with coordination
+echo "🤖 Starting \${AGENT_TYPE} agent with coordination..."
+if [ -f "./agent/enhanced-coordinated-index.js" ]; then
+    node ./agent/enhanced-coordinated-index.js
+else
+    echo "❌ Enhanced coordinated agent not found for \${AGENT_TYPE}"
+    exit 1
+fi
+
+# Cleanup health check process
+kill \$HEALTH_PID 2>/dev/null || true
+EOF
+
+RUN chmod +x /app/start.sh
+
+# Health check configuration
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S ezaigent && \
+    adduser -S ezaigent -u 1001 -G ezaigent
+
+# Change ownership of application files
+RUN chown -R ezaigent:ezaigent /app
+
+USER ezaigent
+
+EXPOSE 8080
+
+# Use start script as entrypoint
+CMD ["/app/start.sh"]

@@ -7,8 +7,20 @@ const path = require('path');
 // Import coordination services
 const FileLockManager = require('./file-lock-manager');
 const AgentCommunication = require('./agent-communication');
+const QueueEnhancer = require('./queue-enhancer');
 
 const redis = new Redis(process.env.REDIS_URL);
+
+// Initialize queue enhancer for priority-aware dequeuing
+const queueEnhancer = new QueueEnhancer(redis, {
+  enableFeatures: {
+    priorities: process.env.ENABLE_PRIORITIES !== 'false',
+    deduplication: process.env.ENABLE_DEDUPLICATION !== 'false',
+    analytics: process.env.ENABLE_ANALYTICS !== 'false',
+    alerts: process.env.ENABLE_ALERTS !== 'false'
+  },
+  fallbackToLegacy: true
+});
 const FILEMAP_PATH = process.env.FILEMAP_PATH || '../shared/filemap.json';
 const TOKENPOOL_PATH = process.env.TOKENPOOL_PATH || '../shared/tokenpool.json';
 
@@ -35,17 +47,22 @@ const lockManager = new FileLockManager();
 const communication = new AgentCommunication(ORCHESTRATOR_ID);
 
 const dequeueJob = async () => {
-  // Use blocking multi-queue pop for efficiency
+  // Use enhanced priority-aware dequeuing
   const models = ['claude-3-opus', 'gpt-4o', 'deepseek-coder', 'command-r-plus', 'gemini-pro'];
   const queueKeys = models.map(model => `queue:${model}`);
   
   try {
-    const result = await redis.blpop(...queueKeys, 1); // 1 second timeout
+    const result = await queueEnhancer.dequeue(queueKeys, 1000); // 1 second timeout
     if (result) {
-      const [queueName, job] = result;
-      const model = queueName.replace('queue:', '');
-      const parsed = JSON.parse(job);
-      return { ...parsed, model };
+      const { queue, task, priority, fallback } = result;
+      const model = queue.replace('queue:', '');
+      
+      if (fallback) {
+        console.log(`   ⚠️ Used legacy dequeue for ${queue}`);
+      }
+      
+      console.log(`📋 Dequeued ${task.file || 'unknown'} from ${queue} (Priority: ${priority})`);
+      return { ...task, model, priority };
     }
   } catch (error) {
     console.error('Error dequeuing job:', error);
@@ -104,7 +121,9 @@ const submitTask = async (job) => {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 30000,
+      validateStatus: (status) => status < 500
     });
 
     const response = res.data.choices[0].message.content;
@@ -120,12 +139,12 @@ const submitTask = async (job) => {
     
     // Announce task completion
     await communication.broadcastMessage(
-      `Orchestrator completed task: ${file} using ${model} (${taskId})`,
+      `Orchestrator completed task: ${file} using ${model} (${taskId}, Priority: ${job.priority || 'normal'})`,
       'task_completed',
       'low'
     );
     
-    console.log(`✅ ${model} updated ${file} (Task: ${taskId})`);
+    console.log(`✅ ${model} updated ${file} (Task: ${taskId}, Priority: ${job.priority || 'normal'})`);
     
   } catch (error) {
     console.error(`❌ Task error for ${file}:`, error.message);
@@ -169,11 +188,54 @@ const submitTask = async (job) => {
     await gracefulShutdown();
   });
   
+  // Listen for queue control messages
+  const queueControlSubscriber = new Redis(process.env.REDIS_URL);
+  queueControlSubscriber.subscribe('queue:control', 'queue:emergency');
+  
+  queueControlSubscriber.on('message', async (channel, message) => {
+    try {
+      const controlMessage = JSON.parse(message);
+      
+      if (channel === 'queue:emergency' && controlMessage.action === 'emergency_stop') {
+        console.log('🚨 Emergency stop received:', controlMessage.reason);
+        await gracefulShutdown();
+      }
+      
+      if (channel === 'queue:control') {
+        console.log('📢 Queue control message:', controlMessage);
+      }
+    } catch (error) {
+      console.error('Error processing queue control message:', error);
+    }
+  });
+  
   while (true) {
     try {
+      // Check for emergency stop
+      const emergencyStop = await redis.get('queue:emergency_stop');
+      if (emergencyStop === 'true') {
+        console.log('🛑 Emergency stop is active, waiting...');
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        continue;
+      }
+      
       const job = await dequeueJob();
       if (job) {
-        console.log(`📋 Processing job: ${job.file} with ${job.model}`);
+        // Check if specific queue is paused
+        const queuePaused = await redis.get(`queue:${job.model}:paused`);
+        if (queuePaused === 'true') {
+          console.log(`⏸️ Queue ${job.model} is paused, re-queuing task`);
+          // Put the job back at the front of the queue
+          if (queueEnhancer) {
+            await queueEnhancer.enqueue(`queue:${job.model}`, job, { priority: job.priority });
+          } else {
+            await redis.lpush(`queue:${job.model}`, JSON.stringify(job));
+          }
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          continue;
+        }
+        
+        console.log(`📋 Processing job: ${job.file} with ${job.model} (Priority: ${job.priority})`);
         await submitTask(job);
       }
       // No need for timeout - BLPOP handles blocking

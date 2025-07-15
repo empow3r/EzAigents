@@ -1,21 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
-import { 
-  Brain, 
-  Code, 
-  Zap, 
-  Activity, 
-  Timer, 
-  Coffee,
-  CheckCircle,
-  AlertCircle,
-  Play,
-  Pause,
-  Volume2,
-  VolumeX
-} from 'lucide-react';
+import { Card, CardContent } from '@/src/components/ui/card';
+import * as Icons from 'lucide-react';
 import { Progress } from '@radix-ui/react-progress';
 
 // Sound URLs (these would need to be added to public/sounds/)
@@ -233,7 +220,7 @@ export default function EnhancedAgentDashboard({ darkMode = true }) {
                 : 'bg-black/10 border-black/20 text-gray-900 hover:bg-black/20'
             }`}
           >
-            {soundEnabled ? <Volume2 size={18} className="sm:w-5 sm:h-5" /> : <VolumeX size={18} className="sm:w-5 sm:h-5" />}
+            {soundEnabled ? <Icons.Volume2 size={18} className="sm:w-5 sm:h-5" /> : <Icons.VolumeX size={18} className="sm:w-5 sm:h-5" />}
           </motion.button>
           
           <div className={`backdrop-blur-sm border rounded-lg px-3 py-2 sm:px-4 ${
@@ -406,7 +393,7 @@ export default function EnhancedAgentDashboard({ darkMode = true }) {
           whileTap={{ scale: 0.9 }}
           className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg flex items-center justify-center text-white text-2xl"
         >
-          <Coffee />
+          <Icons.Coffee />
         </motion.button>
       </motion.div>
     </div>

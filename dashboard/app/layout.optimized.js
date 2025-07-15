@@ -1,6 +1,6 @@
 import React from 'react';
 import { Inter } from 'next/font/google';
-import { ThemeProvider } from '@/components/ui/hooks/useTheme';
+import { ThemeProvider } from '@/src/components/ui/hooks/useTheme';
 import { AppProvider } from '@/contexts/AppContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import './globals.css';

@@ -2,20 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import soundService from '../services/soundService';
-import {
-  Brain,
-  Zap,
-  Activity,
-  Target,
-  TrendingUp,
-  Waves,
-  Sparkles,
-  Heart,
-  Eye,
-  Gauge,
-  Layers,
-  Cpu
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 /**
  * NEURAL-OPTIMIZED USER FEEDBACK SYSTEM
@@ -229,7 +216,7 @@ const AdaptiveCoach = ({ neuralState, darkMode }) => {
           type: 'stress_relief',
           message: 'High cognitive load detected. Consider taking a short break.',
           action: 'Take 3 deep breaths and return refreshed',
-          icon: Heart,
+          icon:Icons.Heart,
           color: 'red',
           soundEffect: 'alphaWaves'
         };
@@ -238,7 +225,7 @@ const AdaptiveCoach = ({ neuralState, darkMode }) => {
           type: 'focus_enhancement',
           message: 'Your focus could be improved. Try the Pomodoro technique.',
           action: 'Set a 25-minute focused work timer',
-          icon: Target,
+          icon:Icons.Target,
           color: 'blue',
           soundEffect: 'focusBoost'
         };
@@ -247,7 +234,7 @@ const AdaptiveCoach = ({ neuralState, darkMode }) => {
           type: 'flow_reinforcement',
           message: 'Excellent! You\'re in a flow state. Keep the momentum!',
           action: 'Continue your current task for maximum productivity',
-          icon: Waves,
+          icon:Icons.Waves,
           color: 'green',
           soundEffect: 'euphoria'
         };
@@ -256,7 +243,7 @@ const AdaptiveCoach = ({ neuralState, darkMode }) => {
           type: 'motivation_boost',
           message: 'Low motivation detected. Let\'s re-energize!',
           action: 'Complete a small, achievable task first',
-          icon: Sparkles,
+          icon:Icons.Sparkles,
           color: 'yellow',
           soundEffect: 'energyWave'
         };
@@ -350,28 +337,28 @@ const NeuralDashboard = ({ neuralState, brainwaveActivity, darkMode }) => {
     { 
       label: 'Focus', 
       value: neuralState.focusIntensity, 
-      icon: Target, 
+      icon:Icons.Target, 
       color: 'blue',
       description: 'Current attention intensity'
     },
     { 
       label: 'Flow', 
       value: neuralState.flowState ? 1 : neuralState.engagementScore, 
-      icon: Waves, 
+      icon:Icons.Waves, 
       color: 'green',
       description: 'Flow state indicator'
     },
     { 
       label: 'Energy', 
       value: neuralState.energyLevel, 
-      icon: Zap, 
+      icon:Icons.Zap, 
       color: 'yellow',
       description: 'Mental energy reserves'
     },
     { 
       label: 'Load', 
       value: neuralState.cognitiveLoad, 
-      icon: Cpu, 
+      icon:Icons.Cpu, 
       color: 'red',
       description: 'Cognitive processing load'
     }
@@ -495,7 +482,7 @@ export default function NeuralFeedbackSystem({ darkMode, children }) {
             : 'bg-white/80 text-gray-900 border border-gray-200'
         }`}
       >
-        <Brain size={20} />
+        <Icons.Brain size={20} />
       </motion.button>
 
       {/* Neural Dashboard Panel */}

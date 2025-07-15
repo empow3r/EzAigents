@@ -61,7 +61,9 @@ const getNextApiKey = () => {
         headers: {
           'Authorization': `Bearer ${getNextApiKey()}`,
           'Content-Type': 'application/json'
-        }
+        },
+        timeout: 30000,
+        validateStatus: (status) => status < 500
       });
       
       if (!response.data.choices || !response.data.choices[0]) {

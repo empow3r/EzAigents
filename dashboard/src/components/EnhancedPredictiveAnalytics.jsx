@@ -1,18 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  AlertTriangle, 
-  Target, 
-  Zap,
-  Brain,
-  Eye,
-  BarChart3,
-  PieChart,
-  Activity
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 export default function EnhancedPredictiveAnalytics({ 
   predictions = {}, 
@@ -176,7 +165,7 @@ export default function EnhancedPredictiveAnalytics({
               <div className={`text-sm flex items-center gap-1 ${
                 insight.trend > 0 ? 'text-green-400' : 'text-red-400'
               }`}>
-                {insight.trend > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                {insight.trend > 0 ? <Icons.TrendingUp className="w-3 h-3" /> : <Icons.TrendingDown className="w-3 h-3" />}
                 {Math.abs(insight.trend).toFixed(1)}%
               </div>
             )}
@@ -202,7 +191,7 @@ export default function EnhancedPredictiveAnalytics({
   const PredictionChart = ({ title, data, color, unit = '' }) => (
     <div className="bg-gray-800/50 backdrop-blur-lg border border-gray-700/50 rounded-xl p-6">
       <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-        <BarChart3 className="w-4 h-4 text-cyan-400" />
+        <Icons.BarChart3 className="w-4 h-4 text-cyan-400" />
         {title}
       </h3>
       <div className="relative h-24">
@@ -261,7 +250,7 @@ export default function EnhancedPredictiveAnalytics({
       {/* Header with time horizon selector */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Brain className="w-6 h-6 text-purple-400" />
+          <Icons.Brain className="w-6 h-6 text-purple-400" />
           Predictive Intelligence
         </h2>
         <div className="flex bg-gray-800 rounded-lg p-1">
@@ -313,7 +302,7 @@ export default function EnhancedPredictiveAnalytics({
       {/* Advanced Analytics Panel */}
       <div className="bg-gradient-to-br from-purple-900/50 to-indigo-900/50 backdrop-blur-lg border border-purple-500/30 rounded-2xl p-8">
         <h3 className="text-xl font-semibold text-purple-300 mb-6 flex items-center gap-2">
-          <Eye className="w-5 h-5" />
+          <Icons.Eye className="w-5 h-5" />
           AI-Powered Strategic Recommendations
         </h3>
         
@@ -322,7 +311,7 @@ export default function EnhancedPredictiveAnalytics({
             <h4 className="text-lg font-semibold text-white">Immediate Actions</h4>
             {insights.filter(i => i.impact === 'high').map((insight, idx) => (
               <div key={idx} className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg">
-                <Target className="w-4 h-4 text-cyan-400" />
+                <Icons.Target className="w-4 h-4 text-cyan-400" />
                 <span className="text-sm text-gray-200">{insight.action}</span>
                 <span className="ml-auto text-xs bg-cyan-600 text-white px-2 py-1 rounded-full">
                   {insight.confidence}%

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Trophy, Zap, Target, TrendingUp, Award, Crown, Sparkles } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { useInfinityBoardStore } from '../../stores/infinityBoardStore';
 
 // Achievement definitions
@@ -98,7 +98,7 @@ const AchievementToast = ({ achievement, onClose }) => {
               <p className="text-white/80 text-sm">{achievement.title}</p>
               <p className="text-white/60 text-xs">{achievement.description}</p>
               <div className="flex items-center space-x-2 mt-1">
-                <Zap className="w-3 h-3 text-yellow-400" />
+                <Icons.Zap className="w-3 h-3 text-yellow-400" />
                 <span className="text-yellow-400 text-xs">+{achievement.xp} XP</span>
               </div>
             </div>
@@ -129,7 +129,7 @@ const LevelUpToast = ({ newLevel, onClose }) => {
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             className="w-20 h-20 mx-auto mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center"
           >
-            <Crown className="w-10 h-10 text-white" />
+            <Icons.Crown className="w-10 h-10 text-white" />
           </motion.div>
           <h2 className="text-3xl font-bold text-white mb-2">LEVEL UP!</h2>
           <p className="text-xl text-yellow-400 mb-2">Level {newLevel}</p>
@@ -148,7 +148,7 @@ const LevelUpToast = ({ newLevel, onClose }) => {
                   delay: i * 0.2
                 }}
               >
-                <Sparkles className="w-4 h-4 text-yellow-400" />
+                <Icons.Sparkles className="w-4 h-4 text-yellow-400" />
               </motion.div>
             ))}
           </div>
@@ -171,12 +171,12 @@ const ProgressBar = ({ currentXp, maxXp, level, theme }) => {
     <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 border border-white/20">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-2">
-          <Crown className="w-5 h-5 text-yellow-400" />
+          <Icons.Crown className="w-5 h-5 text-yellow-400" />
           <span className="text-white font-semibold">Level {level}</span>
           <span className="text-white/60 text-sm">({LEVEL_SYSTEM.getLevelTitle(level)})</span>
         </div>
         <div className="flex items-center space-x-1">
-          <Zap className="w-4 h-4 text-yellow-400" />
+          <Icons.Zap className="w-4 h-4 text-yellow-400" />
           <span className="text-white/80 text-sm">{currentXp % 1000}/1000 XP</span>
         </div>
       </div>
@@ -225,7 +225,7 @@ const AchievementGrid = ({ achievements, theme }) => {
   return (
     <div>
       <h3 className="text-white text-lg font-semibold mb-4 flex items-center space-x-2">
-        <Trophy className="w-5 h-5 text-yellow-400" />
+        <Icons.Trophy className="w-5 h-5 text-yellow-400" />
         <span>Achievements</span>
       </h3>
       
@@ -261,7 +261,7 @@ const AchievementGrid = ({ achievements, theme }) => {
                 </p>
                 {isUnlocked && (
                   <div className="flex items-center justify-center space-x-1 mt-2">
-                    <Zap className="w-3 h-3 text-yellow-400" />
+                    <Icons.Zap className="w-3 h-3 text-yellow-400" />
                     <span className="text-yellow-400 text-xs">+{achievement.xp}</span>
                   </div>
                 )}
@@ -295,25 +295,25 @@ const GamificationDashboard = ({ className = "" }) => {
       {/* Stats Overview */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 border border-white/20 text-center">
-          <Trophy className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
+          <Icons.Trophy className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
           <p className="text-2xl font-bold text-white">{user.achievements.length}</p>
           <p className="text-white/60 text-sm">Achievements</p>
         </div>
         
         <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 border border-white/20 text-center">
-          <Zap className="w-6 h-6 text-blue-400 mx-auto mb-2" />
+          <Icons.Zap className="w-6 h-6 text-blue-400 mx-auto mb-2" />
           <p className="text-2xl font-bold text-white">{user.experience}</p>
           <p className="text-white/60 text-sm">Total XP</p>
         </div>
         
         <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 border border-white/20 text-center">
-          <Sparkles className="w-6 h-6 text-purple-400 mx-auto mb-2" />
+          <Icons.Sparkles className="w-6 h-6 text-purple-400 mx-auto mb-2" />
           <p className="text-2xl font-bold text-white">{user.tokens}</p>
           <p className="text-white/60 text-sm">Tokens</p>
         </div>
         
         <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 border border-white/20 text-center">
-          <Target className="w-6 h-6 text-green-400 mx-auto mb-2" />
+          <Icons.Target className="w-6 h-6 text-green-400 mx-auto mb-2" />
           <p className="text-2xl font-bold text-white">87%</p>
           <p className="text-white/60 text-sm">Completion</p>
         </div>

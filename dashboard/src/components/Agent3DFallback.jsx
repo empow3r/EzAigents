@@ -2,15 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import soundService from '../services/optimizedSoundService';
-import { 
-  Box, 
-  Cpu, 
-  Activity, 
-  Zap, 
-  Brain,
-  Eye,
-  RefreshCw
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 // Lightweight 3D workspace fallback
 export default function Agent3DFallback({ darkMode = true }) {
@@ -37,10 +29,10 @@ export default function Agent3DFallback({ darkMode = true }) {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'active': return <Activity size={16} />;
-      case 'busy': return <Zap size={16} />;
-      case 'idle': return <Eye size={16} />;
-      default: return <Cpu size={16} />;
+      case 'active': return <Icons.Activity size={16} />;
+      case 'busy': return <Icons.Zap size={16} />;
+      case 'idle': return <Icons.Eye size={16} />;
+      default: return <Icons.Cpu size={16} />;
     }
   };
 
@@ -129,7 +121,7 @@ export default function Agent3DFallback({ darkMode = true }) {
                     : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
               }`}
             >
-              <Activity size={16} />
+              <Icons.Activity size={16} />
               <span className="hidden sm:inline">2D View</span>
               <span className="sm:hidden">2D</span>
             </button>
@@ -145,9 +137,9 @@ export default function Agent3DFallback({ darkMode = true }) {
               }`}
             >
               {loadingFullVersion ? (
-                <RefreshCw className="animate-spin" size={16} />
+                <Icons.RefreshCw className="animate-spin" size={16} />
               ) : (
-                <Box size={16} />
+                <Icons.Box size={16} />
               )}
               <span className="hidden sm:inline">{loadingFullVersion ? 'Loading...' : '3D View'}</span>
               <span className="sm:hidden">{loadingFullVersion ? '...' : '3D'}</span>
@@ -192,7 +184,7 @@ export default function Agent3DFallback({ darkMode = true }) {
                 whileHover={{ scale: 1.1 }}
                 className={`w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full bg-gradient-to-br ${getStatusColor(agent.status)} flex items-center justify-center shadow-lg cursor-pointer relative`}
               >
-                <Brain className={darkMode ? "text-white" : "text-gray-900"} size={16} />
+                <Icons.Brain className={darkMode ? "text-white" : "text-gray-900"} size={16} />
                 
                 {/* Status indicator */}
                 <div className={`absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 rounded-full flex items-center justify-center ${

@@ -1,88 +1,63 @@
 #!/bin/bash
 
-# Ez Aigent Multi-Agent Startup Script
-echo "🚀 Starting Ez Aigent Multi-Agent System..."
+# Ez Aigents Startup Script
+echo "🚀 Starting Ez Aigents System..."
 
-# Load environment variables
-export $(cat .env | xargs)
-
-# Start Redis server
-echo "📦 Starting Redis server..."
-redis-server --daemonize yes --port 6379
-
-# Wait for Redis to be ready
-sleep 2
-
-# Test Redis connection
-if redis-cli ping > /dev/null 2>&1; then
-    echo "✅ Redis server is running"
-else
-    echo "❌ Redis server failed to start"
-    exit 1
+# Check if Redis is running
+if ! pgrep -f "redis-server" > /dev/null; then
+    echo "⚠️  Redis not detected. Starting Redis..."
+    redis-server --daemonize yes --port 6379
+    sleep 2
 fi
 
-# Start the orchestrator/runner
-echo "🎯 Starting orchestrator..."
-cd cli
-node runner.js &
-RUNNER_PID=$!
-echo "Orchestrator PID: $RUNNER_PID"
-cd ..
-
 # Start agents in background
-echo "🤖 Starting Claude agent..."
-cd agents/claude
-node index.js &
+echo "🤖 Starting AI Agents..."
+
+# Start Claude Agent
+echo "  → Starting Claude Agent..."
+cd agents/claude && node wrapped-index.js > logs/claude.log 2>&1 &
 CLAUDE_PID=$!
-echo "Claude agent PID: $CLAUDE_PID"
-cd ../..
+echo "    Claude PID: $CLAUDE_PID"
 
-echo "🤖 Starting GPT agent..."
-cd agents/gpt
-node index.js &
+# Start GPT Agent  
+echo "  → Starting GPT Agent..."
+cd ../gpt && node wrapped-index.js > logs/gpt.log 2>&1 &
 GPT_PID=$!
-echo "GPT agent PID: $GPT_PID"
-cd ../..
+echo "    GPT PID: $GPT_PID"
 
-echo "🤖 Starting DeepSeek agent..."
-cd agents/deepseek
-node index.js &
+# Start DeepSeek Agent
+echo "  → Starting DeepSeek Agent..."
+cd ../deepseek && node wrapped-index.js > logs/deepseek.log 2>&1 &
 DEEPSEEK_PID=$!
-echo "DeepSeek agent PID: $DEEPSEEK_PID"
-cd ../..
+echo "    DeepSeek PID: $DEEPSEEK_PID"
 
-echo "🤖 Starting Mistral agent..."
-cd agents/mistral
-node index.js &
-MISTRAL_PID=$!
-echo "Mistral agent PID: $MISTRAL_PID"
-cd ../..
+# Back to root
+cd ../../
 
-echo "🤖 Starting Gemini agent..."
-cd agents/gemini
-node index.js &
-GEMINI_PID=$!
-echo "Gemini agent PID: $GEMINI_PID"
-cd ../..
+# Start API Key Manager
+echo "🔑 Starting API Key Manager..."
+node cli/api-key-manager.js start > cli/logs/api-key-manager.log 2>&1 &
+API_MANAGER_PID=$!
+echo "    API Manager PID: $API_MANAGER_PID"
 
-# Start dashboard
-echo "📊 Starting dashboard..."
-cd dashboard
-npm run dev &
+# Start Dashboard
+echo "🌐 Starting Dashboard..."
+cd dashboard && npm run dev > logs/dashboard.log 2>&1 &
 DASHBOARD_PID=$!
-echo "Dashboard PID: $DASHBOARD_PID"
-cd ..
-
-# Save PIDs for cleanup
-echo "$RUNNER_PID,$CLAUDE_PID,$GPT_PID,$DEEPSEEK_PID,$MISTRAL_PID,$GEMINI_PID,$DASHBOARD_PID" > .agent_pids
+echo "    Dashboard PID: $DASHBOARD_PID"
 
 echo ""
-echo "🎉 Ez Aigent system started successfully!"
+echo "✅ Ez Aigents System Started!"
+echo ""
 echo "📊 Dashboard: http://localhost:3000"
-echo "📦 Redis: localhost:6379"
+echo "🩺 Health Check: http://localhost:3000/claude-doctor"
+echo "📈 Queue Stats: http://localhost:3000/api/queue-stats"
 echo ""
-echo "To stop all agents, run: ./stop-agents.sh"
-echo "To check agent status: ./check-agents.sh"
-echo "To enqueue tasks: cd cli && node enqueue.js"
+echo "PIDs:"
+echo "  Claude: $CLAUDE_PID"
+echo "  GPT: $GPT_PID" 
+echo "  DeepSeek: $DEEPSEEK_PID"
+echo "  API Manager: $API_MANAGER_PID"
+echo "  Dashboard: $DASHBOARD_PID"
 echo ""
-echo "Agent PIDs saved to .agent_pids"
+echo "To stop all services: pkill -f 'node.*wrapped-index.js'"

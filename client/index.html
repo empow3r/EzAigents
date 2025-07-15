@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Observability Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Claude Code Observability</h1>
+            <div class="status">
+                <span id="connection-status" class="status-disconnected">⚫ Disconnected</span>
+                <span id="event-count">0 events</span>
+            </div>
+        </header>
+        
+        <div class="controls">
+            <button id="clear-btn">Clear Events</button>
+            <button id="export-btn">Export JSON</button>
+            <label>
+                <input type="checkbox" id="auto-scroll" checked>
+                Auto-scroll
+            </label>
+        </div>
+        
+        <div class="filters">
+            <input type="text" id="search" placeholder="Search events...">
+            <select id="app-filter">
+                <option value="">All Apps</option>
+            </select>
+            <select id="type-filter">
+                <option value="">All Event Types</option>
+                <option value="pre_tool_use">Pre Tool Use</option>
+                <option value="post_tool_use">Post Tool Use</option>
+                <option value="stop">Stop</option>
+            </select>
+        </div>
+        
+        <div id="events-container" class="events-container">
+            <div class="loading">Connecting to WebSocket...</div>
+        </div>
+    </div>
+    
+    <script src="ws.js"></script>
+</body>
+</html>

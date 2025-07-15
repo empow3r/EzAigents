@@ -1,17 +1,7 @@
 'use client';
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Home, 
-  BarChart3, 
-  Settings, 
-  Users, 
-  Zap,
-  Brain,
-  MessageCircle,
-  Trophy,
-  Box
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 const MobileNavigation = memo(({ 
   activeTab, 
@@ -21,11 +11,11 @@ const MobileNavigation = memo(({
 }) => {
   // Priority tabs for mobile bottom navigation
   const mobilePriorityTabs = [
-    { id: 'command', icon: Zap, label: 'Command' },
-    { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
-    { id: 'enhanced', icon: Brain, label: 'Enhanced' },
-    { id: 'chat', icon: MessageCircle, label: 'Chat' },
-    { id: 'settings', icon: Settings, label: 'More' }
+    { id: 'command', icon:Icons.Zap, label: 'Command' },
+    { id: 'dashboard', icon:Icons.BarChart3, label: 'Dashboard' },
+    { id: 'enhanced', icon:Icons.Brain, label: 'Enhanced' },
+    { id: 'chat', icon:Icons.MessageCircle, label: 'Chat' },
+    { id: 'settings', icon:Icons.Settings, label: 'More' }
   ];
 
   const handleTabClick = (tabId) => {

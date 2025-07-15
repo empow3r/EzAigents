@@ -1,13 +1,35 @@
 {
   "name": "ez-aigent-gemini-agent",
   "version": "1.0.0",
-  "description": "Gemini agent for specialized tasks",
+  "description": "Gemini agent for code analysis and optimization with enhanced coordination",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "dependencies": {
     "ioredis": "^5.3.2",
-    "axios": "^1.6.0"
-  }
+    "axios": "^1.6.0",
+    "@google/generative-ai": "^0.19.0",
+    "winston": "^3.11.0",
+    "uuid": "^9.0.0"
+  },
+  "optionalDependencies": {
+    "redis": "^4.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "gemini",
+    "ai",
+    "agent",
+    "code-analysis",
+    "optimization",
+    "performance",
+    "security"
+  ],
+  "author": "Ez Aigent Platform",
+  "license": "MIT"
 }

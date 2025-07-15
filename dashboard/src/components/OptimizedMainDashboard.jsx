@@ -5,21 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { ErrorBoundary } from 'react-error-boundary';
 import { initializePerformance } from '../utils/performanceInit';
-import { 
-  BarChart3, 
-  Zap, 
-  Box, 
-  GitCompare, 
-  Trophy, 
-  Settings,
-  Moon,
-  Sun,
-  Sparkles,
-  GitBranch,
-  MessageCircle,
-  Loader2,
-  Activity
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 // Lazy load components for better performance
 const AgentDashboard = lazy(() => import('../AgentDashboard'));
@@ -36,7 +22,7 @@ const PerformanceDashboard = lazy(() => import('./PerformanceDashboard'));
 // Loading component
 const LoadingSpinner = memo(() => (
   <div className="flex items-center justify-center h-96">
-    <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+    <Icons.Loader2 className="w-8 h-8 animate-spin text-blue-500" />
     <span className="ml-2 text-gray-600">Loading...</span>
   </div>
 ));
@@ -104,16 +90,16 @@ const OptimizedMainDashboard = memo(() => {
   }, []);
 
   const tabs = [
-    { id: 'project', name: 'Project Status', icon: GitBranch, component: ProjectDashboard },
-    { id: 'enhanced', name: 'Enhanced Dashboard', icon: Sparkles, component: EnhancedAgentDashboard },
-    { id: 'chat', name: 'Agent Chat', icon: MessageCircle, component: ChatDashboard },
-    { id: 'performance', name: 'Performance', icon: Activity, component: PerformanceDashboard },
-    { id: 'dashboard', name: 'Classic Dashboard', icon: BarChart3, component: AgentDashboard },
-    { id: 'workspace', name: '3D Workspace', icon: Box, component: Agent3DWorkspace },
-    { id: 'diffs', name: 'Code Diffs', icon: GitCompare, component: CodeDiffViewer },
-    { id: 'gamification', name: 'Achievements', icon: Trophy, component: GameficationDashboard },
-    { id: 'prompts', name: 'Prompt Manager', icon: Settings, component: PromptManager },
-    { id: 'enhancements', name: 'Enhancements', icon: Zap, component: EnhancementDashboard }
+    { id: 'project', name: 'Project Status', icon:Icons.GitBranch, component: ProjectDashboard },
+    { id: 'enhanced', name: 'Enhanced Dashboard', icon:Icons.Sparkles, component: EnhancedAgentDashboard },
+    { id: 'chat', name: 'Agent Chat', icon:Icons.MessageCircle, component: ChatDashboard },
+    { id: 'performance', name: 'Performance', icon:Icons.Activity, component: PerformanceDashboard },
+    { id: 'dashboard', name: 'Classic Dashboard', icon:Icons.BarChart3, component: AgentDashboard },
+    { id: 'workspace', name: '3D Workspace', icon:Icons.Box, component: Agent3DWorkspace },
+    { id: 'diffs', name: 'Code Diffs', icon:Icons.GitCompare, component: CodeDiffViewer },
+    { id: 'gamification', name: 'Achievements', icon:Icons.Trophy, component: GameficationDashboard },
+    { id: 'prompts', name: 'Prompt Manager', icon:Icons.Settings, component: PromptManager },
+    { id: 'enhancements', name: 'Enhancements', icon:Icons.Zap, component: EnhancementDashboard }
   ];
 
   const activeComponent = tabs.find(tab => tab.id === activeTab)?.component;
@@ -154,7 +140,7 @@ const OptimizedMainDashboard = memo(() => {
                   transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
                   className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center"
                 >
-                  <Zap className="text-white" size={20} />
+                  <Icons.Zap className="text-white" size={20} />
                 </motion.div>
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
@@ -188,7 +174,7 @@ const OptimizedMainDashboard = memo(() => {
                     : 'bg-blue-500/20 text-blue-600 hover:bg-blue-500/30'
                 }`}
               >
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                {darkMode ? <Icons.Sun size={20} /> : <Icons.Moon size={20} />}
               </motion.button>
 
               {/* Tab Navigation */}

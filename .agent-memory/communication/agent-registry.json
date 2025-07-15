@@ -1,0 +1,19 @@
+{
+  "gemini-1752529941632": {
+    "agentId": "gemini-1752529941632",
+    "agentType": "gemini",
+    "pid": 56771,
+    "startTime": "2025-07-14T21:52:21.769Z",
+    "version": "1.0.0",
+    "capabilities": [
+      "communication",
+      "file_locking",
+      "port_management",
+      "health_monitoring",
+      "code_analysis",
+      "research"
+    ],
+    "status": "initializing",
+    "lastHeartbeat": "2025-07-14T21:52:21.769Z"
+  }
+}

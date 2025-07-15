@@ -3,18 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useScrollEffects, scrollAnimations } from '../hooks/useScrollEffects';
 import ScrollAnimatedSection from './ScrollAnimatedSection';
 import ParallaxSection from './ParallaxSection';
-import { 
-  Sparkles, 
-  Rocket, 
-  Code, 
-  Cpu, 
-  Globe, 
-  Shield,
-  Zap,
-  Users,
-  BarChart3,
-  GitBranch
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 const ScrollEffectsShowcase = ({ darkMode = true }) => {
   const containerRef = useRef(null);
@@ -27,25 +16,25 @@ const ScrollEffectsShowcase = ({ darkMode = true }) => {
 
   const features = [
     { 
-      icon: Rocket, 
+      icon:Icons.Rocket, 
       title: "Lightning Fast", 
       description: "Optimized performance with lazy loading and code splitting",
       animation: "slideLeft"
     },
     { 
-      icon: Shield, 
+      icon:Icons.Shield, 
       title: "Enterprise Security", 
       description: "Bank-grade encryption and secure API communication",
       animation: "slideRight"
     },
     { 
-      icon: Users, 
+      icon:Icons.Users, 
       title: "Multi-Agent System", 
       description: "Coordinate 10-100+ AI agents seamlessly",
       animation: "slideUp"
     },
     { 
-      icon: Zap, 
+      icon:Icons.Zap, 
       title: "Real-time Updates", 
       description: "Live WebSocket connections for instant feedback",
       animation: "scale"
@@ -72,7 +61,7 @@ const ScrollEffectsShowcase = ({ darkMode = true }) => {
             style={{ scale }}
             className="inline-block mb-8"
           >
-            <Sparkles className={`w-24 h-24 mx-auto ${
+            <Icons.Sparkles className={`w-24 h-24 mx-auto ${
               darkMode ? 'text-blue-400' : 'text-blue-600'
             }`} />
           </motion.div>
@@ -237,7 +226,7 @@ const ScrollEffectsShowcase = ({ darkMode = true }) => {
                 style={{ rotate }}
                 className="absolute -top-10 -right-10 w-32 h-32 opacity-10"
               >
-                <Code className="w-full h-full" />
+                <Icons.Code className="w-full h-full" />
               </motion.div>
               <div className={`rounded-xl overflow-hidden shadow-2xl ${
                 darkMode ? 'bg-gray-900' : 'bg-gray-100'

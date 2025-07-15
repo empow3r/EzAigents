@@ -1,19 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  BarChart3, 
-  PieChart, 
-  TrendingUp, 
-  Activity,
-  Zap,
-  Eye,
-  Layers,
-  Target,
-  Brain,
-  Cpu,
-  DollarSign
-} from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 export const FluidBarChart = ({ data, height = 200, color = '#00D4FF' }) => {
   const canvasRef = useRef(null);
