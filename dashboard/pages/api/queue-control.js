@@ -7,7 +7,7 @@ let QueueEnhancer;
 let queueEnhancer;
 
 try {
-  QueueEnhancer = require('../../../../cli/queue-enhancer');
+  QueueEnhancer = require('../../../cli/queue-enhancer');
   queueEnhancer = new QueueEnhancer(redis, {
     enableFeatures: {
       priorities: true,

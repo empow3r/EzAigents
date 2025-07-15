@@ -35,30 +35,6 @@ const nextConfig = {
   // Disable source maps in production for faster builds
   productionBrowserSourceMaps: false,
   
-  // Optimize images
-  images: {
-    unoptimized: process.env.NODE_ENV === 'development',
-    domains: ['localhost'],
-  },
-  
-  // Performance-optimized webpack config
-  webpack: (config, { dev }) => {
-    if (!dev) {
-      // Enable optimizations for performance
-      config.optimization.minimize = true;
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-          },
-        },
-      };
-    }
-    return config;
-  },
   
   // Security headers
   async headers() {

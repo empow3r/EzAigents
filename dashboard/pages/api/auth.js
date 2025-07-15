@@ -231,10 +231,11 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error('Authentication API error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    const { createErrorResponse } = require('../../../src/utils/errorHandler');
+    const { response, statusCode } = createErrorResponse(
+      'Authentication service error',
+      error.message
+    );
+    res.status(statusCode).json(response);
   }
 }
